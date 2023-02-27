@@ -134,11 +134,11 @@
     margin: 2em auto 0px;
 }
 .AddNewItem_Image_Basic {
-    background-image: url(../imgs/hero-items-new-item-modal-basic-cropped.svg);
+    background-image: url(../../imgs/hero-items-new-item-modal-basic-cropped.svg);
     width: 120px;
 } 
 .AddNewItem_Image_Variants {
-    background-image: url(../imgs/hero-items-new-item-modal-variants.svg);
+    background-image: url(../../imgs/hero-items-new-item-modal-variants.svg);
 }
 
 .NewBasicItem_Input {

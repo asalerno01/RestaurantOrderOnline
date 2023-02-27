@@ -201,7 +201,7 @@ td {
     padding: 0 20px;
 }
 .BorderImage {
-    background-image: url('../imgs/border-shadow.png');
+    background-image: url('../../../imgs/border-shadow.png');
     background-position: 100% 0;
     background-repeat: repeat-y;
 }
