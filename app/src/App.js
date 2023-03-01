@@ -29,16 +29,18 @@ import TimeClock from './pages/staff/TimeClock';
 import NewEmployee from './pages/staff/NewEmployee';
 import EmployeeList from './pages/staff/EmployeeList';
 import EditEmployee from './pages/staff/EditEmployee';
+import Login from './pages/user_pages/Login';
 
 function App() {
     return (
         <Routes>
+            <Route path="salerno/login" element={<Login />} />
             <Route path="salerno" element={<Dashboard />}>
                 <Route element={<PageLayout />}>
                     <Route path='items' element={<ItemList />} />
-                    <Route path='items/:id/edit' element={<Edit />} />
+                    <Route path='items/:guid/edit' element={<Edit />} />
                     {/* <Route path='edit/new' element={<Edit />} /> */}
-                    <Route path='items/:id/modifiers' element={<Modifiers />} />
+                    <Route path='items/:guid/modifiers' element={<Modifiers />} />
 
                     <Route path='employees' element={<EmployeeList />} />
                     <Route path='employees/timeclock' element={<TimeClock />} />

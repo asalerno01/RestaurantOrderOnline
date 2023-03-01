@@ -2,7 +2,6 @@
 {
     public class Item
     {
-        //public string GUID { get; set; } = Guid.NewGuid().ToString();
         public string GUID { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }
         public string? Department { get; set; }
@@ -24,7 +23,5 @@
         public string? LiabilityRedemptionTender { get; set; }
         public string? TaxGroupOrRate { get; set; }
         public List<Modifier> Modifiers { get; set; } = new();
-        // public string? Name means can be null
-        public string? Secret { get; set; }
     }
 }

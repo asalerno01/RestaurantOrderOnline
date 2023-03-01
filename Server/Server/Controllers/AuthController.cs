@@ -6,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Server.Models.Authentication;
+using Microsoft.EntityFrameworkCore;
 
 namespace SalernoServer
 {
@@ -52,7 +53,10 @@ namespace SalernoServer
                 Response.Cookies.Append("RefreshToken", refTokString, cookieOptions);
                 return Ok(new
                 {
-                    AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken)
+                    AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
+                    email = customerAccount.Email,
+                    firstName = customerAccount.FirstName,
+                    lastName = customerAccount.LastName
                 });
             }
             return Unauthorized();
@@ -75,6 +79,17 @@ namespace SalernoServer
             var result = await _context.CustomerAccounts.AddAsync(customerAccount);
             await _context.SaveChangesAsync();
 
+            return Ok();
+        }
+        [HttpPost]
+        [Route("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var refreshToken = Request.Cookies["RefreshToken"];
+            var foundAccount = await _context.CustomerAccounts.Where(ca => ca.RefreshToken.Equals(refreshToken)).FirstOrDefaultAsync();
+            if (foundAccount is null) return BadRequest("Can't find account");
+            foundAccount.RefreshToken = "";
+            _context.Update(foundAccount);
             return Ok();
         }
         [HttpGet]

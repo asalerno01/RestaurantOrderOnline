@@ -28,40 +28,6 @@ builder.Services.AddDbContext<AppDbContext>(
 );
 builder.Services.AddJWTTokenServices(builder.Configuration);
 
-/*//builder.Services.AddJWTTokenServices(builder.Configuration);
-//builder.Services.AddNewJWTTokenServices(builder.Configuration);
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
-
-// Adding Authentication
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-
-// Adding Jwt Bearer
-.AddJwtBearer(options =>
-{
-    options.SaveToken = true;
-    options.RequireHttpsMetadata = false;
-    options.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ClockSkew = TimeSpan.Zero,
-
-        ValidAudience = "https://localhost:7074",
-        ValidIssuer = "https://localhost:7074",
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("e7202338bf9a0384046b2753776c5fa9cc7e095dc0df1e63c8f95bbb0df31a7bc9a3732b13bfe0ecd2c4f9ce5abaaba7be85860f9dc2a25c453ec3aab6be157f"))
-    };
-});*/
-
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -69,7 +35,9 @@ builder.Services.AddCors(options =>
                       {
                           policy.WithOrigins("http://example.com",
                                               "http://localhost:3000",
-                                               "http://localhost:3001");
+                                               "http://localhost:3001")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
                       });
 });
 
@@ -99,21 +67,14 @@ builder.Services.AddSwaggerGen(options => {
 });
 
 var app = builder.Build();
-
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseCors(MyAllowSpecificOrigins);
-
 app.UseHttpsRedirection();
-
+app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

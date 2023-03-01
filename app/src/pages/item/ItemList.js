@@ -323,12 +323,12 @@ const ItemList = () => {
                                     </div>
                                     <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Cost')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
                                         <div className='ItemList_Table_Body_Data_Container'>
-                                            <span className='ItemList_ItemDetails'>{item['price'].toFixed(2 )}</span>
+                                            <span className='ItemList_ItemDetails'>{item['cost'].toFixed(2 )}</span>
                                         </div>
                                     </div>
                                     <div className='ItemList_Table_Content_Body_Cell_Item_Col' style={(showHideValue.includes('Item')) ? {display: 'block'} : {display: 'none'}}>
                                         <div className='ItemList_Table_Body_Data_Container'>
-                                            <a href={`/salerno/items/${item['id']}/edit`} className='ItemList_ItemName_Button'>{item['name']}</a>
+                                            <a href={`/salerno/items/${item['guid']}/edit`} className='ItemList_ItemName_Button'>{item['name']}</a>
                                         </div>
                                     </div>
                                     <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Margin')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
@@ -407,274 +407,274 @@ const ItemList = () => {
                             </div>
                     
                     <div className='ItemList_Table_Container_Scroll'>
-                                <div className='ItemList_Table'>
-                                            <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Price')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
-                                                <div className='ItemList_Table_Header_Wrapper'>
-                                                    <div className='ItemList_Table_Header_Grid'>
-                                                        <div className='ItemList_Table_Header_Title_Not_Item'>
-                                                            <span>Price</span>
-                                                        </div>
-                                                        <div className='ItemList_Table_Header_Sort_Icon_Wrapper'>
-                                                            <SortButton sortType={sortType} setSortType={setSortType} value='Price' />
-                                                        </div>
-                                                        <div className='ItemList_Table_Header_Item_Wrapper'>
-                                                            <div className='ItemList_Table_Header_Item_Bottom'>
-                                                                <div className='ItemList_Table_Header_Input_Wrapper'>
-                                                                    <input type='text' value={priceValue['Value']} onChange={handlePriceValueChange} className='ItemList_Table_Header_Input' />
-                                                                </div>
-                                                                <div className='ItemList_Table_Header_Filter_Icon_Wrapper'>
-                                                                    <button className='ItemList_Table_Header_Search_Filter_Button' onClick={() => handleHeaderFilterDropdownClick('Price')}>
-                                                                        <HiFilter className='ItemList_Filter_Icon' size='1.1em' />
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                            <div className='ItemList_Table'>
+                                <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Price')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
+                                    <div className='ItemList_Table_Header_Wrapper'>
+                                        <div className='ItemList_Table_Header_Grid'>
+                                            <div className='ItemList_Table_Header_Title_Not_Item'>
+                                                <span>Price</span>
+                                            </div>
+                                            <div className='ItemList_Table_Header_Sort_Icon_Wrapper'>
+                                                <SortButton sortType={sortType} setSortType={setSortType} value='Price' />
+                                            </div>
+                                            <div className='ItemList_Table_Header_Item_Wrapper'>
+                                                <div className='ItemList_Table_Header_Item_Bottom'>
+                                                    <div className='ItemList_Table_Header_Input_Wrapper'>
+                                                        <input type='text' value={priceValue['Value']} onChange={handlePriceValueChange} className='ItemList_Table_Header_Input' />
                                                     </div>
-                                                </div>
-                                                <div className='ItemList_Header_Filter_Dropdown_Wrapper' style={(currentFilterDropdown === 'Price') ? {display: 'block'} : {display: 'none'}}>
-                                                    <div className='ItemList_Open_Wrapper'>
-                                                        <div className='ItemList_Select_Wrapper'>
-                                                            <select className='ItemList_Filter_Select' value={priceValue['Type']} onChange={(event) => setPriceValue(prev => ({...prev, 'Type': event.target.value}))}>
-                                                                <option className='ItemList_Filter_Select_Option' value='Equals'>Equals</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Greater'>Greater than</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Greater_Equal'>Greater than or equal to</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Less'>Less than</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Less_Equal'>Less than or equal to</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Range'>In range</option>
-                                                            </select>
-                                                        </div>
-                                                        <div className='ItemList_Input_Search_Wrapper'>
-                                                            <input type='text' className='ItemList_Input_Search' value={priceValue['Value']} onChange={handlePriceValueChange} />
-                                                        </div>
-                                                        <div className='ItemList_Clear_Wrapper'>
-                                                            <button type='button' className='ItemList_Clear_Button' onClick={() => setPriceValue({'Value': '', 'Type': 'Equals'})}>Clear filter</button>
-                                                        </div>
+                                                    <div className='ItemList_Table_Header_Filter_Icon_Wrapper'>
+                                                        <button className='ItemList_Table_Header_Search_Filter_Button' onClick={() => handleHeaderFilterDropdownClick('Price')}>
+                                                            <HiFilter className='ItemList_Filter_Icon' size='1.1em' />
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className={(showHideValue.includes('Cost')) ? 'ItemList_Table_Header_Col' : 'ItemList_Table_Header_Col hidden'} style={(showHideValue.includes('Cost')) ? {width: `calc(100% / ${showHideValue.length}`} : {}}>
-                                                <div className='ItemList_Table_Header_Wrapper'>
-                                                    <div className='ItemList_Table_Header_Grid'>
-                                                        <div className='ItemList_Table_Header_Title_Not_Item'><span>Cost</span></div>
-                                                        <div className='ItemList_Table_Header_Sort_Icon_Wrapper'>
-                                                            <SortButton sortType={sortType} setSortType={setSortType} value='Cost' />
-                                                        </div>
-                                                        <div className='ItemList_Table_Header_Item_Wrapper'>
-                                                            <div className='ItemList_Table_Header_Item_Bottom'>
-                                                                <div className='ItemList_Table_Header_Input_Wrapper'>
-                                                                    <input type='text' value={costValue['Value']} onChange={handleCostValueChange} className='ItemList_Table_Header_Input' />
-                                                                </div>
-                                                                <div className='ItemList_Table_Header_Filter_Icon_Wrapper'>
-                                                                    <button className='ItemList_Table_Header_Search_Filter_Button'>
-                                                                        <HiFilter className='ItemList_Filter_Icon' size='1.1em' onClick={() => handleHeaderFilterDropdownClick('Cost')}/>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className='ItemList_Header_Filter_Dropdown_Wrapper' style={(currentFilterDropdown === 'Cost') ? {display: 'block'} : {display: 'none'}}>
-                                                    <div className='ItemList_Open_Wrapper'>
-                                                        <div className='ItemList_Select_Wrapper'>
-                                                            <select className='ItemList_Filter_Select' value={costValue['Type']} onChange={(event) => setCostValue(prev => ({...prev, 'Type': event.target.value}))}>
-                                                                <option className='ItemList_Filter_Select_Option' value='Equals'>Equals</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Greater'>Greater than</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Greater_Equal'>Greater than or equal to</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Less'>Less than</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Less_Equal'>Less than or equal to</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Range'>In range</option>
-                                                            </select>
-                                                        </div>
-                                                        <div className='ItemList_Input_Search_Wrapper'>
-                                                            <input type='text' className='ItemList_Input_Search' value={costValue['Value']} onChange={handleCostValueChange} />
-                                                        </div>
-                                                        <div className='ItemList_Clear_Wrapper'>
-                                                            <button type='button' className='ItemList_Clear_Button' onClick={() => setCostValue({'Value': '', 'Type': 'Equals'})}>Clear filter</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                        </div>
+                                    </div>
+                                    <div className='ItemList_Header_Filter_Dropdown_Wrapper' style={(currentFilterDropdown === 'Price') ? {display: 'block'} : {display: 'none'}}>
+                                        <div className='ItemList_Open_Wrapper'>
+                                            <div className='ItemList_Select_Wrapper'>
+                                                <select className='ItemList_Filter_Select' value={priceValue['Type']} onChange={(event) => setPriceValue(prev => ({...prev, 'Type': event.target.value}))}>
+                                                    <option className='ItemList_Filter_Select_Option' value='Equals'>Equals</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Greater'>Greater than</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Greater_Equal'>Greater than or equal to</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Less'>Less than</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Less_Equal'>Less than or equal to</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Range'>In range</option>
+                                                </select>
                                             </div>
-                                            <div className='ItemList_Table_Header_Item_Col' style={(showHideValue.includes('Item')) ? {display: 'block'} : {display: 'none'}}>
-                                                <div className='ItemList_Table_Header_Wrapper'>
-                                                    <div className='ItemList_Table_Header_Grid'>
-                                                        <div className='ItemList_Table_Header_Title_Item'><span>Item</span></div>
-                                                        <div className='ItemList_Table_Header_Sort_Icon_Wrapper'>
-                                                            <SortButton sortType={sortType} setSortType={setSortType} value='Item' />
-                                                        </div>
-                                                        <div className='ItemList_Table_Header_Item_Wrapper'>
-                                                            <div className='ItemList_Table_Header_Item_Bottom'>
-                                                                <div className='ItemList_Table_Header_Input_Wrapper'>
-                                                                    <input type='text' value={itemValue['Value']} onChange={handleItemInput} className='ItemList_Table_Header_Input' />
-                                                                </div>
-                                                                <div className='ItemList_Table_Header_Filter_Icon_Wrapper'>
-                                                                    <button className='ItemList_Table_Header_Search_Filter_Button'>
-                                                                        <HiFilter className='ItemList_Filter_Icon' size='1.1em' onClick={() => handleHeaderFilterDropdownClick('Item')}/>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className='ItemList_Header_Filter_Dropdown_Wrapper' style={(currentFilterDropdown === 'Item') ? {display: 'block'} : {display: 'none'}}>
-                                                    <div className='ItemList_Open_Wrapper'>
-                                                        <div className='ItemList_Input_Search_Wrapper'>
-                                                            <input type='text' className='ItemList_Input_Search' value={itemValue['Value']} onChange={handleItemInput} />
-                                                        </div>
-                                                        <div className='ItemList_Clear_Wrapper'>
-                                                            <button type='button' className='ItemList_Clear_Button' onClick={() => setItemValue({'Value': '', 'Type': 'Equals'})}>Clear filter</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            <div className='ItemList_Input_Search_Wrapper'>
+                                                <input type='text' className='ItemList_Input_Search' value={priceValue['Value']} onChange={handlePriceValueChange} />
                                             </div>
-                                            <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Margin')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
-                                                <div className='ItemList_Table_Header_Wrapper'>
-                                                    <div className='ItemList_Table_Header_Grid'>
-                                                        <div className='ItemList_Table_Header_Title_Not_Item'><span>Margin</span></div>
-                                                        <div className='ItemList_Table_Header_Sort_Icon_Wrapper'>
-                                                            <SortButton sortType={sortType} setSortType={setSortType} value='Margin' />
-                                                        </div>
-                                                        <div className='ItemList_Table_Header_Item_Wrapper'>
-                                                            <div className='ItemList_Table_Header_Item_Bottom'>
-                                                                <div className='ItemList_Table_Header_Input_Wrapper'>
-                                                                    <input type='text' value={marginValue['Value']} onChange={handleMarginValueChange} className='ItemList_Table_Header_Input' />
-                                                                </div>
-                                                                <div className='ItemList_Table_Header_Filter_Icon_Wrapper'>
-                                                                    <button className='ItemList_Table_Header_Search_Filter_Button'>
-                                                                        <HiFilter className='ItemList_Filter_Icon' size='1.1em' onClick={() => handleHeaderFilterDropdownClick('Margin')}/>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className='ItemList_Header_Filter_Dropdown_Wrapper' style={(currentFilterDropdown === 'Margin') ? {display: 'block'} : {display: 'none'}}>
-                                                    <div className='ItemList_Open_Wrapper'>
-                                                        <div className='ItemList_Select_Wrapper'>
-                                                            <select className='ItemList_Filter_Select' value={marginValue['Type']} onChange={(event) => setMarginValue(prev => ({...prev, 'Type': event.target.value}))}>
-                                                                <option className='ItemList_Filter_Select_Option' value='Equals'>Equals</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Greater'>Greater than</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Greater_Equal'>Greater than or equal to</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Less'>Less than</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Less_Equal'>Less than or equal to</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Range'>In range</option>
-                                                            </select>
-                                                        </div>
-                                                        <div className='ItemList_Input_Search_Wrapper'>
-                                                            <input type='text' className='ItemList_Input_Search' value={marginValue['Value']} onChange={handleMarginValueChange} />
-                                                        </div>
-                                                        <div className='ItemList_Clear_Wrapper'>
-                                                            <button type='button' className='ItemList_Clear_Button' onClick={() => setMarginValue({'Value': '', 'Type': 'Equals'})}>Clear filter</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            <div className='ItemList_Clear_Wrapper'>
+                                                <button type='button' className='ItemList_Clear_Button' onClick={() => setPriceValue({'Value': '', 'Type': 'Equals'})}>Clear filter</button>
                                             </div>
-                                            <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Markup')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
-                                                <div className='ItemList_Table_Header_Wrapper'>
-                                                    <div className='ItemList_Table_Header_Grid'>
-                                                        <div className='ItemList_Table_Header_Title_Not_Item'><span>Markup</span></div>
-                                                        <div className='ItemList_Table_Header_Sort_Icon_Wrapper'>
-                                                            <SortButton sortType={sortType} setSortType={setSortType} value='Markup' />
-                                                        </div>
-                                                        <div className='ItemList_Table_Header_Item_Wrapper'>
-                                                            <div className='ItemList_Table_Header_Item_Bottom'>
-                                                                <div className='ItemList_Table_Header_Input_Wrapper'>
-                                                                    <input type='text' value={markupValue['Value']} onChange={handleMarkupValueChange} className='ItemList_Table_Header_Input' />
-                                                                </div>
-                                                                <div className='ItemList_Table_Header_Filter_Icon_Wrapper'>
-                                                                    <button className='ItemList_Table_Header_Search_Filter_Button'>
-                                                                        <HiFilter className='ItemList_Filter_Icon' size='1.1em' onClick={() => handleHeaderFilterDropdownClick('Markup')}/>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className='ItemList_Header_Filter_Dropdown_Wrapper' style={(currentFilterDropdown === 'Markup') ? {display: 'block'} : {display: 'none'}}>
-                                                    <div className='ItemList_Open_Wrapper'>
-                                                        <div className='ItemList_Select_Wrapper'>
-                                                            <select className='ItemList_Filter_Select' value={markupValue['Type']} onChange={(event) => setMarkupValue(prev => ({...prev, 'Type': event.target.value}))}>
-                                                                <option className='ItemList_Filter_Select_Option' value='Equals'>Equals</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Greater'>Greater than</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Greater_Equal'>Greater than or equal to</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Less'>Less than</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Less_Equal'>Less than or equal to</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Range'>In range</option>
-                                                            </select>
-                                                        </div>
-                                                        <div className='ItemList_Input_Search_Wrapper'>
-                                                            <input type='text' className='ItemList_Input_Search' value={markupValue['Value']} onChange={handleMarkupValueChange} />
-                                                        </div>
-                                                        <div className='ItemList_Clear_Wrapper'>
-                                                            <button type='button' className='ItemList_Clear_Button' onClick={() => setMarkupValue({'Value': '', 'Type': 'Equals'})}>Clear filter</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Quantity')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
-                                                <div className='ItemList_Table_Header_Wrapper'>
-                                                    <div className='ItemList_Table_Header_Grid'>
-                                                        <div className='ItemList_Table_Header_Title_Not_Item'><span>Quantity</span></div>
-                                                        <div className='ItemList_Table_Header_Sort_Icon_Wrapper'>
-                                                            <SortButton sortType={sortType} setSortType={setSortType} value='Quantity' />
-                                                        </div>
-                                                        <div className='ItemList_Table_Header_Item_Wrapper'>
-                                                            <div className='ItemList_Table_Header_Item_Bottom'>
-                                                                <div className='ItemList_Table_Header_Input_Wrapper'>
-                                                                    <input type='text' value={quantityValue['Value']} onChange={handleQuantityValueChange} className='ItemList_Table_Header_Input' />
-                                                                </div>
-                                                                <div className='ItemList_Table_Header_Filter_Icon_Wrapper'>
-                                                                    <button className='ItemList_Table_Header_Search_Filter_Button'>
-                                                                        <HiFilter className='ItemList_Filter_Icon' size='1.1em' onClick={() => handleHeaderFilterDropdownClick('Quantity')}/>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className='ItemList_Header_Filter_Dropdown_Wrapper' style={(currentFilterDropdown === 'Quantity') ? {display: 'block'} : {display: 'none'}}>
-                                                    <div className='ItemList_Open_Wrapper'>
-                                                        <div className='ItemList_Select_Wrapper'>
-                                                            <select className='ItemList_Filter_Select' value={quantityValue['Type']} onChange={(event) => setQuantityValue(prev => ({...prev, 'Type': event.target.value}))}>
-                                                                <option className='ItemList_Filter_Select_Option' value='Equals'>Equals</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Greater'>Greater than</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Greater_Equal'>Greater than or equal to</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Less'>Less than</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Less_Equal'>Less than or equal to</option>
-                                                                <option className='ItemList_Filter_Select_Option' value='Range'>In range</option>
-                                                            </select>
-                                                        </div>
-                                                        <div className='ItemList_Input_Search_Wrapper'>
-                                                            <input type='text' className='ItemList_Input_Search' value={quantityValue['Value']} onChange={handleQuantityValueChange} />
-                                                        </div>
-                                                        <div className='ItemList_Clear_Wrapper'>
-                                                            <button type='button' className='ItemList_Clear_Button' onClick={() => setQuantityValue({'Value': '', 'Type': 'Equals'})}>Clear filter</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Total Value')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
-                                                <div className='ItemList_Table_Header_Wrapper'>
-                                                    <div className='ItemList_Table_Header_Grid'>
-                                                        <div className='ItemList_Table_Header_Title_Not_Item'><span>Total Value</span></div>
-                                                        <div className='ItemList_Table_Header_Sort_Icon_Wrapper'>
-                                                            .
-                                                        </div>
-                                                        <div className='ItemList_Table_Header_Item_Wrapper'>
-                                                            <div className='ItemList_Table_Header_Item_Bottom'>
-                                                                <div className='ItemList_Table_Header_Input_Wrapper'>
-                                                                    <input type='text' disabled className='ItemList_Table_Header_Input' />
-                                                                </div>
-                                                                <div className='ItemList_Table_Header_Filter_Icon_Wrapper'>
-                                                                    <button className='ItemList_Table_Header_Search_Filter_Button'>
-                                                                        <HiFilter className='ItemList_Filter_Icon' size='1.1em' onClick={() => handleHeaderFilterDropdownClick('Total Value')}/>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                                <div className={(showHideValue.includes('Cost')) ? 'ItemList_Table_Header_Col' : 'ItemList_Table_Header_Col hidden'} style={(showHideValue.includes('Cost')) ? {width: `calc(100% / ${showHideValue.length}`} : {}}>
+                                    <div className='ItemList_Table_Header_Wrapper'>
+                                        <div className='ItemList_Table_Header_Grid'>
+                                            <div className='ItemList_Table_Header_Title_Not_Item'><span>Cost</span></div>
+                                            <div className='ItemList_Table_Header_Sort_Icon_Wrapper'>
+                                                <SortButton sortType={sortType} setSortType={setSortType} value='Cost' />
+                                            </div>
+                                            <div className='ItemList_Table_Header_Item_Wrapper'>
+                                                <div className='ItemList_Table_Header_Item_Bottom'>
+                                                    <div className='ItemList_Table_Header_Input_Wrapper'>
+                                                        <input type='text' value={costValue['Value']} onChange={handleCostValueChange} className='ItemList_Table_Header_Input' />
+                                                    </div>
+                                                    <div className='ItemList_Table_Header_Filter_Icon_Wrapper'>
+                                                        <button className='ItemList_Table_Header_Search_Filter_Button'>
+                                                            <HiFilter className='ItemList_Filter_Icon' size='1.1em' onClick={() => handleHeaderFilterDropdownClick('Cost')}/>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='ItemList_Header_Filter_Dropdown_Wrapper' style={(currentFilterDropdown === 'Cost') ? {display: 'block'} : {display: 'none'}}>
+                                        <div className='ItemList_Open_Wrapper'>
+                                            <div className='ItemList_Select_Wrapper'>
+                                                <select className='ItemList_Filter_Select' value={costValue['Type']} onChange={(event) => setCostValue(prev => ({...prev, 'Type': event.target.value}))}>
+                                                    <option className='ItemList_Filter_Select_Option' value='Equals'>Equals</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Greater'>Greater than</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Greater_Equal'>Greater than or equal to</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Less'>Less than</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Less_Equal'>Less than or equal to</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Range'>In range</option>
+                                                </select>
+                                            </div>
+                                            <div className='ItemList_Input_Search_Wrapper'>
+                                                <input type='text' className='ItemList_Input_Search' value={costValue['Value']} onChange={handleCostValueChange} />
+                                            </div>
+                                            <div className='ItemList_Clear_Wrapper'>
+                                                <button type='button' className='ItemList_Clear_Button' onClick={() => setCostValue({'Value': '', 'Type': 'Equals'})}>Clear filter</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='ItemList_Table_Header_Item_Col' style={(showHideValue.includes('Item')) ? {display: 'block'} : {display: 'none'}}>
+                                    <div className='ItemList_Table_Header_Wrapper'>
+                                        <div className='ItemList_Table_Header_Grid'>
+                                            <div className='ItemList_Table_Header_Title_Item'><span>Item</span></div>
+                                            <div className='ItemList_Table_Header_Sort_Icon_Wrapper'>
+                                                <SortButton sortType={sortType} setSortType={setSortType} value='Item' />
+                                            </div>
+                                            <div className='ItemList_Table_Header_Item_Wrapper'>
+                                                <div className='ItemList_Table_Header_Item_Bottom'>
+                                                    <div className='ItemList_Table_Header_Input_Wrapper'>
+                                                        <input type='text' value={itemValue['Value']} onChange={handleItemInput} className='ItemList_Table_Header_Input' />
+                                                    </div>
+                                                    <div className='ItemList_Table_Header_Filter_Icon_Wrapper'>
+                                                        <button className='ItemList_Table_Header_Search_Filter_Button'>
+                                                            <HiFilter className='ItemList_Filter_Icon' size='1.1em' onClick={() => handleHeaderFilterDropdownClick('Item')}/>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='ItemList_Header_Filter_Dropdown_Wrapper' style={(currentFilterDropdown === 'Item') ? {display: 'block'} : {display: 'none'}}>
+                                        <div className='ItemList_Open_Wrapper'>
+                                            <div className='ItemList_Input_Search_Wrapper'>
+                                                <input type='text' className='ItemList_Input_Search' value={itemValue['Value']} onChange={handleItemInput} />
+                                            </div>
+                                            <div className='ItemList_Clear_Wrapper'>
+                                                <button type='button' className='ItemList_Clear_Button' onClick={() => setItemValue({'Value': '', 'Type': 'Equals'})}>Clear filter</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Margin')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
+                                    <div className='ItemList_Table_Header_Wrapper'>
+                                        <div className='ItemList_Table_Header_Grid'>
+                                            <div className='ItemList_Table_Header_Title_Not_Item'><span>Margin</span></div>
+                                            <div className='ItemList_Table_Header_Sort_Icon_Wrapper'>
+                                                <SortButton sortType={sortType} setSortType={setSortType} value='Margin' />
+                                            </div>
+                                            <div className='ItemList_Table_Header_Item_Wrapper'>
+                                                <div className='ItemList_Table_Header_Item_Bottom'>
+                                                    <div className='ItemList_Table_Header_Input_Wrapper'>
+                                                        <input type='text' value={marginValue['Value']} onChange={handleMarginValueChange} className='ItemList_Table_Header_Input' />
+                                                    </div>
+                                                    <div className='ItemList_Table_Header_Filter_Icon_Wrapper'>
+                                                        <button className='ItemList_Table_Header_Search_Filter_Button'>
+                                                            <HiFilter className='ItemList_Filter_Icon' size='1.1em' onClick={() => handleHeaderFilterDropdownClick('Margin')}/>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='ItemList_Header_Filter_Dropdown_Wrapper' style={(currentFilterDropdown === 'Margin') ? {display: 'block'} : {display: 'none'}}>
+                                        <div className='ItemList_Open_Wrapper'>
+                                            <div className='ItemList_Select_Wrapper'>
+                                                <select className='ItemList_Filter_Select' value={marginValue['Type']} onChange={(event) => setMarginValue(prev => ({...prev, 'Type': event.target.value}))}>
+                                                    <option className='ItemList_Filter_Select_Option' value='Equals'>Equals</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Greater'>Greater than</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Greater_Equal'>Greater than or equal to</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Less'>Less than</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Less_Equal'>Less than or equal to</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Range'>In range</option>
+                                                </select>
+                                            </div>
+                                            <div className='ItemList_Input_Search_Wrapper'>
+                                                <input type='text' className='ItemList_Input_Search' value={marginValue['Value']} onChange={handleMarginValueChange} />
+                                            </div>
+                                            <div className='ItemList_Clear_Wrapper'>
+                                                <button type='button' className='ItemList_Clear_Button' onClick={() => setMarginValue({'Value': '', 'Type': 'Equals'})}>Clear filter</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Markup')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
+                                    <div className='ItemList_Table_Header_Wrapper'>
+                                        <div className='ItemList_Table_Header_Grid'>
+                                            <div className='ItemList_Table_Header_Title_Not_Item'><span>Markup</span></div>
+                                            <div className='ItemList_Table_Header_Sort_Icon_Wrapper'>
+                                                <SortButton sortType={sortType} setSortType={setSortType} value='Markup' />
+                                            </div>
+                                            <div className='ItemList_Table_Header_Item_Wrapper'>
+                                                <div className='ItemList_Table_Header_Item_Bottom'>
+                                                    <div className='ItemList_Table_Header_Input_Wrapper'>
+                                                        <input type='text' value={markupValue['Value']} onChange={handleMarkupValueChange} className='ItemList_Table_Header_Input' />
+                                                    </div>
+                                                    <div className='ItemList_Table_Header_Filter_Icon_Wrapper'>
+                                                        <button className='ItemList_Table_Header_Search_Filter_Button'>
+                                                            <HiFilter className='ItemList_Filter_Icon' size='1.1em' onClick={() => handleHeaderFilterDropdownClick('Markup')}/>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='ItemList_Header_Filter_Dropdown_Wrapper' style={(currentFilterDropdown === 'Markup') ? {display: 'block'} : {display: 'none'}}>
+                                        <div className='ItemList_Open_Wrapper'>
+                                            <div className='ItemList_Select_Wrapper'>
+                                                <select className='ItemList_Filter_Select' value={markupValue['Type']} onChange={(event) => setMarkupValue(prev => ({...prev, 'Type': event.target.value}))}>
+                                                    <option className='ItemList_Filter_Select_Option' value='Equals'>Equals</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Greater'>Greater than</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Greater_Equal'>Greater than or equal to</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Less'>Less than</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Less_Equal'>Less than or equal to</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Range'>In range</option>
+                                                </select>
+                                            </div>
+                                            <div className='ItemList_Input_Search_Wrapper'>
+                                                <input type='text' className='ItemList_Input_Search' value={markupValue['Value']} onChange={handleMarkupValueChange} />
+                                            </div>
+                                            <div className='ItemList_Clear_Wrapper'>
+                                                <button type='button' className='ItemList_Clear_Button' onClick={() => setMarkupValue({'Value': '', 'Type': 'Equals'})}>Clear filter</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Quantity')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
+                                    <div className='ItemList_Table_Header_Wrapper'>
+                                        <div className='ItemList_Table_Header_Grid'>
+                                            <div className='ItemList_Table_Header_Title_Not_Item'><span>Quantity</span></div>
+                                            <div className='ItemList_Table_Header_Sort_Icon_Wrapper'>
+                                                <SortButton sortType={sortType} setSortType={setSortType} value='Quantity' />
+                                            </div>
+                                            <div className='ItemList_Table_Header_Item_Wrapper'>
+                                                <div className='ItemList_Table_Header_Item_Bottom'>
+                                                    <div className='ItemList_Table_Header_Input_Wrapper'>
+                                                        <input type='text' value={quantityValue['Value']} onChange={handleQuantityValueChange} className='ItemList_Table_Header_Input' />
+                                                    </div>
+                                                    <div className='ItemList_Table_Header_Filter_Icon_Wrapper'>
+                                                        <button className='ItemList_Table_Header_Search_Filter_Button'>
+                                                            <HiFilter className='ItemList_Filter_Icon' size='1.1em' onClick={() => handleHeaderFilterDropdownClick('Quantity')}/>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='ItemList_Header_Filter_Dropdown_Wrapper' style={(currentFilterDropdown === 'Quantity') ? {display: 'block'} : {display: 'none'}}>
+                                        <div className='ItemList_Open_Wrapper'>
+                                            <div className='ItemList_Select_Wrapper'>
+                                                <select className='ItemList_Filter_Select' value={quantityValue['Type']} onChange={(event) => setQuantityValue(prev => ({...prev, 'Type': event.target.value}))}>
+                                                    <option className='ItemList_Filter_Select_Option' value='Equals'>Equals</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Greater'>Greater than</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Greater_Equal'>Greater than or equal to</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Less'>Less than</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Less_Equal'>Less than or equal to</option>
+                                                    <option className='ItemList_Filter_Select_Option' value='Range'>In range</option>
+                                                </select>
+                                            </div>
+                                            <div className='ItemList_Input_Search_Wrapper'>
+                                                <input type='text' className='ItemList_Input_Search' value={quantityValue['Value']} onChange={handleQuantityValueChange} />
+                                            </div>
+                                            <div className='ItemList_Clear_Wrapper'>
+                                                <button type='button' className='ItemList_Clear_Button' onClick={() => setQuantityValue({'Value': '', 'Type': 'Equals'})}>Clear filter</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Total Value')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
+                                    <div className='ItemList_Table_Header_Wrapper'>
+                                        <div className='ItemList_Table_Header_Grid'>
+                                            <div className='ItemList_Table_Header_Title_Not_Item'><span>Total Value</span></div>
+                                            <div className='ItemList_Table_Header_Sort_Icon_Wrapper'>
+                                                .
+                                            </div>
+                                            <div className='ItemList_Table_Header_Item_Wrapper'>
+                                                <div className='ItemList_Table_Header_Item_Bottom'>
+                                                    <div className='ItemList_Table_Header_Input_Wrapper'>
+                                                        <input type='text' disabled className='ItemList_Table_Header_Input' />
+                                                    </div>
+                                                    <div className='ItemList_Table_Header_Filter_Icon_Wrapper'>
+                                                        <button className='ItemList_Table_Header_Search_Filter_Button'>
+                                                            <HiFilter className='ItemList_Filter_Icon' size='1.1em' onClick={() => handleHeaderFilterDropdownClick('Total Value')}/>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div className='xtest'>
                                     
                                     <DataRows />

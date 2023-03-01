@@ -30,10 +30,19 @@ namespace SalernoServer.Controllers
         }
 
         // GET: api/items/5
-        [HttpGet("{id}")]
+        [HttpGet("{guid}")]
         public async Task<ActionResult<Item>> GetItem(string guid)
         {
-            var item = await _context.Items.FindAsync(guid);
+            //var item = await _context.Items.FindAsync(guid);
+            var item = await _context.Items
+                .Include(i => i.Modifiers)
+                .ThenInclude(m => m.Addons)
+                .Include(m => m.Modifiers)
+                .ThenInclude(m => m.NoOptions)
+                .Include(m => m.Modifiers)
+                .ThenInclude(m => m.Groups)
+                .ThenInclude(g => g.GroupOptions)
+                .FirstOrDefaultAsync(i => i.GUID.Equals(guid));
 
             if (item == null)
             {
@@ -126,6 +135,33 @@ namespace SalernoServer.Controllers
         private bool ItemExists(string guid)
         {
             return _context.Items.Any(e => e.GUID == guid);
+        }
+
+        [HttpGet("{guid}/modifiers")]
+        public async Task<ActionResult<ItemModifiersDTO>> GetItemModifiers(string guid)
+        {
+            var item = await _context.Items
+                .Include(i => i.Modifiers)
+                .ThenInclude(m => m.Addons)
+                .Include(m => m.Modifiers)
+                .ThenInclude(m => m.NoOptions)
+                .Include(m => m.Modifiers)
+                .ThenInclude(m => m.Groups)
+                .ThenInclude(g => g.GroupOptions)
+                .FirstOrDefaultAsync(i => i.GUID.Equals(guid));
+
+            if (item is null) return StatusCode(404);
+
+            return ConvertToItemModifierDTO(item);
+        }
+        private ItemModifiersDTO ConvertToItemModifierDTO(Item item)
+        {
+            return new ItemModifiersDTO
+            {
+                GUID = item.GUID,
+                Name = item.Name,
+                Modifiers = item.Modifiers
+            };
         }
 
     }

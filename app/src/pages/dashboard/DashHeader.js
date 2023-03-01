@@ -4,12 +4,19 @@ import { IconContext } from 'react-icons/lib';
 import { useState } from 'react';
 import { BiMenu } from 'react-icons/bi';
 import { AiFillQuestionCircle } from 'react-icons/ai';
+import useLogout from '../../hooks/useLogout';
+import { useNavigate } from 'react-router-dom';
 
 const DashHeader = ({ name, setSupportOpen, setNavOpen }) => {
     const [dropdown, setDropdown] = useState(false);
     const date = new Date();
-    const signOut = () => {
+    const logout = useLogout();
+    const navigate = useNavigate();
+
+    const signOut = async () => {
         console.log('loggin out...');
+        await logout();
+        navigate("/salerno")
     }
     
     return (

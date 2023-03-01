@@ -4,28 +4,31 @@ import FilterButton from '../../components/FilterButton';
 import QuestionIcon from "../../components/QuestionIcon";
 import ButtonTabs from "../../components/ButtonTabs";
 import DeleteItemModal from "../../components/DeleteItemModal";
+import axios from 'axios';
 import './css/edit.css';
 
 export default function Edit() {
-    const { uuid } = useParams();
+    const { guid } = useParams();
     const [item, setItem] = useState({});
     const [dialogOpen, setDialogOpen] = useState(false);
     const navigate = useNavigate();
 
-    console.log(uuid)
-
-    const items = require('../../data/stock_items.json');
-
     useEffect(() => {
-        if (uuid !== undefined)
-            items.forEach(item => {
-                if (item['Item UUID'] === uuid) {
-                    console.log("setting item to: " + item);
-                    setItem(item);
-                }
+        if (guid !== undefined)
+            axios.get(`https://localhost:7074/api/item/${guid}`)
+            .then(res => {
+                console.log(res.data);
+                setItem(res.data);
             })
-    },[]);
-    
+            .catch(function (err) {
+                console.log(err.message);
+            });
+    }, []);
+    const handleSaveButtonClick = () => {
+        console.log("saving item...");
+        navigate("/salerno/items");
+    }
+
     return (
         <div className='EditItem'>
             <div className='PageLayout_Header'>
@@ -36,7 +39,7 @@ export default function Edit() {
             </div>
             <DeleteItemModal setDialogOpen={setDialogOpen} dialogOpen={dialogOpen} />
             <div className='EditItem_Container'>
-                <ButtonTabs />
+                <ButtonTabs guid={guid} />
                 <div className='EditItem_Grid'>
                     <div className='EditItem_Grid_Item'>
                         <div className='EditItem_Content_Header'>
@@ -45,10 +48,10 @@ export default function Edit() {
                         <div className='edit-content-test edit-dark-border'>
                             <div className='EditItem_Grid_Item'>
                                 <label htmlFor='name-input'>Name <div className='EditItem_Required_Field_Indicator'></div></label>
-                                <input className='EditItem_Input' type='text' defaultValue={item['Name']} id='name-input'/>
+                                <input className='EditItem_Input' type='text' defaultValue={item['name']} id='name-input'/>
                             </div>
-                            <div>
-                                <label htmlFor='Register_Status_Open'>Register Status <QuestionIcon /></label>  
+                            <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "flex-start"}}>
+                                <label htmlFor='Register_Status_Open'>Register Status <QuestionIcon style={{verticalAlign: "middle", position: "relative", top: "-5px"}}/></label>
                                 <div className='EditItem_ActiveRegister_Wrapper'>
                                     <input className='EditItem_Register_Checkbox' type='checkbox' id='Register_Status_Open'/>
                                     <label htmlFor='Register_Status_Open' className='EditItem_Register_Checkbox_Label'>Active</label>
@@ -57,14 +60,14 @@ export default function Edit() {
                             <div>
                                 <label htmlFor='department-input'>Department <QuestionIcon /></label>
                                 <select className='EditItem_Input' id='department-input'>
-                                    <option value='1'>{item['Department']}</option>
+                                    <option value='1'>{item['department']}</option>
                                     <option value='2'>2</option>
                                     <option value='3'>3</option>
                                 </select>
                             </div>
                             <div>
                                 <div style={{textAlign: 'left'}}>SKU <QuestionIcon /></div>
-                                <div style={{textAlign: 'left', fontSize: '14px', fontWeight: '300', height: '39px', padding: '6px 0'}}>{item['Store Code (SKU)']}</div>
+                                <div style={{textAlign: 'left', fontSize: '14px', fontWeight: '300', height: '39px', padding: '6px 0'}}>{item['sku']}</div>
                             </div>
                             <div>
                                 <label htmlFor='category-input'>Category <QuestionIcon /></label>
@@ -76,7 +79,7 @@ export default function Edit() {
                             </div>
                             <div>
                                 <label htmlFor='upc-input'>UPC <QuestionIcon /></label>
-                                <input type='text' className='EditItem_Input' defaultValue={item['UPC']} id='upc-input'/>
+                                <input type='text' className='EditItem_Input' defaultValue={item['upc']} id='upc-input'/>
                             </div>
                         </div>
                     </div>
@@ -87,7 +90,7 @@ export default function Edit() {
                         <div className='edit-content-test edit-dark-border'>
                             <div>
                                 <label htmlFor='sale-price-input'>Sales Price <div className='EditItem_Required_Field_Indicator'></div></label>
-                                <input type='text' className='EditItem_Input' defaultValue={item['Price']} id='sale-price-input'/>
+                                <input type='text' className='EditItem_Input' defaultValue={item['price']} id='sale-price-input'/>
                             </div>
                             <div>
                                 <label htmlFor='price-type-input'>Price Type</label>
@@ -104,8 +107,8 @@ export default function Edit() {
                             <div>
                                 <label htmlFor='discounts-input'>Discounts <QuestionIcon /></label>
                                 <select className='EditItem_Input' id='discounts-input'>
-                                    <option value='discountable' defaultValue={item['Discountable']}>Discountable</option>
-                                    <option value='non-discountable' defaultValue={item['Discountable']}>Non-discountable</option>
+                                    <option value='discountable' defaultValue={item['discountable']}>Discountable</option>
+                                    <option value='non-discountable' defaultValue={item['discountable']}>Non-discountable</option>
                                 </select>
                             </div>
                             <div>
@@ -119,8 +122,8 @@ export default function Edit() {
                             <div>
                                 <label htmlFor='taxable-input'>Taxable</label>
                                 <select className='EditItem_Input' id='taxable-input'>
-                                    <option value='taxable' defaultValue={item['Taxable']}>Yes</option>
-                                    <option value='non-taxable' defaultValue={item['Taxable']}>No</option>
+                                    <option value='taxable' defaultValue={item['taxable']}>Yes</option>
+                                    <option value='non-taxable' defaultValue={item['taxable']}>No</option>
                                 </select>
                             </div>
                             <div>
@@ -144,7 +147,7 @@ export default function Edit() {
                             <div>
                                 <label htmlFor='supplier-input'>Supplier <QuestionIcon /></label>
                                 <select className='EditItem_Input' id='supplier-input'>
-                                    <option value={'mm'}>{item['Supplier']}</option>
+                                    <option>{item['supplier']}</option>
                                 </select>
                             </div>
                             <div>
@@ -166,12 +169,12 @@ export default function Edit() {
                                 Delete
                             </button>
                             <div style={{flexGrow: '1'}}></div>
-                            <a href="/salerno/items" className='EditItem_Submit_Footer_Button_Cancel'>
+                            <button onClick={() => navigate("/salerno/items")} className='EditItem_Submit_Footer_Button_Cancel'>
                                 Cancel
-                            </a>
-                            <a href="/salerno/items" className='EditItem_Submit_Footer_Button_Save'>
+                            </button>
+                            <button onClick={handleSaveButtonClick} className='EditItem_Submit_Footer_Button_Save'>
                                 Save and close
-                            </a>
+                            </button>
                     </div>
                 </div>
             </div>
