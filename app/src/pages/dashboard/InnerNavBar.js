@@ -9,8 +9,8 @@ const InnerNavBar = ({ innerNavType }) => {
     
     const isCurrentPage = (page) => {
         if (location.pathname.search(`/${page}$`) > -1)
-            return "NavBar_Button_ShopKeep NavBar_Active_ShopKeep";
-        return "NavBar_Button_ShopKeep NavBar_Inactive_ShopKeep";
+            return "NavBar_Inner_Button NavBar_Inner_Button_Active";
+        return "NavBar_Inner_Button";
     }
     switch (innerNavType) {
         case "items":
@@ -21,9 +21,9 @@ const InnerNavBar = ({ innerNavType }) => {
                     </div>
                     <div className='NavBar_Inner_Buttons_Container'>
                         <button type="button" className={isCurrentPage("items")} onClick={() => navigate('/salerno/items')}><div>Item List</div></button>
-                        <button type='button' className='NavBar_Inner_Button'><div>Item Shortcuts</div></button>
-                        <button type='button' className='NavBar_Inner_Button'><div>Update Inventory</div></button>
-                        <button type='button' className='NavBar_Inner_Button'><div>Bulk Manage Items</div></button>
+                        <button type='button' className={isCurrentPage("itemshortcuts")}><div>Item Shortcuts</div></button>
+                        <button type='button' className={isCurrentPage("updateinventory")}><div>Update Inventory</div></button>
+                        <button type='button' className={isCurrentPage("bulkmanage")}><div>Bulk Manage Items</div></button>
                     </div>
                 </div>
             );

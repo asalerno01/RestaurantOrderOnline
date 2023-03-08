@@ -3,8 +3,6 @@
     position: relative;
 }
 .ButtonTabs_Current {
-    color: #555555;
-    font-size: 14px;
     border: 1px solid #ddd;
     border-radius: 4px 4px 0 0;
     border-bottom: white;
@@ -17,6 +15,7 @@
     max-height: 38px;
     bottom: -1px;
     padding: 0;
+    line-height: 38px;
 }
 .ButtonTabs_Modifiers, .ButtonTabs_General {
     margin-right: 2px;
@@ -43,6 +42,7 @@
     max-height: 37px;
     bottom: -1px;
     padding: 0;
+    line-height: 38px;
 }
 .ButtonTabs_Span_Text {
     padding: 10px 15px;
@@ -51,4 +51,21 @@
 }
 .ButtonTabs_Not_Current:hover {
     background-color: rgb(238, 238, 238);
+}
+.ButtonTabs_Link {
+    background-color: transparent;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: inherit;
+    display: block;
+    border: inherit;
+    border-radius: 4px 4px 0 0;
+
+    color: inherit;
+    font-size: inherit;
+    pointer-events: inherit;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    line-height: inherit;
 }

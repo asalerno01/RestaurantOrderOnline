@@ -113,7 +113,8 @@
     color: white;
     user-select: none;
 }
-.NavBar_Inner_Button:hover {
+.NavBar_Inner_Button_Active {
+    background-color: rgb(47,49,55);
 }
 .NavBar_Button_Icon_Wrapper {
     width: 20px;

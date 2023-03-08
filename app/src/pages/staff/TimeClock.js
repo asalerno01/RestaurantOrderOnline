@@ -5,9 +5,9 @@ import { BsCalendarWeek, BsChevronDown } from 'react-icons/bs';
 import { HiFilter } from 'react-icons/hi';
 import { SlPencil } from 'react-icons/sl';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import MiniCalendar from '../../../simple/Requests/MiniCalendar';
-import DeleteStaffTimeClockModal from '../../../components/DeleteStaffTimeClockModal.js';
-import EditTimeClock from '../../../components/EditTimeClock';
+import MiniCalendar from '../../simple/Requests/MiniCalendar';
+import DeleteStaffTimeClockModal from '../../components/DeleteStaffTimeClockModal.js';
+import EditTimeClock from '../../components/EditTimeClock';
 import './css/timeclock.css';
 
 const TimeClock = () => {

@@ -2,11 +2,23 @@ import React from 'react';
 import { IoMdClose } from 'react-icons/io';
 import { IconContext } from 'react-icons/lib';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './css/deleteitemmodal.css';
 
-const DeleteItemModal = ({ dialogOpen, setDialogOpen }) => {
+const DeleteItemModal = ({ dialogOpen, setDialogOpen, itemId }) => {
     const navigate = useNavigate();
 
+    const handleDelete = async event => {
+        event.preventDefault();
+        await axios.delete(`https://localhost:7074/api/item/${itemId}`)
+            .then(res => {
+                console.log(res);
+                navigate("/salerno/items");
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
     return (
         <div className='DeleteItemModal_Dialog' style={ dialogOpen ? {display: 'block'} : {display: 'none'} } onClick={() => setDialogOpen(false)}>
             <div className='DeleteItemModal_Dialog_Backdrop'></div>
@@ -27,7 +39,7 @@ const DeleteItemModal = ({ dialogOpen, setDialogOpen }) => {
                     </div>
                     <div className='DeleteItemModal_Buttons_Wrapper'>
                         <button type='button' className='DeleteItemModal_Cancel_Button' onClick={() => setDialogOpen(false)}>Cancel</button>
-                        <button type='button' className='DeleteItemModal_Continue_Button'onClick={() => navigate('/salerno/itemlist')}>Continue</button>
+                        <button type='button' className='DeleteItemModal_Continue_Button'onClick={handleDelete}>Continue</button>
                     </div>
                 </div>
             </div>
