@@ -56,10 +56,10 @@ namespace SalernoServer.Controllers
             return modifier;
         }
         // GET: api/modifier/5
-        [HttpGet("item/{guid}")]
-        public async Task<ActionResult<Modifier>> GetItemModifier(string guid)
+        [HttpGet("{id}/item")]
+        public async Task<ActionResult<Modifier>> GetItemModifier(string id)
         {
-            var item = await _context.Items.FindAsync(guid);
+            var item = await _context.Items.FindAsync(id);
             if (item == null)
             {
                 return NotFound();
@@ -83,44 +83,72 @@ namespace SalernoServer.Controllers
         // PUT: api/Items/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutModifier(long id, [FromBody] Modifier modifierNew)
+        public async Task<IActionResult> PutModifier(long id, [FromBody] ModifierHelper modifier)
         {
-
-            if (id != modifierNew.ModifierId)
+            if (modifier == null)
             {
                 return BadRequest();
             }
-            var modifier = await _context.Modifiers.FindAsync(id);
-            if (modifier == null)
+            var foundModifier = await _context.Modifiers.FindAsync(id);
+            if (foundModifier == null) return BadRequest($"Modifier ID to update not found: {id}");
+            Modifier updatedModifier = new()
             {
-                return NotFound();
-            }
-            Console.WriteLine("Removing modifier ID:{0}", id);
-            _context.Modifiers.Remove(modifier);
-            Console.WriteLine("Success!");
-            Console.WriteLine("Adding new modifier");
-            _context.Modifiers.Add(modifierNew);
-            Console.WriteLine("Success!");
-            /*modifier.Name = modifierNew.Name;
-            modifier.Description = modifierNew.Description;
-            modifier.Addons = modifierNew.Addons;
-            modifier.NoOptions = modifierNew.NoOptions;
-            modifier.Groups = modifierNew.Groups;*/
+                ModifierId = id,
+                Name = modifier.Name,
+                Description = modifier.Description,
+                Item = foundModifier.Item
+            };
 
-            Console.WriteLine("Done");
-
-            /*            _context.Entry(modifier).State = EntityState.Modified;*/
-
-            try
+            foreach (var addon in modifier.Addons)
             {
-                await _context.SaveChangesAsync();
+                var updatedAddon = new Addon
+                {
+                    AddonId = addon.AddonId,
+                    Name = addon.Name,
+                    Price = addon.Price,
+                    Modifier = foundModifier,
+                };
+                updatedModifier.Addons.Add(updatedAddon);
             }
-            catch (DbUpdateConcurrencyException) when (!ModifierExists(id))
+            foreach (var noOption in modifier.NoOptions)
             {
-                return NotFound();
+                var updatedNoOption = new NoOption
+                {
+                    NoOptionId = noOption.NoOptionId,
+                    Name = noOption.Name,
+                    DiscountPrice = noOption.DiscountPrice,
+                    Modifier = updatedModifier
+                };
+                updatedModifier.NoOptions.Add(updatedNoOption);
             }
+            foreach (var group in modifier.Groups)
+            {
+                var updatedGroup = new Group
+                {
+                    GroupId = group.GroupId,
+                    Name = group.Name,
+                    Modifier = updatedModifier
+                };
+                foreach (var groupOption in group.GroupOptions)
+                {
+                    var updatedGroupOption = new GroupOption
+                    {
+                        GroupOptionId = groupOption.GroupOptionId,
+                        Name = groupOption.Name,
+                        Price = groupOption.Price,
+                        Group = updatedGroup
+                    };
+                    updatedGroup.GroupOptions.Add(updatedGroupOption);
+                }
+                updatedModifier.Groups.Add(updatedGroup);
+            }
+            _context.Modifiers.Remove(foundModifier);
+            await _context.SaveChangesAsync();
 
-            return NoContent();
+            await _context.Modifiers.AddAsync(updatedModifier);
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         // POST: api/modifiers
@@ -132,78 +160,80 @@ namespace SalernoServer.Controllers
             {
                 return BadRequest();
             }
-            var foundItem = await _context.Items.FindAsync(modifier.ItemGUID);
-            if (foundItem == null) return BadRequest($"Modifier ItemID {modifier.ItemGUID} not found");
+            var foundModifier = await _context.Modifiers.FindAsync(modifier.ModifierId);
+            if (foundModifier is not null)
+            {
+                _context.Modifiers.Remove(foundModifier);
+                await _context.SaveChangesAsync();
+            }
+            var foundItem = await _context.Items.FindAsync(modifier.ItemId);
+            if (foundItem == null) return BadRequest($"Modifier ItemID {modifier.ItemId} not found");
             var newModifier = new Modifier
             {
                 Name = modifier.Name,
                 Description = modifier.Description,
                 Item = foundItem
             };
+            if (modifier.ModifierId != 0)
+            {
+                newModifier.ModifierId = modifier.ModifierId;
+            }
+            foreach (var addon in modifier.Addons)
+            {
+                var newAddon = new Addon
+                {
+                    Name = addon.Name,
+                    Price = addon.Price,
+                    Modifier = newModifier
+                };
+                if (addon.AddonId != 0)
+                {
+                    newAddon.AddonId = addon.AddonId;
+                }
+                newModifier.Addons.Add(newAddon);
+            }
+            foreach (var noOption in modifier.NoOptions)
+            {
+                var newNoOption = new NoOption
+                {
+                    Name = noOption.Name,
+                    DiscountPrice = noOption.DiscountPrice,
+                    Modifier = newModifier
+                };
+                if (noOption.NoOptionId != 0)
+                {
+                    newNoOption.NoOptionId = noOption.NoOptionId;
+                }
+                newModifier.NoOptions.Add(newNoOption);
+            }
+            foreach (var group in modifier.Groups)
+            {
+                var newGroup = new Group
+                {
+                    Name = group.Name,
+                    Modifier = newModifier
+                };
+                if (group.GroupId != 0)
+                {
+                    newGroup.GroupId = group.GroupId;
+                }
+                foreach (var groupOption in group.GroupOptions)
+                {
+                    var newGroupOption = new GroupOption
+                    {
+                        Name = groupOption.Name,
+                        Price = groupOption.Price,
+                        Group = newGroup
+                    };
+                    if (groupOption.GroupOptionId != 0)
+                    {
+                        newGroupOption.GroupOptionId = groupOption.GroupOptionId;
+                    }
+                    newGroup.GroupOptions.Add(newGroupOption);
+                }
+                newModifier.Groups.Add(newGroup);
+            }
             await _context.Modifiers.AddAsync(newModifier);
-            if (modifier.Addons.Any())
-            {
-                foreach (var addon in modifier.Addons)
-                {
-                    if (addon is not null)
-                    {
-                        // TODO: Could check if addon exists already...
-                        var newAddon = new Addon
-                        {
-                            Name = addon.Name,
-                            Price = addon.Price,
-                            Modifier = newModifier
-                        };
-                        await _context.Addons.AddAsync(newAddon);
-                    }
-                }
-            }
-            if (modifier.NoOptions.Any())
-            {
-                foreach (var noOption in modifier.NoOptions)
-                {
-                    if (noOption is not null)
-                    {
-                        // TODO: Could check if noOption exists already...
-                        var newNoOption = new NoOption
-                        {
-                            Name = noOption.Name,
-                            DiscountPrice = noOption.DiscountPrice,
-                            Modifier = newModifier
-                        };
-                        await _context.NoOptions.AddAsync(newNoOption);
-                    }
-                }
-            }
-            if (modifier.Groups.Any())
-            {
-                foreach (var group in modifier.Groups)
-                {
-                    if (group is not null)
-                    {
-                        // TODO: Could check if group exists already...
-                        var newGroup = new Group
-                        {
-                            Name = group.Name,
-                            Modifier = newModifier
-                        };
-                        await _context.Groups.AddAsync(newGroup);
-                        if (group.GroupOptions.Any())
-                        {
-                            foreach (var groupOption in group.GroupOptions)
-                            {
-                                var newGroupOption = new GroupOption
-                                {
-                                    Name = groupOption.Name,
-                                    Price = groupOption.Price,
-                                    Group = newGroup
-                                };
-                                await _context.GroupOptions.AddAsync(newGroupOption);
-                            }
-                        }
-                    }
-                }
-            }
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(

@@ -5,31 +5,86 @@ import { RiDeleteBinFill } from 'react-icons/ri';
 import { TiArrowSortedDown, TiArrowSortedUp } from 'react-icons/ti';
 import axios from 'axios';
 import ButtonTabs from "../../components/ButtonTabs";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import FilterButton from "../../components/FilterButton";
 import './css/modifiers.css';
 
 export default function Modifiers() {
+    
+    const { itemId } = useParams();
+    const navigate = useNavigate();
+    const [items, setItems] = useState([]);
 
-    const [modifiers, setModifiers] = useState(null);
-    const { guid } = useParams();
-
+    const [modifiers, setModifiers] = useState({
+        "itemName": "",
+        "itemId": itemId,
+        "description": "",
+        "groups": [],
+        "addons": [],
+        "noOptions": []
+    });
+    
+    const getModifiers = async () => {
+        await axios({
+            method: "get",
+            url: `https://localhost:7074/api/item/${itemId}`,
+            withCredentials: false
+        })
+        .then(res => {
+            console.log(res);
+            if (res.data.modifiers.length === 0) {
+                setModifiers({
+                    "modifierId": 0,
+                    "name": "",
+                    "itemName": res.data.name,
+                    "itemId": itemId,
+                    "description": "",
+                    "groups": [],
+                    "addons": [],
+                    "noOptions": []
+                })
+            } else {
+                let temp = res.data.modifiers[0];
+                temp["name"] = res.data.name;
+                setModifiers(temp);
+            }
+            
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+    const getItems = async () => {
+        await axios.get('https://localhost:7074/api/item/all')
+        .then(res => {
+            setItems(res.data);
+        })
+        .catch(function (err) {
+            console.log(err.message);
+        });
+    }
     useEffect(() => {
-        if (guid !== undefined) {
-            axios.get(`https://localhost:7074/api/item/${guid}/modifiers`)
-            .then(res => {
-                console.log(res.data);
-                setModifiers(res.data);
-            })
-            .catch(function (err) {
-                console.log(err.message);
-            });
+        if (itemId !== undefined) {
+            getModifiers();
+            getItems();
+            // await axios.get(`https://localhost:7074/api/item/${itemId}`)
+            // .then(res => {
+            //     console.log(res.data.modifiers[0]);
+            //     setModifiers(res.data.modifiers[0]);
+            // })
+            // .catch(err => {
+            //     console.log(err);
+            // });
         }
     }, []);
 
+    const copyModifiers = event => {
+        event.preventDefault();
+
+    }
     const handleAddGroup = () => {
         let temp = Object.assign({}, modifiers);
-        temp['modifiers'][0]['groups'].push(
+        temp['groups'].push(
             {
                 "name": "New Group",
                 "groupId": generateUUIDUsingMathRandom(),
@@ -42,7 +97,7 @@ export default function Modifiers() {
         console.log(group)
         console.log('adding group option to: ' + group['name'])
         let temp = Object.assign({}, modifiers);
-        temp['modifiers'][0]['groups'].find(g => g['groupId'] === group['groupId'])['groupOptions'].push({ "name": "New Option", "price": 0.00, "groupOptionId": generateUUIDUsingMathRandom() });
+        temp['groups'].find(g => g['groupId'] === group['groupId'])['groupOptions'].push({ "name": "New Option", "price": 0.00, "groupOptionId": generateUUIDUsingMathRandom() });
         setModifiers(temp);
     }
     const handleRemoveGroupOption = event => {
@@ -52,39 +107,39 @@ export default function Modifiers() {
         let groupId = event.target.parentElement.parentElement.parentElement.attributes.groupid.value;
         let groupOptionId = event.target.parentElement.parentElement.parentElement.attributes.groupoptionid.value;
         let temp = Object.assign({}, modifiers);
-        console.log(temp['modifiers'][0]['groups'].find(g => g['groupId'] == groupId))
-        console.log(temp['modifiers'][0]['groups'].find(g => g['groupId'] == groupId)['groupOptions'])
-        temp['modifiers'][0]['groups'].find(g => g['groupId'] == groupId)['groupOptions'] = temp['modifiers'][0]['groups'].find(g => g['groupId'] == groupId)['groupOptions'].filter(go => go['groupOptionId'] != groupOptionId);
+        console.log(temp['groups'].find(g => g['groupId'] == groupId))
+        console.log(temp['groups'].find(g => g['groupId'] == groupId)['groupOptions'])
+        temp['groups'].find(g => g['groupId'] == groupId)['groupOptions'] = temp['groups'].find(g => g['groupId'] == groupId)['groupOptions'].filter(go => go['groupOptionId'] != groupOptionId);
         setModifiers(temp);
     }
     const handleRemoveGroup = (groupInput) => {
         let temp = Object.assign({}, modifiers);
-        let newGroups = temp['modifiers'][0]['groups'].filter(group => group['groupId'] !== groupInput['groupId']);
-        temp['modifiers'][0]['groups'] = newGroups;
+        let newGroups = temp['groups'].filter(group => group['groupId'] !== groupInput['groupId']);
+        temp['groups'] = newGroups;
         setModifiers(temp);
     }
     const handleRemoveAddOn = (addOnInput) => {
         let temp = Object.assign({}, modifiers);
-        let newAddons = temp['modifiers'][0]['addons'].filter(addOn => addOn['addonId'] !== addOnInput['addonId']);
-        temp['modifiers'][0]['addons'] = newAddons;
+        let newAddons = temp['addons'].filter(addOn => addOn['addonId'] !== addOnInput['addonId']);
+        temp['addons'] = newAddons;
         setModifiers(temp);
     }
     const handleRemoveNoOption = (noOptionInput) => {
         let temp = Object.assign({}, modifiers);
-        let newNoOptions = temp['modifiers'][0]['noOptions'].filter(noOption => noOption['noOptionId'] !== noOptionInput['noOptionId']);
-        temp['modifiers'][0]['noOptions'] = newNoOptions;
+        let newNoOptions = temp['noOptions'].filter(noOption => noOption['noOptionId'] !== noOptionInput['noOptionId']);
+        temp['noOptions'] = newNoOptions;
         setModifiers(temp);
     }
 
     const handleAddAddOn = () => {
         let temp = Object.assign({}, modifiers);
-        temp['modifiers'][0]['addons'].push({ "name": "New Option", "price": 0.00, "addonId": generateUUIDUsingMathRandom()});
+        temp['addons'].push({ "name": "New Option", "price": 0.00, "addonId": generateUUIDUsingMathRandom()});
         setModifiers(temp);
     }
     const handleAddNoOption = () => {
         console.log('x')
         let temp = Object.assign({}, modifiers);
-        temp['modifiers'][0]['noOptions'].push({ "name": "New Option", "price": 0.00, "noOptionId": generateUUIDUsingMathRandom() });
+        temp['noOptions'].push({ "name": "New Option", "discountPrice": 0.00, "noOptionId": generateUUIDUsingMathRandom() });
         setModifiers(temp);
     }
 
@@ -119,7 +174,7 @@ export default function Modifiers() {
         event.preventDefault();
         let groupId = event.target.attributes.groupid.value;
         let temp = Object.assign({}, modifiers);
-        temp['modifiers'][0]['groups'].find(g => g['groupId'] == groupId)['name'] = event.target.value;
+        temp['groups'].find(g => g['groupId'] == groupId)['name'] = event.target.value;
         setModifiers(temp);
     }
     const handleGroupOptionNameChange = event => {
@@ -128,21 +183,21 @@ export default function Modifiers() {
         let groupId = event.target.attributes.groupid.value;
         let groupOptionId = event.target.attributes.groupoptionid.value;
         let temp = Object.assign({}, modifiers);
-        temp['modifiers'][0]['groups'].find(g => g['groupId'] == groupId)['groupOptions'].find(go => go['groupOptionId'] == groupOptionId)['name'] = event.target.value;
+        temp['groups'].find(g => g['groupId'] == groupId)['groupOptions'].find(go => go['groupOptionId'] == groupOptionId)['name'] = event.target.value;
         setModifiers(temp);
     }
     const handleAddonNameChange = event => {
         event.preventDefault();
         let addonId = event.target.attributes.addonid.value;
         let temp = Object.assign({}, modifiers);
-        temp['modifiers'][0]['addons'].find(a => a['addonId'] == addonId)['name'] = event.target.value;
+        temp['addons'].find(a => a['addonId'] == addonId)['name'] = event.target.value;
         setModifiers(temp);
     }
     const handleNoOptionNameChange = event => {
         event.preventDefault();
         let noOptionId = event.target.attributes.nooptionid.value;
         let temp = Object.assign({}, modifiers);
-        temp['modifiers'][0]['noOptions'].find(no => no['noOptionId'] == noOptionId)['name'] = event.target.value;
+        temp['noOptions'].find(no => no['noOptionId'] == noOptionId)['name'] = event.target.value;
         setModifiers(temp);
     }
 
@@ -158,19 +213,19 @@ export default function Modifiers() {
         switch (type) {
             case "addons":
                 console.log('a');
-                tempModifier['modifiers'][0]['addons'].find(a => a['addonId'] == id)[thisattr] = event.target.value;
+                tempModifier['addons'].find(a => a['addonId'] == id)[thisattr] = event.target.value;
                 break;
             case "noOptions":
                 console.log('b');
-                tempModifier['modifiers'][0]['noOptions'].find(no => no['noOptionId'] == id)[thisattr] = event.target.value;
+                tempModifier['noOptions'].find(no => no['noOptionId'] == id)[thisattr] = event.target.value;
                 break;
             case "groupOptions":
                 console.log('c');
-                tempModifier['modifiers'][0]['groups'].find(g => g['groupId'] == event.target.attributes.groupid.value)['groupOptions'].find(go => go['groupOptionId'] == id)[thisattr] = event.target.value;
+                tempModifier['groups'].find(g => g['groupId'] == event.target.attributes.groupid.value)['groupOptions'].find(go => go['groupOptionId'] == id)[thisattr] = event.target.value;
                 break;
             case "groups":
                 console.log('d');
-                tempModifier['modifiers'][0]['groups'].find(g => g['groupId'] == id)[thisattr] = event.target.value;
+                tempModifier['groups'].find(g => g['groupId'] == id)[thisattr] = event.target.value;
                 break;
             default:
                 break;
@@ -183,13 +238,97 @@ export default function Modifiers() {
         let groupId = event.target.attributes.groupid.value;
         let groupOptionId = event.target.attributes.groupoptionid.value;
         let temp = Object.assign({}, modifiers);
-        temp['modifiers'][0]['groups'].find(g => g['groupId'] == groupId)['groupOptions'].find(go => go['groupOptionId'] == groupOptionId)['price'] = event.target.value;
+        temp['groups'].find(g => g['groupId'] == groupId)['groupOptions'].find(go => go['groupOptionId'] == groupOptionId)['price'] = event.target.value;
         setModifiers(temp);
     }
-    const copyInputRef = useRef();
 
+    // function isInt(value) {
+    //     if (isNaN(value)) {
+    //       return false;
+    //     }
+    //     var x = parseFloat(value);
+    //     return (x | 0) === x;
+    //   }
+      function isInt(value) {
+        return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value))
+      }
+
+    const handleSubmit = async event => {
+        event.preventDefault();
+        let data = {
+            "modifierId": modifiers["modifierId"],
+            "name": modifiers["name"],
+            "description": modifiers["description"],
+            "itemId": itemId,
+            "groups": [],
+            "addons": [],
+            "noOptions": []
+        }
+        modifiers["groups"].forEach(group => {
+            let id;
+            if (isNaN(group["groupId"]) || modifiers["modifierId"] === 0) 
+                id = 0;
+            else
+                id = group["groupId"];
+            let tempGroup = {
+                "groupId": id,
+                "name": group["name"],
+                "groupOptions": []
+            };
+            group["groupOptions"].forEach(groupOption => {
+                let id;
+                if (isNaN(groupOption["groupOptionId"]) || modifiers["modifierId"] === 0) 
+                    id = 0;
+                else
+                    id = groupOption["groupOptionId"];
+                tempGroup["groupOptions"].push({
+                    "groupOptionId": id,
+                    "name": groupOption["name"],
+                    "price": groupOption["price"]
+                });
+            });
+            data["groups"].push(tempGroup);
+        });
+        modifiers["addons"].forEach(addon => {
+            let id;
+            if (isNaN(addon["addonId"]) || modifiers["modifierId"] === 0) 
+                id = 0;
+            else
+                id = addon["addonId"]
+            console.log(id)
+            let tempAddon = {
+                "addonId": id,
+                "name": addon["name"],
+                "price": addon["price"]
+            };
+            data["addons"].push(tempAddon);
+        });
+        modifiers["noOptions"].forEach(noOption => {
+            let id;
+            if (isNaN(noOption["noOptionId"]) || modifiers["modifierId"] === 0) 
+                id = 0;
+            else
+                id = noOption["noOptionId"];
+            let tempNoOption = {
+                "noOptionId": id,
+                "name": noOption["name"],
+                "discountPrice": noOption["discountPrice"]
+            };
+            data["noOptions"].push(tempNoOption);
+        });
+        console.log(JSON.stringify(data));
+
+        await axios.post("https://localhost:7074/api/modifier", data)
+            .then(res => {
+                console.log(res);
+                navigate("/salerno/items");
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
     const GroupContent = () => {
-        if (modifiers === null || modifiers['modifiers'][0]['groups'].length === 0) {
+        if (modifiers === null || modifiers['groups'].length === 0) {
             return (
                 <div className='Modifiers_Groups_Empty_Container'>
                     <ul className='Modifiers_Groups_Empty_List'>
@@ -212,7 +351,7 @@ export default function Modifiers() {
         return (
             <div>
                 {
-                modifiers['modifiers'][0]['groups'].map((group, index) => {
+                modifiers['groups'].map((group, index) => {
                     return (
                         <div key={`groupId${group['groupId']}`}>
                             <div className='Modifiers_Group_Container'>
@@ -276,7 +415,7 @@ export default function Modifiers() {
     }
         
     const NoOptions = () => {
-        if (modifiers === null || modifiers['modifiers'][0]['noOptions'].length === 0)
+        if (modifiers === null || modifiers['noOptions'].length === 0)
             return (
                 <div className='Modifiers_Groups_Empty_Container'>
                     <ul className='Modifiers_Groups_Empty_List'>
@@ -305,7 +444,7 @@ export default function Modifiers() {
                         </div>
                         <ul className='Modifiers_NoOptions_List'>
                             {
-                                modifiers['modifiers'][0]['noOptions'].map(noOption => (
+                                modifiers['noOptions'].map(noOption => (
                                     <li key={`noOption-${noOption['noOptionId']}`}>
                                         <input type='text' className='Modifiers_Option_Name_Input' value={noOption['name']} thistype="noOptions" thisattr="name" thisid={noOption['noOptionId']} onChange={handleInputChange} />
                                         <input type='text' className='Modifiers_Option_Price_Input' value={noOption['price']} thistype="noOptions" thisattr="price" thisid={noOption['noOptionId']} onChange={handleInputChange} />
@@ -336,7 +475,7 @@ export default function Modifiers() {
     //   }, [copyDropdown]);
 
     const AddOns = () => {
-        if (modifiers === null || modifiers['modifiers'][0]['addons'].length === 0) {
+        if (modifiers === null || modifiers['addons'].length === 0) {
             return (
                 <div className='Modifiers_Groups_Empty_Container'>
                     <ul className='Modifiers_Groups_Empty_List'>
@@ -365,7 +504,7 @@ export default function Modifiers() {
                     </div>
                     <ul className='Modifiers_AddOn_List'>
                         {
-                            modifiers['modifiers'][0]['addons'].map((addOn, index) => (
+                            modifiers['addons'].map((addOn, index) => (
                                 <li key={addOn + index}>
                                     <input type='text' className='Modifiers_Option_Name_Input' value= {addOn['name']} thistype="addons" thisattr="name" thisid={addOn["addonId"]} onChange={handleInputChange} />
                                     <input type='text' className='Modifiers_Option_Price_Input' value={addOn['price']} thistype="addons" thisattr="price" thisid={addOn["addonId"]} onChange={handleInputChange} />
@@ -391,6 +530,33 @@ export default function Modifiers() {
         )
     }
 
+    const getItemsWithModifiers = () => {
+        let x = [];
+        items.forEach(item => {
+            if (item["modifiers"].length > 0) {
+                x.push(item);
+            }
+        });
+        console.log(x)
+        return x;
+    }
+    const handleCopyModifiers = (id) => {
+        console.log(id)
+        const newModifiers = items.find(item => item["itemId"] === id);
+        let r = newModifiers["modifiers"][0]
+        let x = {
+            "modifierId": 0,
+            "name": "",
+            "itemName": r["itemName"],
+            "itemId": itemId,
+            "description": "",
+            "groups": r["groups"],
+            "addons": r["addons"],
+            "noOptions": r["noOptions"]
+        }
+        setModifiers(x);
+        setCopyDropdown({ "type": "", "value": newModifiers["name"]})
+    }
     return (
         <div className='Modifiers'>
             <div className='PageLayout_Header'>
@@ -400,11 +566,11 @@ export default function Modifiers() {
                 </div>
             </div>
             <div className='Modifiers_Container'>
-                <ButtonTabs guid={guid}/>
+                <ButtonTabs itemId={itemId}/>
                 <div className='Modifiers_Content_Border_Fix'>    
                     <div className='Modifiers_Content'>    
                         <div className='Modifiers_Item_Name_Container' id='item-name-row'>
-                            <div className='Modifiers_Item_Name'>{modifiers === null ? "hey" : modifiers['name']}</div>
+                            <div className='Modifiers_Item_Name'>{modifiers['name']}</div>
                         </div>
                         <div className='Modifiers_Grid'>
                             <div className='Modifiers_Base_Sale_Header'>
@@ -439,9 +605,13 @@ export default function Modifiers() {
                                             </div>
                                             <div className='Modifiers_Groups_Copy_Import_Select_Dropdown_Scroll_Container'>
                                                 <ul className='Modifiers_Groups_Copy_Import_Select_Dropdown_List'>
-                                                    <li className='Modifiers_Groups_Copy_Import_Select_Dropdown_List_Item'>Chicago Style Hot Dog</li>
-                                                    <li className='Modifiers_Groups_Copy_Import_Select_Dropdown_List_Item'>Maxwell Street Polish</li>
-                                                    <li className='Modifiers_Groups_Copy_Import_Select_Dropdown_List_Item'>Chicken Tenders</li>
+                                                    {
+                                                        getItemsWithModifiers().map(item => {
+                                                            console.log(item)
+                                                            return (
+                                                                <li className='Modifiers_Groups_Copy_Import_Select_Dropdown_List_Item' value={item["itemId"]} onClick={() => handleCopyModifiers(item["itemId"])}>{item["name"]}</li>
+                                                        )})
+                                                    }
                                                 </ul>
                                             </div>
                                         </div>
@@ -450,7 +620,7 @@ export default function Modifiers() {
                             </div>
                             <div className='Modififers_Groups_Wrapper'>
                                 {
-                                    (modifiers === null || modifiers['modifiers'][0]['groups'].length === 0) ?
+                                    (modifiers === null || modifiers['groups'].length === 0) ?
                                         <div className='Modifiers_Groups_Empty_Container'>
                                             <ul className='Modifiers_Groups_Empty_List'>
                                                 <li className='Modifiers_Groups_Empty_List_Item'>Group modifiers allow you to select one option from a list</li>
@@ -470,7 +640,7 @@ export default function Modifiers() {
                                         :
                                         <div>
                                         {
-                                            modifiers['modifiers'][0]['groups'].map((group) => {
+                                            modifiers['groups'].map((group) => {
                                                 return (
                                                     <div key={`groupId${group['groupId']}`}>
                                                         <div className='Modifiers_Group_Container'>
@@ -563,7 +733,7 @@ export default function Modifiers() {
                             <div className='Modififers_AddOns_Wrapper'>
                                 <div className='Modifiers_AddOns_Header'><b>Add-ons</b></div>
                                 {
-                                    (modifiers === null || modifiers['modifiers'][0]['addons'].length === 0) ?
+                                    (modifiers === null || modifiers['addons'].length === 0) ?
                                         <div className='Modifiers_Groups_Empty_Container'>
                                             <ul className='Modifiers_Groups_Empty_List'>
                                                 <li className='Modifiers_Groups_Empty_List_Item'>Add-on Options will print on all receipts when activated</li>
@@ -589,7 +759,7 @@ export default function Modifiers() {
                                                 </div>
                                                 <ul className='Modifiers_AddOn_List'>
                                                     {
-                                                        modifiers['modifiers'][0]['addons'].map(addOn => (
+                                                        modifiers['addons'].map(addOn => (
                                                             <li key={`addonId-${addOn['addonId']}`}>
                                                                 <input type='text' className='Modifiers_Option_Name_Input' value={addOn['name']} thistype="addons" thisattr="name" thisid={addOn["addonId"]} onChange={handleInputChange} />
                                                                 <input type='text' className='Modifiers_Option_Price_Input' value={addOn['price']} thistype="addons" thisattr="price" thisid={addOn["addonId"]} onChange={handleInputChange} />
@@ -617,7 +787,7 @@ export default function Modifiers() {
                             <div className='Modififers_NoOptions_Wrapper'>
                                 <div className='Modifiers_NoOptions_Header'><b>"NO" Options</b></div>
                                 {
-                                    (modifiers === null || modifiers['modifiers'][0]['noOptions'].length === 0) ?
+                                    (modifiers === null || modifiers['noOptions'].length === 0) ?
                                     <div className='Modifiers_Groups_Empty_Container'>
                                         <ul className='Modifiers_Groups_Empty_List'>
                                             <li className='Modifiers_Groups_Empty_List_Item'>"NO" Options are activated by default and do not print on receipts</li>
@@ -643,10 +813,10 @@ export default function Modifiers() {
                                             </div>
                                             <ul className='Modifiers_NoOptions_List'>
                                                 {
-                                                    modifiers['modifiers'][0]['noOptions'].map(noOption => (
+                                                    modifiers['noOptions'].map(noOption => (
                                                         <li key={`noOption-${noOption['noOptionId']}`}>
                                                             <input type='text' className='Modifiers_Option_Name_Input' value={noOption['name']} thistype="noOptions" thisattr="name" thisid={noOption['noOptionId']} onChange={handleInputChange} />
-                                                            <input type='text' className='Modifiers_Option_Price_Input' value={noOption['price']} thistype="noOptions" thisattr="price" thisid={noOption['noOptionId']} onChange={handleInputChange} />
+                                                            <input type='text' className='Modifiers_Option_Price_Input' value={noOption['discountPrice']} thistype="noOptions" thisattr="discountPrice" thisid={noOption['noOptionId']} onChange={handleInputChange} />
                                                             <button type='button' className='Modifiers_Delete_Button' onClick={() => handleRemoveNoOption(noOption)}>
                                                                 <IconContext.Provider value={{ style: { verticalAlign: 'top' },  size: '1.5em' }}>
                                                                     <RiDeleteBinFill />
@@ -668,7 +838,7 @@ export default function Modifiers() {
                                     </div>
                                 }
                                 <div className='Modifiers_Submit_Container'>
-                                    <button type='button' className='Modifiers_Submit_Button'>Ok</button>
+                                    <button type='button' className='Modifiers_Submit_Button' onClick={handleSubmit}>Ok</button>
                                 </div>
                             </div>
                         </div>

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import './css/buttontabs.css';
 
-const ButtonTabs = ({guid}) => {
+const ButtonTabs = ({ itemId }) => {
     const navigate = useNavigate();
     console.log(window.location.href);
 
@@ -14,7 +14,7 @@ const ButtonTabs = ({guid}) => {
             )
         return (
             <div className='ButtonTabs_Not_Current ButtonTabs_General'>
-                <a href={`/salerno/items/${guid}/edit`} className="ButtonTabs_Link">General</a>
+                <a href={`/salerno/items/${itemId}/edit`} className="ButtonTabs_Link"><span className='ButtonTabs_Span_Text'>General</span></a>
             </div>
         )
     }
@@ -27,7 +27,7 @@ const ButtonTabs = ({guid}) => {
             )
         return (
             <div className='ButtonTabs_Not_Current ButtonTabs_Modifiers'>
-                <a href={`/salerno/items/${guid}/modifiers`} className="ButtonTabs_Link">Modifiers</a>
+                <a href={`/salerno/items/${itemId}/modifiers`} className="ButtonTabs_Link"><span className='ButtonTabs_Span_Text'>Modifiers</span></a>
             </div>
         )
     }

@@ -3,8 +3,6 @@ import { TiArrowSortedDown, TiArrowSortedUp } from 'react-icons/ti';
 import './css/sortbutton.css';
 
 const SortButton = ({ sortType, setSortType, value }) => {
-    console.log(sortType['Value']);
-    console.log(value);
     if (sortType['Type'] === 'None' || sortType['Value'] !== value) {
         return (
             <button type='button' className='SortButton' onClick={() => setSortType({ 'Value': value, 'Type': 'Ascending'})}>

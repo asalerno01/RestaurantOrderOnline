@@ -22,9 +22,8 @@ const ItemList = () => {
 
     const [itemsPerPage, setItemsPerPage] = useState({ 'Per Page': 50, 'Current Page': 1 });
 
-    useEffect(() => {
-        console.log('Requesting items');
-        axios.get('https://localhost:7074/api/item')
+    const getItems = async () => {
+        await axios.get('https://localhost:7074/api/item/all')
         .then(res => {
             console.log(res.data);
             setInitialItems(res.data);
@@ -33,9 +32,12 @@ const ItemList = () => {
         .catch(function (err) {
             console.log(err.message);
         });
+    }
+    useEffect(() => {
+        console.log('Requesting items');
+        getItems();
     }, []);
     useEffect(() => {
-        console.log(sortType['Type'])
         if (sortType['Type'] === 'Ascending') {
             Array.prototype.clone = function() {
                 return this.slice(0);
@@ -44,15 +46,12 @@ const ItemList = () => {
             const sorted = tmp.sort((a, b) => {
                 if (sortType['Value'] !== 'Price' || sortType['Value'] !== 'Cost' || sortType['Value'] !== 'Quantity') return a[sortType['Value']] - b[sortType['Value']];
                 else if (sortType['Value'] === 'Margin') {
-                    console.log('marg')
                     let itemA = (a['price'] - a['cost']) / a['price'], itemB = (b['price'] - b['cost']) / b['price'];
                     return itemA - itemB;
                 } else if (sortType['Value'] === 'Markup') {
-                    console.log('mark')
                     let itemA = (Number(a['price']) / Number(a['cost'])), itemB = (Number(b['price']) / Number(b['cost']));
                     return itemA - itemB;
                 } else if (sortType['Value'] === 'Item') {
-                    console.log('y')
                     let itemA = a['name'].toLowerCase(), itemB = b['name'].toLowerCase();
                     if (itemA > itemB) {
                         return -1;
@@ -106,17 +105,13 @@ const ItemList = () => {
 
     const handleShowHideClick = (type) => {
         if (showHideValue.includes(type)) {
-            console.log('removing: ' + type)
             setShowHideValue(prev => prev.filter(val => val !== type));
         } else {
-            console.log('adding: ' + type)
             setShowHideValue(prev => [...prev, type]);
         }
     }
     const handlePriceValueChange = event => {
         event.preventDefault();
-        console.log(event.target.value)
-        console.log(priceValue)
         const x = event.target.value;
         if (event.target.value.length === priceValue.length - 1) {
             setPriceValue(prev => ({ ...prev, 'Value': event.target.value}))
@@ -165,7 +160,6 @@ const ItemList = () => {
     }
     const handleQuantityValueChange = event => {
         event.preventDefault();
-        console.log('hey')
         if (event.target.value.length === quantityValue.length - 1) {
             setQuantityValue(prev => ({ ...prev, 'Value': event.target.value}))
         } else if ((!isNaN(event.target.value.charAt(event.target.value.length - 1)) 
@@ -177,15 +171,11 @@ const ItemList = () => {
 
     const isItemFiltered = (item) => {
         if (itemValue.length > 0) {
-            console.log('checking itemvalue')
             if (item['name'].toLowerCase().indexOf(itemValue.toLowerCase()) < 0) {
-                console.log(item['name'] + ' equals ' + itemValue)
                 return false
             }
         }
         if (priceValue['Value'] !== '') {
-            console.log(priceValue['Value']);
-            console.log(priceValue['Type']);
             switch (priceValue['Type']) {
                 case 'Equals':
                     if (item['price'] !== Number(priceValue['Value'])) return false;
@@ -315,7 +305,7 @@ const ItemList = () => {
                     items.map(item => {
                         if (isItemFiltered(item))
                             return (
-                                <div key={item['itemUUID']} className='ItemList_Table_Content_Row'>
+                                <div key={item['itemId']} className='ItemList_Table_Content_Row'>
                                     <div className='ItemList_Table_Content_Body_Cell' style={showHideValue.includes('Price') ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
                                         <div className='ItemList_Table_Body_Data_Container'>
                                             <span className='ItemList_ItemDetails'>{item['price'].toFixed(2 )}</span>
@@ -328,7 +318,7 @@ const ItemList = () => {
                                     </div>
                                     <div className='ItemList_Table_Content_Body_Cell_Item_Col' style={(showHideValue.includes('Item')) ? {display: 'block'} : {display: 'none'}}>
                                         <div className='ItemList_Table_Body_Data_Container'>
-                                            <a href={`/salerno/items/${item['guid']}/edit`} className='ItemList_ItemName_Button'>{item['name']}</a>
+                                            <a href={`/salerno/items/${item['itemId']}/edit`} className='ItemList_ItemName_Button'>{item['name']}</a>
                                         </div>
                                     </div>
                                     <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Margin')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>

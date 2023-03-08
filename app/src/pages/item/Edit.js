@@ -8,14 +8,14 @@ import axios from 'axios';
 import './css/edit.css';
 
 export default function Edit() {
-    const { guid } = useParams();
+    const { itemId } = useParams();
     const [item, setItem] = useState({});
     const [dialogOpen, setDialogOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (guid !== undefined)
-            axios.get(`https://localhost:7074/api/item/${guid}`)
+        if (itemId !== undefined)
+            axios.get(`https://localhost:7074/api/item/${itemId}`)
             .then(res => {
                 console.log(res.data);
                 setItem(res.data);
@@ -37,9 +37,9 @@ export default function Edit() {
                     <FilterButton />
                 </div>
             </div>
-            <DeleteItemModal setDialogOpen={setDialogOpen} dialogOpen={dialogOpen} />
+            <DeleteItemModal setDialogOpen={setDialogOpen} itemId={itemId} dialogOpen={dialogOpen} />
             <div className='EditItem_Container'>
-                <ButtonTabs guid={guid} />
+                <ButtonTabs itemId={itemId} />
                 <div className='EditItem_Grid'>
                     <div className='EditItem_Grid_Item'>
                         <div className='EditItem_Content_Header'>

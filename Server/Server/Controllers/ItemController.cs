@@ -23,26 +23,36 @@ namespace SalernoServer.Controllers
 
         // GET: api/Items
         [HttpGet]
+        [Route("all")]
         public async Task<ActionResult<IEnumerable<Item>>> GetItems()
         {
-            var items = await _context.Items.ToListAsync();
+            var items = await _context.Items
+                .Include(i => i.Modifier)
+                .ThenInclude(m => m.Addons)
+                .Include(m => m.Modifier)
+                .ThenInclude(m => m.NoOptions)
+                .Include(m => m.Modifier)
+                .ThenInclude(m => m.Groups)
+                .ThenInclude(g => g.GroupOptions)
+                .ToListAsync();
+
             return Ok(items);
         }
 
         // GET: api/items/5
-        [HttpGet("{guid}")]
-        public async Task<ActionResult<Item>> GetItem(string guid)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Item>> GetItem(string id)
         {
-            //var item = await _context.Items.FindAsync(guid);
+            //var item = await _context.Items.FindAsync(itemId);
             var item = await _context.Items
-                .Include(i => i.Modifiers)
+                .Include(i => i.Modifier)
                 .ThenInclude(m => m.Addons)
-                .Include(m => m.Modifiers)
+                .Include(m => m.Modifier)
                 .ThenInclude(m => m.NoOptions)
-                .Include(m => m.Modifiers)
+                .Include(m => m.Modifier)
                 .ThenInclude(m => m.Groups)
                 .ThenInclude(g => g.GroupOptions)
-                .FirstOrDefaultAsync(i => i.GUID.Equals(guid));
+                .FirstOrDefaultAsync(i => i.ItemId.Equals(id));
 
             if (item == null)
             {
@@ -51,23 +61,21 @@ namespace SalernoServer.Controllers
 
             return item;
         }
-
         // PUT: api/Items/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutItem(string guid, Item item)
+        public async Task<IActionResult> PutItem(string id, Item item)
         {
-            if (guid != item.GUID)
+            if (id != item.ItemId)
             {
                 return BadRequest();
             }
-            var newItem = await _context.Items.FindAsync(guid);
+            var newItem = await _context.Items.FindAsync(id);
             if (newItem == null)
             {
                 return NotFound();
             }
-            newItem.GUID = item.GUID;
-            //newItem.ItemUUID = item.ItemUUID;
+            newItem.ItemId = item.ItemId;
             newItem.Name = item.Name;
             newItem.Department = item.Department;
             newItem.Category = item.Category;
@@ -88,18 +96,10 @@ namespace SalernoServer.Controllers
             newItem.LiabilityRedemptionTender = item.LiabilityRedemptionTender;
             newItem.TaxGroupOrRate = item.TaxGroupOrRate;
 
-            // _context.Entry(item).State = EntityState.Modified;
+            _context.Update(newItem);
+            await _context.SaveChangesAsync();
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException) when (!ItemExists(guid))
-            {
-                return NotFound();
-            }
-
-            return NoContent();
+            return Ok();
         }
 
         // POST: api/Items
@@ -112,15 +112,15 @@ namespace SalernoServer.Controllers
 
             return CreatedAtAction(
                 nameof(GetItem), 
-                new { id = item.GUID }, 
+                new { id = item.ItemId }, 
                 item);
         }
 
         // DELETE: api/Items/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteItem(string guid)
+        public async Task<IActionResult> DeleteItem(string id)
         {
-            var item = await _context.Items.FindAsync(guid);
+            var item = await _context.Items.FindAsync(id);
             if (item == null)
             {
                 return NotFound();
@@ -131,38 +131,5 @@ namespace SalernoServer.Controllers
 
             return NoContent();
         }
-
-        private bool ItemExists(string guid)
-        {
-            return _context.Items.Any(e => e.GUID == guid);
-        }
-
-        [HttpGet("{guid}/modifiers")]
-        public async Task<ActionResult<ItemModifiersDTO>> GetItemModifiers(string guid)
-        {
-            var item = await _context.Items
-                .Include(i => i.Modifiers)
-                .ThenInclude(m => m.Addons)
-                .Include(m => m.Modifiers)
-                .ThenInclude(m => m.NoOptions)
-                .Include(m => m.Modifiers)
-                .ThenInclude(m => m.Groups)
-                .ThenInclude(g => g.GroupOptions)
-                .FirstOrDefaultAsync(i => i.GUID.Equals(guid));
-
-            if (item is null) return StatusCode(404);
-
-            return ConvertToItemModifierDTO(item);
-        }
-        private ItemModifiersDTO ConvertToItemModifierDTO(Item item)
-        {
-            return new ItemModifiersDTO
-            {
-                GUID = item.GUID,
-                Name = item.Name,
-                Modifiers = item.Modifiers
-            };
-        }
-
     }
 }

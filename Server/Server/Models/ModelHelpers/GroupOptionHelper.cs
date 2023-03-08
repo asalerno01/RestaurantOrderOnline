@@ -2,6 +2,7 @@
 {
     public class GroupOptionHelper
     {
+        public long GroupId { get; set; }
         public long GroupOptionId { get; set; }
     }
 }

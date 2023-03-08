@@ -30,6 +30,7 @@ import NewEmployee from './pages/staff/NewEmployee';
 import EmployeeList from './pages/staff/EmployeeList';
 import EditEmployee from './pages/staff/EditEmployee';
 import Login from './pages/user_pages/Login';
+import Order from './pages/order/Order';
 
 function App() {
     return (
@@ -37,10 +38,11 @@ function App() {
             <Route path="salerno/login" element={<Login />} />
             <Route path="salerno" element={<Dashboard />}>
                 <Route element={<PageLayout />}>
+                    <Route path='Order' element={<Order />} />
                     <Route path='items' element={<ItemList />} />
-                    <Route path='items/:guid/edit' element={<Edit />} />
+                    <Route path='items/:itemId/edit' element={<Edit />} />
                     {/* <Route path='edit/new' element={<Edit />} /> */}
-                    <Route path='items/:guid/modifiers' element={<Modifiers />} />
+                    <Route path='items/:itemId/modifiers' element={<Modifiers />} />
 
                     <Route path='employees' element={<EmployeeList />} />
                     <Route path='employees/timeclock' element={<TimeClock />} />

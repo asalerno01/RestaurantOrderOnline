@@ -17,7 +17,7 @@ var builder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 //builder.Services.AddDbContext<ItemContext>(
 //    options => options.UseMySqlServer(@"Server=localhost;Port=3306;Database=Salerno;User ID=root;Password="));
-var connectionString = "server=localhost;user=root;password=;database=salerno;Convert Zero Datetime=True";
+var connectionString = "server=localhost;user=root;password=ascent;database=salerno_server;Convert Zero Datetime=True";
 var serverVersion = ServerVersion.AutoDetect(connectionString);
 
 builder.Services.AddDbContext<AppDbContext>(

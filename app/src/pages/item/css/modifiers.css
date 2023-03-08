@@ -342,6 +342,7 @@
     border: none;
     border-radius: 4px;
     color: white;
+    cursor: pointer;
 }
 .Modifiers_Submit_Button:hover {
     background-color: rgb(0, 145, 174);
@@ -394,6 +395,7 @@
     border: 1px solid #aaa;
     border-top: 0;
     border-radius: 0 0 4px 4px;
+    z-index: 10;
 }
 .Modifiers_Groups_Copy_Import_Select_Dropdown_Search_Wrapper {
     padding: 3px 0;
