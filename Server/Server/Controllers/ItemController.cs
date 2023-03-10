@@ -10,7 +10,7 @@ using SalernoServer.Models.ItemModels;
 
 namespace SalernoServer.Controllers
 {
-    [Route("api/item")]
+    [Route("api/items")]
     [ApiController]
     public class ItemController : ControllerBase
     {
@@ -23,7 +23,6 @@ namespace SalernoServer.Controllers
 
         // GET: api/Items
         [HttpGet]
-        [Route("all")]
         public async Task<ActionResult<IEnumerable<Item>>> GetItems()
         {
             var items = await _context.Items

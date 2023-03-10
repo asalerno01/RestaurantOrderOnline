@@ -10,7 +10,7 @@ const DeleteItemModal = ({ dialogOpen, setDialogOpen, itemId }) => {
 
     const handleDelete = async event => {
         event.preventDefault();
-        await axios.delete(`https://localhost:7074/api/item/${itemId}`)
+        await axios.delete(`https://localhost:7074/api/items/${itemId}`)
             .then(res => {
                 console.log(res);
                 navigate("/salerno/items");
