@@ -10,5 +10,6 @@ namespace SalernoServer.Models.ItemModels
         public long GroupOptionId { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; } = 0;
+        public bool IsDefault { get; set; } = false;
     }
 }

@@ -22,12 +22,15 @@ const ItemList = () => {
 
     const [itemsPerPage, setItemsPerPage] = useState({ 'Per Page': 50, 'Current Page': 1 });
 
+    const [isLoaded, setIsLoaded] = useState(false);
+
     const getItems = async () => {
-        await axios.get('https://localhost:7074/api/item/all')
+        await axios.get('https://localhost:7074/api/items')
         .then(res => {
             console.log(res.data);
             setInitialItems(res.data);
             setItems(res.data);
+            setIsLoaded(true);
         })
         .catch(function (err) {
             console.log(err.message);
@@ -299,6 +302,10 @@ const ItemList = () => {
     }
 
     const DataRows = () => {
+        if (!isLoaded)
+            return (
+                <div>hi</div>
+            )
         return (
             <div className='ItemList_Table_Content_Container'>
                 {   

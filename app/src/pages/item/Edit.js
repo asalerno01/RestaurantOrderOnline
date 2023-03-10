@@ -15,7 +15,7 @@ export default function Edit() {
 
     useEffect(() => {
         if (itemId !== undefined)
-            axios.get(`https://localhost:7074/api/item/${itemId}`)
+            axios.get(`https://localhost:7074/api/items/${itemId}`)
             .then(res => {
                 console.log(res.data);
                 setItem(res.data);

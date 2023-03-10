@@ -55,30 +55,6 @@ namespace SalernoServer.Controllers
 
             return modifier;
         }
-        // GET: api/modifier/5
-        [HttpGet("{id}/item")]
-        public async Task<ActionResult<Modifier>> GetItemModifier(string id)
-        {
-            var item = await _context.Items.FindAsync(id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-            var modifier = await _context.Modifiers
-                .Include(m => m.Groups)
-                .ThenInclude(g => g.GroupOptions)
-                .Include(m => m.Addons)
-                .Include(m => m.NoOptions)
-                .Where(m => m.Item == item)
-                .FirstOrDefaultAsync();
-
-            if (modifier == null)
-            {
-                return NotFound();
-            }
-
-            return modifier;
-        }
 
         // PUT: api/Items/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -136,6 +112,7 @@ namespace SalernoServer.Controllers
                         GroupOptionId = groupOption.GroupOptionId,
                         Name = groupOption.Name,
                         Price = groupOption.Price,
+                        IsDefault = groupOption.IsDefault,
                         Group = updatedGroup
                     };
                     updatedGroup.GroupOptions.Add(updatedGroupOption);
@@ -172,7 +149,7 @@ namespace SalernoServer.Controllers
             {
                 Name = modifier.Name,
                 Description = modifier.Description,
-                Item = foundItem
+                ItemId = foundItem.ItemId
             };
             if (modifier.ModifierId != 0)
             {
@@ -211,7 +188,8 @@ namespace SalernoServer.Controllers
                 var newGroup = new Group
                 {
                     Name = group.Name,
-                    Modifier = newModifier
+                    Modifier = newModifier,
+                    Description = ""
                 };
                 if (group.GroupId != 0)
                 {
@@ -223,6 +201,7 @@ namespace SalernoServer.Controllers
                     {
                         Name = groupOption.Name,
                         Price = groupOption.Price,
+                        IsDefault = groupOption.IsDefault,
                         Group = newGroup
                     };
                     if (groupOption.GroupOptionId != 0)

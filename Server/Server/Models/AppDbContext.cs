@@ -28,9 +28,10 @@ namespace SalernoServer.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            /*modelBuilder.Entity<Group>()
-                .HasOne(g => g.Modifier)
-                .WithMany(o => o.Groups);*/
+            modelBuilder.Entity<Modifier>()
+                .HasOne(m => m.Item)
+                .WithOne(i => i.Modifier)
+                .HasForeignKey<Modifier>(i => i.ItemId);
 
             /*modelBuilder.Entity<Modifier>().Navigation(m => m.Addons).AutoInclude();*/
             //modelBuilder.Entity<Modifier>()

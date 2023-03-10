@@ -22,6 +22,6 @@
         public bool LiabilityItem { get; set; } = false;
         public string LiabilityRedemptionTender { get; set; }
         public string TaxGroupOrRate { get; set; }
-        public Modifier Modifier { get; set; }
+        public virtual Modifier Modifier { get; set; }
     }
 }
