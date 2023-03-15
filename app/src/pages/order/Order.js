@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import OrderItem from './OrderItem';
 import './order.css';
 
 // const items = require('./test_items.json');
@@ -11,12 +12,16 @@ const Order = () => {
     const [order, setOrder] = useState({"subtotal": 0, "orderItems": [] });
     const [orderItem, setOrderItem] = useState({});
     const [response, setResponse] = useState(null);
+    const [openItem, setOpenItem] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
 
     const getItems = async () => {
-        await axios.get("https://localhost:7074/api/item/all")
+        await axios.get("https://localhost:7074/api/items")
             .then(res => {
                 console.log(res);
                 setItems(res.data);
+                console.log(res.data)
+                setIsLoading(false)
             })
             .catch(err => {
                 console.log(err);
@@ -32,19 +37,18 @@ const Order = () => {
         if (orderItem["itemId"] === event.target.value) setOrderItem({})
         else {
             const item = items.find(i => i["itemId"] === event.target.value);
-            const orderItem = {
+            let orderItem = {
                 "itemId": item["itemId"],
                 "name": item["name"],
                 "price": item["price"],
-                "modifiers": {
+                "modifier": {
                     "addons": [],
                     "noOptions": [],
                     "groups": []
-                },
-                "baseModifiers": item["modifiers"]
+                }
             }
             console.log(JSON.stringify(orderItem))
-            setOrderItem(orderItem);
+            setOrderItem(item);
         }
     }
     const handleAddAddonCheckboxChange = event => {
@@ -53,15 +57,15 @@ const Order = () => {
         console.log("modifierid => " + modifierId);
         const addonId = event.target.attributes.addonid.value;
         console.log("addonid => " + addonId);
-        const addonModifierParent = orderItem["baseModifiers"].find(bm => bm["modifierId"] == modifierId);
+        const addonModifierParent = orderItem["basemodifier"].find(bm => bm["modifierId"] == modifierId);
         console.log(JSON.stringify(addonModifierParent))
         const addonToAdd = addonModifierParent["addons"].find(a => a["addonId"] == addonId);
         const tempOrderItem = Object.assign({}, orderItem);
         console.log(JSON.stringify(tempOrderItem))
         if (event.target.checked)
-            tempOrderItem["modifiers"]["addons"].push(addonToAdd);
+            tempOrderItem["modifier"]["addons"].push(addonToAdd);
         else if (!event.target.checked)
-            tempOrderItem["modifiers"]["addons"] = tempOrderItem["modifiers"]["addons"].filter(a => a["addonId"] != addonId);
+            tempOrderItem["modifier"]["addons"] = tempOrderItem["modifier"]["addons"].filter(a => a["addonId"] != addonId);
         setOrderItem(tempOrderItem);
     }
     const handleAddItem = event => {
@@ -88,12 +92,12 @@ const Order = () => {
             let addons = [];
             let noOptions = [];
             let groupOptions = [];
-            orderItem["modifiers"]["addons"].forEach(addon => {
+            orderItem["modifier"]["addons"].forEach(addon => {
                 addons.push({
                     "addonId": addon["addonId"]
                 });
             });
-            orderItem["modifiers"]["noOptions"].forEach(noOption => {
+            orderItem["modifier"]["noOptions"].forEach(noOption => {
                 noOptions.push({
                     "noOptionId": noOption["noOptionId"]
                 });
@@ -135,50 +139,60 @@ const Order = () => {
 
     }
 
-    const OpenItem = ({ itemId }) => {
-        const item = items.find(i => i["itemId"] === itemId);
-        if (item["modifiers"].length === 0)
-        return (
-            <div className="Order_ItemList_Grid_Options_Wrapper">
-                <button type="button" className="Order_ItemList_Grid_AddItem_Button" onClick={handleAddItem}>Add to cart</button>
-            </div>
-        )
-        return (
-            <div className="Order_ItemList_Grid_Options_Wrapper">
-                <div className="Order_ItemList_Options_Container">
-                    <div className="Order_Item_Options_Addons_Container">
-                        <div className="Order_Item_Options_Addon_Label">Add-Ons</div>
-                        <div className="Order_Item_Options_Addons_Wrapper">
-                            <ul className="Order_Item_Options_Addons_List">
-                                {
-                                    item['modifiers'].map(modifier => (
-                                        modifier['addons'].map(addon => (
-                                            <li key={`addon-id-${addon["addonId"]}`} value={addon['addonId']} className="Order_Item_Options_Addon_Item">
-                                                <label className="Order_Item_Options_Addon_Item_Label" htmlFor={`addon-checkbox-${addon["addonId"]}`}>
-                                                    <input type="checkbox" id={`addon-checkbox-${addon["addonId"]}`}
-                                                        className="Order_Item_Options_Addon_Item_Checkbox"
-                                                        checked={orderItem["modifiers"]["addons"].some(a => a["addonId"] === addon["addonId"])}
-                                                        addonid={addon["addonId"]}
-                                                        modifierid={modifier["modifierId"]}
-                                                        onChange={handleAddAddonCheckboxChange}
-                                                    />
-                                                    {addon["name"]}
-                                                </label>
-                                                <div>${addon["price"].toFixed(2)}</div>
-                                            </li>
-                                        ))
-                                    ))
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <button type="button" className="Order_ItemList_Grid_AddItem_Button" onClick={handleAddItem}>Add to cart</button>
-            </div>
-        )
+    const OpenItem = () => {
+        console.log(orderItem)
+        if (orderItem === {}) return <></>
+        else if (isLoading) return <></>
+        else {
+            const item = items.find(i => i["itemId"] === openItem);
+            console.log("hey")
+            return (
+                <OrderItem item={orderItem} setOrder={setOrder} setOrderItem={setOrderItem} order={order} />
+            )
+        }
+        // if (item["modifier"].length === 0)
+        // return (
+        //     <div className="Order_ItemList_Grid_Options_Wrapper">
+        //         <button type="button" className="Order_ItemList_Grid_AddItem_Button" onClick={handleAddItem}>Add to cart</button>
+        //     </div>
+        // )
+        // return (
+        //     <div className="Order_ItemList_Grid_Options_Wrapper">
+        //         <div className="Order_ItemList_Options_Container">
+        //             <div className="Order_Item_Options_Addons_Container">
+        //                 <div className="Order_Item_Options_Addon_Label">Add-Ons</div>
+        //                 <div className="Order_Item_Options_Addons_Wrapper">
+        //                     <ul className="Order_Item_Options_Addons_List">
+        //                         {
+        //                             item['modifier']["addons"].map(addon => (
+        //                                     <li key={`addon-id-${addon["addonId"]}`} value={addon['addonId']} className="Order_Item_Options_Addon_Item">
+        //                                         <label className="Order_Item_Options_Addon_Item_Label" htmlFor={`addon-checkbox-${addon["addonId"]}`}>
+        //                                             <input type="checkbox" id={`addon-checkbox-${addon["addonId"]}`}
+        //                                                 className="Order_Item_Options_Addon_Item_Checkbox"
+        //                                                 checked={orderItem["modifier"]["addons"].some(a => a["addonId"] === addon["addonId"])}
+        //                                                 addonid={addon["addonId"]}
+        //                                                 onChange={handleAddAddonCheckboxChange}
+        //                                             />
+        //                                             {addon["name"]}
+        //                                         </label>
+        //                                         <div>${addon["price"].toFixed(2)}</div>
+        //                                     </li>
+        //                                 )
+        //                             )
+        //                         }
+        //                     </ul>
+
+        //                 </div>
+        //             </div>
+        //         </div>
+        //         <button type="button" className="Order_ItemList_Grid_AddItem_Button" onClick={handleAddItem}>Add to cart</button>
+        //     </div>
+        // )
     }
+    console.log(order)
     return (
         <div className="Order">
+            <OrderItem item={orderItem} setOrder={setOrder} setOrderItem={setOrderItem} order={order} />
             { (response === "Success!") ? <h3 style={{color: "green"}}>{response}</h3> : (response !== null) ? <h3 style={{color: "red"}}>{response}</h3> : <></> }
             <div className="Order_Container">
                 <div className="Order_ItemList">
@@ -196,7 +210,6 @@ const Order = () => {
                                                 <div className="Order_ItemList_Grid_Price_Wrapper">
                                                     <div>${item['price'].toFixed(2)}</div>
                                                 </div>
-                                                { (orderItem["itemId"] === item["itemId"]) ? <OpenItem itemId={item["itemId"]} /> : <></> }
                                             </div>
                                         </td>
                                     </tr>
@@ -218,23 +231,42 @@ const Order = () => {
                                                 <div>{orderItem['name']}</div>
                                             </div>
                                             <div className="Order_Details_Price_Wrapper">
-                                                <div>${orderItem['price'].toFixed(2)}</div>
+                                                <div>${orderItem['price']}</div>
                                             </div>
                                             <div>
                                                 <button type="button" value={index} onClick={handleRemoveItem} className="Order_Details_Remove_Button">X</button>
                                             </div>
-                                            <div className="Order_Details_Modifiers_Wrapper">
+                                            <div className="Order_Details_modifier_Wrapper">
                                                 {
-                                                    (orderItem["modifiers"]["addons"].length === 0) ? <></>
+                                                    (orderItem["modifier"]["addons"].length === 0) ? <></>
                                                     :
-                                                    <div className="Order_Details_Modifiers_Addons_Wrapper">
-                                                        <div className="Order_Details_Modifiers_Addons_Header">Add-Ons</div>
-                                                        <ul className="Order_Details_Modifiers_Addons_List">
+                                                    <div className="Order_Details_modifier_Addons_Wrapper">
+                                                        <div className="Order_Details_modifier_Addons_Header">Add-Ons</div>
+                                                        <ul className="Order_Details_modifier_Addons_List">
                                                             {
-                                                                orderItem["modifiers"]["addons"].map(addon => (
-                                                                    <li key={`orderitem-${orderItem["itemId"]}-addon-${addon["addonId"]}`} className="Order_Details_Modifiers_List_Item">
-                                                                        <div className="Order_Details_Modifiers_List_Item_Name">{addon["name"]}</div>
-                                                                        <div className="Order_Details_Modifiers_List_Item_Price">${addon["price"].toFixed(2)}</div>
+                                                                orderItem["modifier"]["addons"].map(addon => (
+                                                                    <li key={`orderitem-${orderItem["itemId"]}-addon-${addon["addonId"]}`} className="Order_Details_modifier_List_Item">
+                                                                        <div className="Order_Details_modifier_List_Item_Name">{addon["name"]}</div>
+                                                                        <div className="Order_Details_modifier_List_Item_Price">${addon["price"]}</div>
+                                                                    </li>
+                                                                ))
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div className="Order_Details_modifier_Wrapper">
+                                                {
+                                                    (orderItem["modifier"]["noOptions"].length === 0) ? <></>
+                                                    :
+                                                    <div className="Order_Details_modifier_Addons_Wrapper">
+                                                        <div className="Order_Details_modifier_Addons_Header">Remove from {orderItem["name"]}</div>
+                                                        <ul className="Order_Details_modifier_Addons_List">
+                                                            {
+                                                                orderItem["modifier"]["noOptions"].map(addon => (
+                                                                    <li key={`orderitem-${orderItem["itemId"]}-addon-${addon["addonId"]}`} className="Order_Details_modifier_List_Item">
+                                                                        <div className="Order_Details_modifier_List_Item_Name">{addon["name"]}</div>
+                                                                        {/* <div className="Order_Details_modifier_List_Item_Price">${addon["price"]}</div> */}
                                                                     </li>
                                                                 ))
                                                             }

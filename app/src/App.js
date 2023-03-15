@@ -31,6 +31,7 @@ import EmployeeList from './pages/staff/EmployeeList';
 import EditEmployee from './pages/staff/EditEmployee';
 import Login from './pages/user_pages/Login';
 import Order from './pages/order/Order';
+import OrderItem from './pages/order/OrderItem';
 
 function App() {
     return (
@@ -39,6 +40,7 @@ function App() {
             <Route path="salerno" element={<Dashboard />}>
                 <Route element={<PageLayout />}>
                     <Route path='Order' element={<Order />} />
+                    <Route path='Order/Item' element={<OrderItem />} />
                     <Route path='items' element={<ItemList />} />
                     <Route path='items/:itemId/edit' element={<Edit />} />
                     {/* <Route path='edit/new' element={<Edit />} /> */}
