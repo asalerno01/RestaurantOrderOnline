@@ -1,0 +1,144 @@
+.OrderItem {
+    width: 100%;
+    height: calc(100% - 54px);
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    background-color: hsla(0, 0%, 0%, 0.5);
+    z-index: 4;
+    box-sizing: border-box;
+}
+.OrderItem * {
+    font-family: Lato, sans-serif;
+}
+.OrderItem_Container {
+    width: calc(100% / 3);
+    height: 95%;
+    background-color: white;
+    border-radius: 15px;
+    border: 2px solid black;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+.OrderItem_Header {
+    border-bottom: 2px solid black;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    padding: 0 50px;
+    justify-self: flex-start;
+    width: 100%;
+}
+.OrderItem_Header_Title {
+    font-size: 25px;
+    font-family: "Lato Heavy", sans-serif;
+}
+.OrderItem_Options_Max_Select_Label {
+    text-align: left;
+    color: gray;
+    font-size: 0.8em;
+    font-weight: 500;
+    margin: 0 0 5px 0;
+    padding-left: 10px;
+}
+.OrderItem_Content {
+    flex-grow: 1;
+    width: 100%;
+    padding: 15px;
+    overflow-y: scroll;
+}
+.OrderItem_Addons_Header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.OrderItem_Addons_Title {
+    font-family: "Lato Heavy", sans-serif;
+    font-size: 16px;
+}
+.OrderItem_Options_Type {
+    font-size: 0.7em;
+    color: gray;
+    font-weight: 700;
+    position: relative;
+    bottom: -1px;
+}
+.OrderItem_Footer {
+    border-top: 2px solid black;
+    height: 70px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    padding: 0 25px;
+}
+.OrderItem_Footer_AddToCart_Button {
+    cursor: pointer;
+    background-color: red;
+    border-radius: 25px;
+    padding: 10px 16px;
+    font-weight: 700;
+    border: none;
+    color: white;
+    outline: none;
+}
+.OrderItem_Options_List {
+    list-style-type: none;
+    margin: 0;
+    padding: 5px 0 0 10px;
+}
+.OrderItem_Options_List > li {
+    text-align: left;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+}
+.OrderItem_Option_Checkbox {
+    margin-right: 10px;
+}
+.OrderItem_Option_Label {
+    font-size: 1.25em;
+    user-select: none;
+}
+.OrderItem_Description {
+    margin-bottom: 25px;
+    text-align: left;
+}
+.OrderItem_Option_Button {
+    width: 100%;
+    text-align: left;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    padding: 0;
+}
+.OrderItem_Checkbox_Box_Icon {
+    position: relative;
+    top: 1px;
+}
+.OrderItem_Checkbox_Checked_Icon {
+    position: absolute;
+    left: -2px;
+    top: -11px;
+}
+.OrderItem_CheckBox_Wrapper {
+    margin-right: 10px;
+    position: relative;
+    top: 1px;
+}
+.OrderItem_Checkbox_Checked_GroupOption_Icon {
+    position: relative;
+    left: -13px;
+    top: -2px;
+}
