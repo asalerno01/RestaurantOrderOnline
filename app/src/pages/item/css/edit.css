@@ -166,6 +166,8 @@
     font-weight: 14px;
     font-family: Lato, sans-serif;
     font-weight: 300;
+    height: 39px;
+    line-height: 39px;
 }
 .EditItem_Register_Checkbox_Label {
     margin: 0 0 0 3px;
@@ -217,12 +219,41 @@
     font-size: 0.9rem;
     border-width: 0 1px 1px 1px;
     padding: 20px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    grid-column-gap: 24px;
-    grid-row-gap: 20px;
+    display: flex;
+    flex-wrap: wrap;
 }
+.edit-content-test > div:not(.edit-content-description) {
+    flex-basis: 50%;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+}
+.edit-content-description {
+    flex-grow: 1;
+    padding: 5px;
+}
+.edit-content-description > textarea {
+    width: 100%;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    border: 1px solid rgb(221, 223, 225);
+    border-radius: 4px;
+    color: rgb(82, 94, 113);
+    box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px 0 inset;
+    font-weight: 200;
+    font-size: 14px;
+    background-color: white;
+    font-size: 16px;
+    padding: 6px 12px;
+    outline: none;
+}
+.edit-content-description > textarea:focus {
+    border-color: rgb(102, 175, 233);
+    box-shadow: 0 0 8px 0 rgb(102 175 233 / 60%);
+    outline: 0;
+}
+
 .edit-column {
     width: 50%;
     flex: 1;

@@ -5,6 +5,8 @@ using SalernoServer.Models.ItemModels;
 using SalernoServer.Models.Authentication;
 using Server.Models.Authentication;
 using SalernoServer.Models;
+using Server.Models.ItemModels;
+
 namespace SalernoServer.Models
 {
     public class AppDbContext : DbContext
@@ -24,6 +26,7 @@ namespace SalernoServer.Models
         public DbSet<OrderItemAddon> OrderItemAddons { get; set; }
         public DbSet<OrderItemNoOption> OrderItemNoOptions { get; set; }
         public DbSet<OrderItemGroup> OrderItemGroups { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

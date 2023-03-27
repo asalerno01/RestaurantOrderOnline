@@ -32,6 +32,8 @@ import EditEmployee from './pages/staff/EditEmployee';
 import Login from './pages/user_pages/Login';
 import Order from './pages/order/Order';
 import OrderItem from './pages/order/OrderItem';
+import Orders from './pages/order/Backoffice/Orders';
+import MenuPage from './raquel/pages/MenuPage';
 
 function App() {
     return (
@@ -39,8 +41,10 @@ function App() {
             <Route path="salerno/login" element={<Login />} />
             <Route path="salerno" element={<Dashboard />}>
                 <Route element={<PageLayout />}>
-                    <Route path='Order' element={<Order />} />
-                    <Route path='Order/Item' element={<OrderItem />} />
+                    <Route path='order' element={<Order />} />
+                    <Route path='orders' element={<Orders />} />
+                    <Route path='order/item' element={<OrderItem />} />
+                    <Route path='menu' element={<MenuPage />} />
                     <Route path='items' element={<ItemList />} />
                     <Route path='items/:itemId/edit' element={<Edit />} />
                     {/* <Route path='edit/new' element={<Edit />} /> */}

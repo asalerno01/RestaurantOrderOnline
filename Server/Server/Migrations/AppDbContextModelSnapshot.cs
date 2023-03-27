@@ -161,14 +161,17 @@ namespace Server.Migrations
                     b.Property<decimal>("AssignedCost")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<long>("CategoryId")
+                        .HasColumnType("bigint");
 
                     b.Property<decimal>("Cost")
                         .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -224,6 +227,8 @@ namespace Server.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("ItemId");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Items");
                 });
@@ -286,10 +291,10 @@ namespace Server.Migrations
                     b.Property<long>("CustomerAccountId")
                         .HasColumnType("bigint");
 
-                    b.Property<decimal>("Net")
-                        .HasColumnType("decimal(65,30)");
-
                     b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("PickUpDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Status")
@@ -299,7 +304,10 @@ namespace Server.Migrations
                     b.Property<decimal>("Subtotal")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<decimal>("Tax")
+                    b.Property<decimal>("SubtotalTax")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("Total")
                         .HasColumnType("decimal(65,30)");
 
                     b.HasKey("OrderId");
@@ -416,6 +424,25 @@ namespace Server.Migrations
                     b.ToTable("CustomerAccounts");
                 });
 
+            modelBuilder.Entity("Server.Models.ItemModels.Category", b =>
+                {
+                    b.Property<long>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("CategoryId");
+
+                    b.ToTable("Categories");
+                });
+
             modelBuilder.Entity("SalernoServer.Models.Authentication.Account", b =>
                 {
                     b.HasOne("SalernoServer.Models.Authentication.Employee", "Employee")
@@ -458,6 +485,17 @@ namespace Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("SalernoServer.Models.ItemModels.Item", b =>
+                {
+                    b.HasOne("Server.Models.ItemModels.Category", "Category")
+                        .WithMany("Items")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Modifier", b =>
@@ -521,7 +559,7 @@ namespace Server.Migrations
                         .IsRequired();
 
                     b.HasOne("SalernoServer.Models.OrderItem", "OrderItem")
-                        .WithMany("OrderItemAddons")
+                        .WithMany("Addons")
                         .HasForeignKey("OrderItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -546,7 +584,7 @@ namespace Server.Migrations
                         .IsRequired();
 
                     b.HasOne("SalernoServer.Models.OrderItem", "OrderItem")
-                        .WithMany("OrderItemGroups")
+                        .WithMany("Groups")
                         .HasForeignKey("OrderItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -567,7 +605,7 @@ namespace Server.Migrations
                         .IsRequired();
 
                     b.HasOne("SalernoServer.Models.OrderItem", "OrderItem")
-                        .WithMany("OrderItemNoOptions")
+                        .WithMany("NoOptions")
                         .HasForeignKey("OrderItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -604,16 +642,21 @@ namespace Server.Migrations
 
             modelBuilder.Entity("SalernoServer.Models.OrderItem", b =>
                 {
-                    b.Navigation("OrderItemAddons");
+                    b.Navigation("Addons");
 
-                    b.Navigation("OrderItemGroups");
+                    b.Navigation("Groups");
 
-                    b.Navigation("OrderItemNoOptions");
+                    b.Navigation("NoOptions");
                 });
 
             modelBuilder.Entity("Server.Models.Authentication.CustomerAccount", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("Server.Models.ItemModels.Category", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

@@ -13,9 +13,9 @@ namespace SalernoServer.Models
         public Order Order { get; set; }
         [JsonIgnore]
         public Item Item { get; set; }
-        public List<OrderItemAddon> OrderItemAddons { get; set; } = new();
-        public List<OrderItemNoOption> OrderItemNoOptions { get; set; } = new();
-        public List<OrderItemGroup> OrderItemGroups { get; set; } = new();
+        public List<OrderItemAddon> Addons { get; set; } = new();
+        public List<OrderItemNoOption> NoOptions { get; set; } = new();
+        public List<OrderItemGroup> Groups { get; set; } = new();
 
     }
 }

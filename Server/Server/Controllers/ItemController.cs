@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SalernoServer.Models;
 using SalernoServer.Models.ItemModels;
+using Server.Models.ItemModels.Helpers;
 
 namespace SalernoServer.Controllers
 {
@@ -33,6 +34,7 @@ namespace SalernoServer.Controllers
                 .Include(m => m.Modifier)
                 .ThenInclude(m => m.Groups)
                 .ThenInclude(g => g.GroupOptions)
+                .OrderBy(i => i.Category)
                 .ToListAsync();
 
             return Ok(items);
@@ -63,21 +65,25 @@ namespace SalernoServer.Controllers
         // PUT: api/Items/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutItem(string id, Item item)
+        public async Task<IActionResult> PutItem(string id, [FromBody] ItemHelper item)
         {
             if (id != item.ItemId)
             {
-                return BadRequest();
+                return BadRequest($"item.ItemId");
             }
             var newItem = await _context.Items.FindAsync(id);
             if (newItem == null)
             {
                 return NotFound();
             }
+            var category = await _context.Categories.FindAsync(item.CategoryId);
+            category ??= await _context.Categories.FirstOrDefaultAsync();
+
             newItem.ItemId = item.ItemId;
             newItem.Name = item.Name;
+            newItem.Description = item.Description;
             newItem.Department = item.Department;
-            newItem.Category = item.Category;
+            newItem.Category = category;   
             newItem.SKU = item.SKU;
             newItem.UPC = item.UPC;
             newItem.Price = item.Price;

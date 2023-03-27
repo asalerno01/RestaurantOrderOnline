@@ -1,5 +1,6 @@
 ﻿using SalernoServer.Models.Authentication;
 using SalernoServer.Models;
+using System.Text.Json.Serialization;
 
 namespace Server.Models.Authentication
 {
@@ -12,6 +13,7 @@ namespace Server.Models.Authentication
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
         public string RefreshToken { get; set; } = "";
+        [JsonIgnore]
         public List<Order> Orders { get; set; }
     }
 }

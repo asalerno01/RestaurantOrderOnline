@@ -1,25 +1,27 @@
-.Order * {
-    font-family: Lato, sans-serif;
-    font-weight: 600;
-}
-.Order_Container {
+
+.order {
     display: flex;
     flex-direction: row;
     background-color: white;
     width: 100%;
     padding: 20px;
     height: 100%;
+    position: relative;
 }
-.Order_ItemList {
-    flex: 1;
+.order__itemlist {
+    flex: 3;
     border: 2px solid black;
     padding: 0 15px 15px;
     margin-right: 10px;
     overflow-y: scroll;
 }
-.Order_ItemList_Table {
-    row-gap: 5px;
+.itemlist__container {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
 }
+
 .Order_Details {
     flex: 1;
     border: 2px solid black;
@@ -118,6 +120,8 @@ table {
 .Order_Details_Modifiers_List_Item {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    padding: 0 15px;
 }
 .Order_Details_Modifiers_List_Item_Name {
     flex-grow: 2;
@@ -130,23 +134,21 @@ table {
 .Order_Item_Options_Addon_Item div:first-child() {
     flex-grow: 1;
 }
-.Order_Details_Header {
-    border-bottom: 1px solid red;
-}
 .Order_ItemList_Button {
     width: 100%;
     cursor: pointer;
 }
 .Order_Details_Remove_Button {
-    color: darkred;
-    background-color: transparent;
+    color: red;
+    background-color: rgb(255, 255, 255);
     cursor: pointer;
     outline: none;
     border: none;
-    background-color: lightcoral;
-    border-radius: 5px;
+    text-decoration: underline;
+    position: relative;
+    float: right;
 }
-.Order_Details_Modifiers_Addons_List {
+.Order_Details_Modifier_Addons_List {
     margin: 0;
 }
 .Order_Details_Pricing_List {
@@ -174,4 +176,25 @@ table {
     border-bottom: 2px solid black;
     border-top: 2px solid black;
     margin-top: 10px;
+}
+.Order_Details_Modifier_Addons_List {
+    list-style-type: none;
+}
+
+
+.Order_Details_Modifier_Container {
+    text-align: left;
+}
+
+
+.Orders_OrderItem_Modal_Details_Content_Item_Modifiers_List_Item_Modifier_Label {
+    font-family: "Lato Light", sans-serif;
+    font-weight: 400;
+    margin-right: 4px;
+    font-size: 14px;
+}
+.Orders_OrderItem_Modal_Details_Content_Item_Modifiers_List_Item_Modifier {
+    font-family: "Lato Light", sans-serif;
+    font-weight: 600;
+    font-size: 14px;
 }

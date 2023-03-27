@@ -1,11 +1,14 @@
-﻿namespace SalernoServer.Models.ItemModels
+﻿using Server.Models.ItemModels;
+
+namespace SalernoServer.Models.ItemModels
 {
     public class Item
     {
         public string ItemId { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }
+        public string Description { get; set; }
         public string Department { get; set; }
-        public string Category { get; set; }
+        public Category Category { get; set; }
         public string UPC { get; set; }
         public string SKU { get; set; }
         public decimal Price { get; set; }
@@ -22,6 +25,6 @@
         public bool LiabilityItem { get; set; } = false;
         public string LiabilityRedemptionTender { get; set; }
         public string TaxGroupOrRate { get; set; }
-        public virtual Modifier Modifier { get; set; }
+        public virtual Modifier Modifier { get; set; } = new();
     }
 }
