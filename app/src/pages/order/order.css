@@ -1,30 +1,45 @@
-.Order * {
-    font-family: Lato, sans-serif;
-    font-weight: 600;
+
+.order {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 16px;
+    background-color: rgb(255, 255, 255);
+    overflow-y: scroll;
 }
-.Order_Container {
+.order_content_container {
     display: flex;
     flex-direction: row;
-    background-color: white;
+    background-color: rgb(255, 255, 255);
     width: 100%;
-    padding: 20px;
-    height: 100%;
+    position: relative;
+    flex-grow: 1;
+    margin-top: 20px;
 }
-.Order_ItemList {
+.order__itemlist {
     flex: 1;
-    border: 2px solid black;
-    padding: 0 15px 15px;
-    margin-right: 10px;
-    overflow-y: scroll;
+    border: 1px solid rgb(231, 231, 231);
+    border-radius: 10px;
+    padding: 15px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
 }
-.Order_ItemList_Table {
-    row-gap: 5px;
+.itemlist__container {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
 }
-.Order_Details {
-    flex: 1;
-    border: 2px solid black;
-    padding: 0 15px 15px;
-    overflow-y: scroll;
+
+.border {
+    height: 1px;
+    background-color: rgb(213, 215, 219);
+    margin: 0 0 5px 16px;
+    display: block;
+    flex-grow: 1;
+    margin: 16px;
 }
 .Order_Details_Item {
     margin: 5px;
@@ -118,6 +133,8 @@ table {
 .Order_Details_Modifiers_List_Item {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    padding: 0 15px;
 }
 .Order_Details_Modifiers_List_Item_Name {
     flex-grow: 2;
@@ -130,23 +147,21 @@ table {
 .Order_Item_Options_Addon_Item div:first-child() {
     flex-grow: 1;
 }
-.Order_Details_Header {
-    border-bottom: 1px solid red;
-}
 .Order_ItemList_Button {
     width: 100%;
     cursor: pointer;
 }
 .Order_Details_Remove_Button {
-    color: darkred;
-    background-color: transparent;
+    color: red;
+    background-color: rgb(255, 255, 255);
     cursor: pointer;
     outline: none;
     border: none;
-    background-color: lightcoral;
-    border-radius: 5px;
+    text-decoration: underline;
+    position: relative;
+    float: right;
 }
-.Order_Details_Modifiers_Addons_List {
+.Order_Details_Modifier_Addons_List {
     margin: 0;
 }
 .Order_Details_Pricing_List {
@@ -174,4 +189,85 @@ table {
     border-bottom: 2px solid black;
     border-top: 2px solid black;
     margin-top: 10px;
+}
+.Order_Details_Modifier_Addons_List {
+    list-style-type: none;
+}
+
+
+.Order_Details_Modifier_Container {
+    text-align: left;
+}
+
+
+.Orders_OrderItem_Modal_Details_Content_Item_Modifiers_List_Item_Modifier_Label {
+    font-family: "Lato Light", sans-serif;
+    font-weight: 400;
+    margin-right: 4px;
+    font-size: 14px;
+}
+.Orders_OrderItem_Modal_Details_Content_Item_Modifiers_List_Item_Modifier {
+    font-family: "Lato Light", sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.order_header {
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    padding: 0 16px;
+}
+.order_header_banner_wrapper {
+    overflow: hidden;
+    height: 360px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+}
+.order_header_banner_image {
+    object-fit: cover;
+    width: 100%;
+    height: 120%;
+    transform: translate3d(0, -15%, 0);
+    -webkit-transform: translate3d(0, -15%, 0);
+    -moz-transform: translate3d(0, -15%, 0);
+    -ms-transform: translate3d(0, -15%, 0);
+    -o-transform: translate3d(0, -15%, 0);
+}
+.order_header_content_container {
+    padding-bottom: 24px;
+}
+.order_header_content_header {
+    margin: 0;
+    color: rgb(25, 25, 25);
+    text-align: left;
+}
+.order_header_content_text {
+    margin-top: 4px;
+    display: block;
+    color: rgb(118, 118, 118);
+    font-size: 20px;
+    text-align: left;
+    font-family: "Lato", sans-serif;
+    font-weight: 500;
+}
+.order_border {
+    display: block;
+    width: 100%;
+    margin: 8px 16px;
+    border: none;
+    height: 1px;
+    background: rgb(231, 231, 231);
+}
+
+.category_header {
+    text-align: left;
+    padding: 0 15px;
+    margin: 0;
+}
+.category_container {
+    margin-bottom: 10px;
 }

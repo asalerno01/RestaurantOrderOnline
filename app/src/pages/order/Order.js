@@ -3,54 +3,233 @@ import axios from 'axios';
 import OrderItem from './OrderItem';
 import './order.css';
 
-// const items = require('./test_items.json');
+import MenuItem from '../../raquel/components/menu/MenuItem';
+import OrderDetailsModifiers from './OrderDetailsModifiers';
+import { IoMdClose } from 'react-icons/io';
+import OrderDetails from './OrderDetails';
+import Banner from '../../imgs/banner.webp';
 
 const Order = () => {
     const customerAccountId = 1;
 
     const [items, setItems] = useState([]);
-    const [order, setOrder] = useState({"subtotal": 0, "orderItems": [] });
+    const [categories, setCategories] = useState([]);
+    const [order, setOrder] = useState({
+        "orderId": generateUUIDUsingMathRandom(),
+        "subtotal": 0,
+        "subtotalTax": 0,
+        "total": 0,
+        "orderItems": []
+    });
+    useEffect(() => {
+        const order = localStorage.getItem("order");
+        if (order !== null && order.length > 0)
+            setOrder(JSON.parse(order));
+    }, []);
+    
+    // TODO: drop subtotal.
     const [orderItem, setOrderItem] = useState({});
+    const [editItemIndex, setEditItemIndex] = useState(null);
     const [response, setResponse] = useState(null);
-    const [openItem, setOpenItem] = useState("");
     const [isLoading, setIsLoading] = useState(true);
 
     const getItems = async () => {
-        await axios.get("https://localhost:7074/api/items")
-            .then(res => {
-                console.log(res);
-                setItems(res.data);
-                console.log(res.data)
-                setIsLoading(false)
-            })
-            .catch(err => {
-                console.log(err);
+        await axios.get("https://localhost:7074/api/Category")
+        .then(res => {
+            console.log(res);
+            let items = [];
+            let categories = res.data;
+            categories.forEach(category => {
+                category.items.forEach(item => {
+                    items.push(item);
+                });
             });
+            console.log(items);
+            setCategories(res.data);
+            setItems(items);
+            setIsLoading(false)
+        })
+        .catch(err => {
+            console.log(err);
+        });
     }
 
     useEffect(() => {
         getItems();
     }, []);
-    
-    const handleOpenItem = event => {
-        event.preventDefault();
-        if (orderItem["itemId"] === event.target.value) setOrderItem({})
-        else {
-            const item = items.find(i => i["itemId"] === event.target.value);
-            let orderItem = {
-                "itemId": item["itemId"],
-                "name": item["name"],
-                "price": item["price"],
-                "modifier": {
-                    "addons": [],
-                    "noOptions": [],
-                    "groups": []
-                }
+
+    function generateUUIDUsingMathRandom() { 
+        // wow
+        // https://qawithexperts.com/article/javascript/generating-guiduuid-using-javascript-various-ways/372#:~:text=Generating%20GUID%2FUUID%20using%20Javascript%20%28Various%20ways%29%201%20Generate,is%20fast%20to%20generate%20an%20ASCII-safe%20GUID%20
+        var d = new Date().getTime();//Timestamp
+        var d2 = (performance && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16;//random number between 0 and 16
+            if(d > 0){ //Use timestamp until depleted
+                r = (d + r)%16 | 0;
+                d = Math.floor(d/16);
+            } else { //Use microseconds since page-load if supported
+                r = (d2 + r)%16 | 0;
+                d2 = Math.floor(d2/16);
             }
-            console.log(JSON.stringify(orderItem))
+            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+    }
+
+    const handleItemClick = (itemId, index) => {
+        setEditItemIndex(index);
+        const item = items.find(i => i["itemId"] === itemId);
+        setOrderItem(item);
+    }
+    const handleOpenItem = (itemId) => {
+        console.log("items=>" + items);
+        if (orderItem["itemId"] === itemId) setOrderItem({})
+        else {
+            const item = items.find(i => i["itemId"] === itemId);
             setOrderItem(item);
         }
     }
+    const handleRemoveItemClick = (index) => {
+        console.log("hey")
+        const temp = Object.assign({}, order);
+        let subtotal = temp["subtotal"] - orderItem['price'];
+        temp["orderItems"].splice(index, 1);
+        if (isNaN(subtotal)) subtotal = 0;
+        temp["subtotal"] = subtotal;
+        setOrder(temp);
+    }
+    const handleCheckout = async event => {
+        event.preventDefault();
+        let orderItems = [];
+        order["orderItems"].forEach(orderItem => {
+            let addons = [];
+            let noOptions = [];
+            let groupOptions = [];
+            orderItem["modifier"]["addons"].forEach(addon => {
+                addons.push({
+                    "addonId": addon["addonId"]
+                });
+            });
+            orderItem["modifier"]["noOptions"].forEach(noOption => {
+                noOptions.push({
+                    "noOptionId": noOption["noOptionId"]
+                });
+            });
+            orderItem["modifier"]["noOptions"].forEach(group => {
+                groupOptions.push({
+                    "groupId": group["groupId"],
+                    "groupOptionId": group["groupOptionId"]
+                });
+            });
+            orderItems.push({
+                "itemId": orderItem["itemId"],
+                "groupOptions": groupOptions,
+                "addons": addons,
+                "noOptions": noOptions
+            })
+        });
+        
+        await axios.post("https://localhost:7074/api/orders",
+            {
+                "customerAccountId": customerAccountId,
+                "subtotal": order["subtotal"],
+                "subtotalTax": (order["subtotal"] * 0.0825).toFixed(2),
+                "total": ((order["subtotal"] * 0.0825) + order["subtotal"]).toFixed(2),
+                "orderItems": orderItems
+            }
+        )
+        .then(res => {
+            setResponse("Success!");
+            console.log(res);
+        })
+        .catch(err => {
+            setResponse(err.message + ". \n" + err.response.data);
+            console.log(err);
+        });
+
+    }
+
+    function formatPrice(price, type) {
+        if (!isNaN(price) && price > 0) {
+            if (type === "noOptions")
+                return `-$${price.toFixed(2)}`;
+            return `+$${price.toFixed(2)}`;
+        }
+            return "";
+    }
+
+    console.log(order)
+    return (
+        <div className="order">
+            <OrderItem itemI={orderItem} setOrder={setOrder} setOrderItem={setOrderItem} order={order} editItemIndex={editItemIndex} setEditItemIndex={setEditItemIndex} />
+            { (response === "Success!") ? <h3 style={{color: "green"}}>{response}</h3> : (response !== null) ? <h3 style={{color: "red"}}>{response}</h3> : <></> }
+                <div className="order_header">
+                    <div className="order_header_banner_wrapper">
+                        <img src={Banner} className="order_header_banner_image" />
+                    </div>
+                    <div className="order_header_content_container">
+                        <h1 className="order_header_content_header">Salerno's Red Hots</h1>
+                        <span className="order_header_content_text">197 E Veterans Pkwy, Yorkville, IL 60560, USA</span>
+                        <span className="order_header_content_text">Open Hours: 11:00 AM - 8:00 PM</span>
+                    </div>
+                </div>
+                <hr className="order_border"/>
+                <div className="order_content_container">
+                    <div className="order__itemlist">
+                        {
+                            categories.map(category => (
+                                <div className="category_container">
+                                    <h1 className="category_header">{category.name}</h1>
+                                    <div className="order_border"></div>
+                                    <div className="itemlist__container">
+                                    {
+                                        category.items.map(item => (
+                                            <MenuItem
+                                                key={item.itemId}
+                                                itemId={item.itemId}
+                                                name={item.name}
+                                                price={item.price}
+                                                description={item.description}
+                                                handleOpenItem={handleOpenItem}
+                                            />
+                                        ))
+                                    }
+                                    </div>
+                                </div>
+                            ))
+                        }
+                        </div>
+                    <OrderDetails order={order} handleItemClick={handleItemClick} handleRemoveItemClick={handleRemoveItemClick} />
+            </div>
+        </div>
+    );
+}
+
+export default Order;
+
+
+/*
+    <table className="Order_ItemList_Table">
+        <tbody>
+            {
+                items.map(item => (
+                    <tr key={item['itemId']}>
+                        <td>
+                            <div className="Order_ItemList_Grid">
+                                <div className="Order_ItemList_Grid_Button_Wrapper">
+                                    <button className="Order_ItemList_Button" onClick={handleOpenItem} value={item['itemId']} type="button">{item['name']}</button>
+                                </div>
+                                <div className="Order_ItemList_Grid_Price_Wrapper">
+                                    <div>${item['price'].toFixed(2)}</div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                ))
+            }
+        </tbody>
+    </table>
+
     const handleAddAddonCheckboxChange = event => {
         event.preventDefault();
         const modifierId = event.target.attributes.modifierid.value;
@@ -76,234 +255,4 @@ const Order = () => {
         setOrder(temp);
         setOrderItem({});
     }
-    const handleRemoveItem = event => {
-        event.preventDefault();
-        const temp = Object.assign({}, order);
-        temp["orderItems"].splice(event.target.value, 1);
-        let subtotal = temp["subtotal"] - orderItem['price'];
-        if (isNaN(subtotal)) subtotal = 0;
-        temp["subtotal"] = subtotal;
-        setOrder(temp);
-    }
-    const handleCheckout = async event => {
-        event.preventDefault();
-        let orderItems = [];
-        order["orderItems"].forEach(orderItem => {
-            let addons = [];
-            let noOptions = [];
-            let groupOptions = [];
-            orderItem["modifier"]["addons"].forEach(addon => {
-                addons.push({
-                    "addonId": addon["addonId"]
-                });
-            });
-            orderItem["modifier"]["noOptions"].forEach(noOption => {
-                noOptions.push({
-                    "noOptionId": noOption["noOptionId"]
-                });
-            });
-            // TODO: Handle groups.
-            orderItems.push({
-                "itemId": orderItem["itemId"],
-                "groupOptions": groupOptions,
-                "addons": addons,
-                "noOptions": noOptions
-            })
-        });
-        // const orderForAPI = {
-        //     "customerAccountId": customerAccountId,
-        //     "subtotal": order["subtotal"],
-        //     "tax": (order["subtotal"] * 0.0825).toFixed(2),
-        //     "net": ((order["subtotal"] * 0.0825) + order["subtotal"]).toFixed(2),
-        //     "orderItems": orderItems
-        // };
-        // console.log(JSON.stringify(orderForAPI));
-        
-        await axios.post("https://localhost:7074/api/order",
-            {
-                "customerAccountId": customerAccountId,
-                "subtotal": order["subtotal"],
-                "tax": (order["subtotal"] * 0.0825).toFixed(2),
-                "net": ((order["subtotal"] * 0.0825) + order["subtotal"]).toFixed(2),
-                "orderItems": orderItems
-            }
-        )
-        .then(res => {
-            setResponse("Success!");
-            console.log(res);
-        })
-        .catch(err => {
-            setResponse(err.message + ". \n" + err.response.data);
-            console.log(err);
-        });
-
-    }
-
-    const OpenItem = () => {
-        console.log(orderItem)
-        if (orderItem === {}) return <></>
-        else if (isLoading) return <></>
-        else {
-            const item = items.find(i => i["itemId"] === openItem);
-            console.log("hey")
-            return (
-                <OrderItem item={orderItem} setOrder={setOrder} setOrderItem={setOrderItem} order={order} />
-            )
-        }
-        // if (item["modifier"].length === 0)
-        // return (
-        //     <div className="Order_ItemList_Grid_Options_Wrapper">
-        //         <button type="button" className="Order_ItemList_Grid_AddItem_Button" onClick={handleAddItem}>Add to cart</button>
-        //     </div>
-        // )
-        // return (
-        //     <div className="Order_ItemList_Grid_Options_Wrapper">
-        //         <div className="Order_ItemList_Options_Container">
-        //             <div className="Order_Item_Options_Addons_Container">
-        //                 <div className="Order_Item_Options_Addon_Label">Add-Ons</div>
-        //                 <div className="Order_Item_Options_Addons_Wrapper">
-        //                     <ul className="Order_Item_Options_Addons_List">
-        //                         {
-        //                             item['modifier']["addons"].map(addon => (
-        //                                     <li key={`addon-id-${addon["addonId"]}`} value={addon['addonId']} className="Order_Item_Options_Addon_Item">
-        //                                         <label className="Order_Item_Options_Addon_Item_Label" htmlFor={`addon-checkbox-${addon["addonId"]}`}>
-        //                                             <input type="checkbox" id={`addon-checkbox-${addon["addonId"]}`}
-        //                                                 className="Order_Item_Options_Addon_Item_Checkbox"
-        //                                                 checked={orderItem["modifier"]["addons"].some(a => a["addonId"] === addon["addonId"])}
-        //                                                 addonid={addon["addonId"]}
-        //                                                 onChange={handleAddAddonCheckboxChange}
-        //                                             />
-        //                                             {addon["name"]}
-        //                                         </label>
-        //                                         <div>${addon["price"].toFixed(2)}</div>
-        //                                     </li>
-        //                                 )
-        //                             )
-        //                         }
-        //                     </ul>
-
-        //                 </div>
-        //             </div>
-        //         </div>
-        //         <button type="button" className="Order_ItemList_Grid_AddItem_Button" onClick={handleAddItem}>Add to cart</button>
-        //     </div>
-        // )
-    }
-    console.log(order)
-    return (
-        <div className="Order">
-            <OrderItem item={orderItem} setOrder={setOrder} setOrderItem={setOrderItem} order={order} />
-            { (response === "Success!") ? <h3 style={{color: "green"}}>{response}</h3> : (response !== null) ? <h3 style={{color: "red"}}>{response}</h3> : <></> }
-            <div className="Order_Container">
-                <div className="Order_ItemList">
-                    <h2 className="Order_Details_Header">Items</h2>
-                    <table className="Order_ItemList_Table">
-                        <tbody>
-                            {
-                                items.map(item => (
-                                    <tr key={item['itemId']}>
-                                        <td>
-                                            <div className="Order_ItemList_Grid">
-                                                <div className="Order_ItemList_Grid_Button_Wrapper">
-                                                    <button className="Order_ItemList_Button" onClick={handleOpenItem} value={item['itemId']} type="button">{item['name']}</button>
-                                                </div>
-                                                <div className="Order_ItemList_Grid_Price_Wrapper">
-                                                    <div>${item['price'].toFixed(2)}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>
-                </div>
-                <div className="Order_Details">
-                    <h2 className="Order_Details_Header">Order Details</h2>
-                    <table className="Order_Details_Table">
-                        <tbody>
-                        {
-                            order["orderItems"].map((orderItem, index) => (
-                                <tr key={index}>
-                                    <td>
-                                        <div className="Order_Details_Item">
-                                            <div className="Order_Details_Name_Wrapper">
-                                                <div>{orderItem['name']}</div>
-                                            </div>
-                                            <div className="Order_Details_Price_Wrapper">
-                                                <div>${orderItem['price']}</div>
-                                            </div>
-                                            <div>
-                                                <button type="button" value={index} onClick={handleRemoveItem} className="Order_Details_Remove_Button">X</button>
-                                            </div>
-                                            <div className="Order_Details_modifier_Wrapper">
-                                                {
-                                                    (orderItem["modifier"]["addons"].length === 0) ? <></>
-                                                    :
-                                                    <div className="Order_Details_modifier_Addons_Wrapper">
-                                                        <div className="Order_Details_modifier_Addons_Header">Add-Ons</div>
-                                                        <ul className="Order_Details_modifier_Addons_List">
-                                                            {
-                                                                orderItem["modifier"]["addons"].map(addon => (
-                                                                    <li key={`orderitem-${orderItem["itemId"]}-addon-${addon["addonId"]}`} className="Order_Details_modifier_List_Item">
-                                                                        <div className="Order_Details_modifier_List_Item_Name">{addon["name"]}</div>
-                                                                        <div className="Order_Details_modifier_List_Item_Price">${addon["price"]}</div>
-                                                                    </li>
-                                                                ))
-                                                            }
-                                                        </ul>
-                                                    </div>
-                                                }
-                                            </div>
-                                            <div className="Order_Details_modifier_Wrapper">
-                                                {
-                                                    (orderItem["modifier"]["noOptions"].length === 0) ? <></>
-                                                    :
-                                                    <div className="Order_Details_modifier_Addons_Wrapper">
-                                                        <div className="Order_Details_modifier_Addons_Header">Remove from {orderItem["name"]}</div>
-                                                        <ul className="Order_Details_modifier_Addons_List">
-                                                            {
-                                                                orderItem["modifier"]["noOptions"].map(addon => (
-                                                                    <li key={`orderitem-${orderItem["itemId"]}-addon-${addon["addonId"]}`} className="Order_Details_modifier_List_Item">
-                                                                        <div className="Order_Details_modifier_List_Item_Name">{addon["name"]}</div>
-                                                                        {/* <div className="Order_Details_modifier_List_Item_Price">${addon["price"]}</div> */}
-                                                                    </li>
-                                                                ))
-                                                            }
-                                                        </ul>
-                                                    </div>
-                                                }
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))
-                        } 
-                        </tbody>
-                    </table>
-                    <div className="Order_Details_Pricing_Wrapper">
-                        <ul className="Order_Details_Pricing_List">
-                            <li className="Order_Details_Pricing_List_Item">
-                                <div className="Order_Details_Pricing_Label">Subtotal:</div>
-                                <div className="Order_Details_Pricing_Price">${order["subtotal"].toFixed(2)}</div>
-                            </li>
-                            <li className="Order_Details_Pricing_List_Item">
-                                <div className="Order_Details_Pricing_Label">Tax:</div>
-                                <div className="Order_Details_Pricing_Price">${(order["subtotal"] * 0.0825).toFixed(2)}</div>
-                            </li>
-                            <li className="Order_Details_Pricing_List_Item">
-                                <div className="Order_Details_Pricing_Label">Total:</div>
-                                <div className="Order_Details_Pricing_Price">${(order["subtotal"] * 1.0825).toFixed(2)}</div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="Order_Details_Checkout_Wrapper">
-                        <button type="button" className="Order_Details_Checkout_Button" onClick={handleCheckout}>Checkout</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-}
-
-export default Order;
+*/

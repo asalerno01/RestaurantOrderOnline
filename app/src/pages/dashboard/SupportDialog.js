@@ -7,11 +7,11 @@ const SupportDialog = ({ supportOpen, setSupportOpen }) => {
 
     return (
         <div className='SupportDialog' style={ supportOpen ? {display: 'block'} : {display: 'none'} } onClick={() => setSupportOpen(false)}>
-            <div className='SupportDialog_Container' onBlur={() => setSupportOpen(false)}>
+            <div className='SupportDialog_Container' onClick={e => e.stopPropagation()}>
                 <div className='SupportDialog_Header'>
                     <span>Support</span>
                     <div style={{flexGrow: '1'}}></div>
-                    <div>
+                    <div onClick={() => setSupportOpen(false)}>
                         <IconContext.Provider value={{ style: { verticalAlign: 'middle' } }}>
                             <IoMdClose onClick={() => setSupportOpen(true)} className='SupportDialog_Close_Icon' />
                         </IconContext.Provider>

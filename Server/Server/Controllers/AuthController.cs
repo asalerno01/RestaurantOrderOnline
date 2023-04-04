@@ -7,10 +7,11 @@ using System.Security.Claims;
 using System.Text;
 using Server.Models.Authentication;
 using Microsoft.EntityFrameworkCore;
+using System.Web;
 
 namespace SalernoServer
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthenticateController : ControllerBase
     {
@@ -26,6 +27,15 @@ namespace SalernoServer
         [Route("login")]
         public async Task<IActionResult> LoginCustomerAccount([FromBody] LoginModel loginModel)
         {
+            var cookie = Request.Cookies["RefreshToken"];
+            foreach (string s in Request.Cookies.Keys)
+            {
+                Console.WriteLine(s);
+            }
+            if (cookie is not null)
+            {
+                Console.WriteLine($"===== Cookie Value=>{cookie}");
+            }
             var customerAccount = _context.CustomerAccounts.Where(a => a.Email.Equals(loginModel.Email)).FirstOrDefault();
             if (customerAccount is not null && customerAccount.Password.Equals(loginModel.Password))
             {
@@ -48,7 +58,10 @@ namespace SalernoServer
                 {
                     HttpOnly = true,
                     Secure = true,
-                    Expires = DateTime.UtcNow.AddHours(1)
+                    Expires = DateTime.UtcNow.AddHours(1),
+                    Domain = "localhost",
+                    SameSite = SameSiteMode.None,
+                    IsEssential = true
                 };
                 Response.Cookies.Append("RefreshToken", refTokString, cookieOptions);
                 return Ok(new
@@ -86,16 +99,28 @@ namespace SalernoServer
         public async Task<IActionResult> Logout()
         {
             var refreshToken = Request.Cookies["RefreshToken"];
+            Console.WriteLine($"Logout refresh token=>{refreshToken}");
             var foundAccount = await _context.CustomerAccounts.Where(ca => ca.RefreshToken.Equals(refreshToken)).FirstOrDefaultAsync();
             if (foundAccount is null) return BadRequest("Can't find account");
             foundAccount.RefreshToken = "";
             _context.Update(foundAccount);
-            return Ok();
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                Expires = DateTime.Now.AddDays(-1),
+                Domain = "localhost",
+                SameSite = SameSiteMode.None,
+                IsEssential = true
+            };
+            Response.Cookies.Append("RefreshToken", "", cookieOptions);
+            return Ok("Done");
         }
         [HttpGet]
         [Route("refresh")]
         public async Task<IActionResult> RefreshToken()
         {
+            Console.WriteLine("refreshing");
             string? refreshToken = Request.Cookies["RefreshToken"];
             if (string.IsNullOrEmpty(refreshToken)) return StatusCode(403);
             Console.WriteLine(refreshToken);
@@ -144,6 +169,9 @@ namespace SalernoServer
 
             return Ok(new
             {
+                FirstName = customerAccount.FirstName,
+                LastName = customerAccount.LastName,
+                Email = customerAccount.Email,
                 AccessToken = tok
             });
         }

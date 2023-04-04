@@ -1,0 +1,58 @@
+[
+    {
+        "name": "Anthony",
+        "date": "10/9/97",
+        "rating": 5,
+        "message": "We've ordered a lot from the McDonald's in the area over the last few years, and they've gotten our order right and to us quickly more times than I can count. Men, keep your women happy and give them McDonald's when they're feeling down. It's just the right thing to do!",
+        "vote": "Liked"
+    },
+    {
+        "name": "Frankie",
+        "date": "11/15/03",
+        "rating": 5,
+        "message": "There seems to be a disconnect between doordash and the actual establishment whereby I get charged more than I should because items are missing.",
+        "vote": "Liked"
+    },
+    {
+        "name": "Sophie",
+        "date": "8/14/13",
+        "rating": 3,
+        "message": "Hot and fresh...",
+        "vote": "Liked"
+    },
+    {
+        "name": "Francesca",
+        "date": "2/5/99",
+        "rating": 1,
+        "message": "Missing extra patty on burger happy meal",
+        "vote": "Disliked"
+    },
+    {
+        "name": "Anthony",
+        "date": "10/9/97",
+        "rating": 5,
+        "message": "We've ordered a lot from the McDonald's in the area over the last few years, and they've gotten our order right and to us quickly more times than I can count. Men, keep your women happy and give them McDonald's when they're feeling down. It's just the right thing to do!",
+        "vote": "Liked"
+    },
+    {
+        "name": "Frankie",
+        "date": "11/15/03",
+        "rating": 5,
+        "message": "There seems to be a disconnect between doordash and the actual establishment whereby I get charged more than I should because items are missing.",
+        "vote": "Liked"
+    },
+    {
+        "name": "Sophie",
+        "date": "8/14/13",
+        "rating": 3,
+        "message": "Hot and fresh...",
+        "vote": "Liked"
+    },
+    {
+        "name": "Francesca",
+        "date": "2/5/99",
+        "rating": 1,
+        "message": "Missing extra patty on burger happy meal",
+        "vote": "Disliked"
+    }
+]

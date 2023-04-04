@@ -11,7 +11,7 @@ const root = createRoot(container);
 root.render(
     <React.StrictMode>
         <BrowserRouter>
-            <AuthProvider >
+            <AuthProvider>
                 <Routes>
                     <Route path="/*" element={<App />} />
                 </Routes>

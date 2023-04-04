@@ -308,3 +308,4 @@ C:\Users\antho\Documents\GitHub\RestaurantOrderOnline\Server\Server\obj\Debug\ne
 C:\Users\antho\Documents\GitHub\RestaurantOrderOnline\Server\Server\obj\Debug\net6.0\Server.pdb
 C:\Users\antho\Documents\GitHub\RestaurantOrderOnline\Server\Server\obj\Debug\net6.0\Server.genruntimeconfig.cache
 C:\Users\antho\Documents\GitHub\RestaurantOrderOnline\Server\Server\obj\Debug\net6.0\ref\Server.dll
+C:\Users\antho\Documents\GitHub\RestaurantOrderOnline\Server\Server\obj\Debug\net6.0\Server.csproj.ResolveComReference.cache

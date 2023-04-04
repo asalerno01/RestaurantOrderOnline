@@ -7,10 +7,10 @@ const useLogout = () => {
         console.log(auth);
         await axios({
             method: "post",
-            url: "http://localhost:3001/logout",
+            url: "http://localhost:7074/api/auth/logout",
             withCredentials: true,
             data: {
-                access_token: auth.access_token
+                access_token: auth.accessToken
             }
         })
         .catch(err => {

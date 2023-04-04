@@ -3,6 +3,7 @@ import { Navigate, Link, useNavigate, useLocation } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import './css/login.css';
 import axios from 'axios';
+import Logo from '../../imgs/logo.jpg';
 
 const Login = () => {
     const { auth, setAuth, remember, setRemember } = useAuth();
@@ -30,22 +31,35 @@ const Login = () => {
         localStorage.setItem("remember", remember);
     }, [remember]);
 
-    const handleSubmit = async event => {
+    const handleLogin = async event => {
         event.preventDefault();
         console.log("submitting...");
-        axios.post('https://localhost:7074/api/authenticate/login', { email: email, password: password})
-        .then(function(res) {
+        await axios({
+            method: "POST",
+            url: "https://localhost:7074/api/auth/login",
+            data: { 
+                email: email,
+                password: password
+            },
+            header: {
+                "Content-Type": "application/json"
+            },
+            withCredentials: true
+        })
+        .then(res => {
+            console.log(res);
             console.log(res.data);
             const accessToken = res.data?.accessToken;
-            const email = res.data?.email;
             const firstName = res.data?.firstName;
             const lastName = res.data?.lastName;
-            setAuth({ email, firstName, lastName, accessToken });
+            const email = res.data?.email;
+            setAuth({ firstName, lastName, email, accessToken });
             setEmail("");
             setPassword("");
-            navigate("/salerno/items");
+            navigate("/salerno/order");
         })
         .catch(err => {
+            console.log(err);
             if (!err?.response) {
                 setErrMsg('No Server Response');
             } else if (err.response?.status === 400) {
@@ -58,60 +72,25 @@ const Login = () => {
                 setErrMsg('Login Failed');
             }
         });
-        // axios({
-        //     method: 'POST',
-        //     url: 'https://localhost:7074/api/authenticate/login',
-        //     data: {
-        //         email: email,
-        //         password: password
-        //     },
-        //     headers: {
-        //         "Content-Type": "application/json"
-        //     }
-        // })
-        // .then(function(res) {
-        //     const accessToken = res.data?.accessToken;
-        //     const email = res.data?.email;
-        //     const firstName = res.data?.firstName;
-        //     const lastName = res.data?.lastName;
-        //     setAuth({ email, firstName, lastName, accessToken });
-        //     setEmail("");
-        //     setPassword("");
-        //     navigate("/salerno/items");
-        // })
-        // .catch(err => {
-        //     if (!err?.response) {
-        //         setErrMsg('No Server Response');
-        //     } else if (err.response?.status === 400) {
-        //         setErrMsg('Missing EmployeeID or Password');
-        //     } else if (err.response?.status === 401) {
-        //         setErrMsg('No account exists for this employeeID');
-        //     } else if (err.response?.status === 404) {
-        //         setErrMsg(err.response.data.message);
-        //     } else {
-        //         setErrMsg('Login Failed');
-        //     }
-        // });
     }
 
   return (
     <div className="Login">
         <div className="Login_Container">
-            <h3 style={{margin: 0}}>Sign In</h3>
+            <div className="Login_Logo_Wrapper">
+                <img src={Logo} className="Login_Logo" />
+            </div>
+            <h1 className="Login_Header">Sign In</h1>
             <div className="Login_Form">
-                <div>
-                    <label className="Login_Form_Input_Label" htmlFor='email'>Email</label>
-                </div>
-                <input className="Login_Form_Input_Text" type='text' id='email' ref={emailRef} onChange={handleEmailChange} value={email} />
-                <div>
-                    <label className="Login_Form_Input_Label" htmlFor='password-input'>Password</label>
-                </div>
-                <input className="Login_Form_Input_Text" type='password' id='password-input' placeholder="Password" onChange={handlePasswordChange} value={password}/>
-                <div>
-                    <label htmlFor='remember-me-input'>Remember Me</label>
-                    <input type='checkbox' name='remember-me-input' id='remember-me-input'/>
-                </div>
-                <button type='submit' onClick={handleSubmit} id='login-button'>Submit</button>
+                <label className="Login_Form_Input_Label" htmlFor='email'>Email</label>
+                <input className="Login_Input_Text" type='text' id='email' ref={emailRef} onChange={handleEmailChange} value={email} />
+                <label className="Login_Form_Input_Label" htmlFor='password-input'>Password</label>
+                <input className="Login_Input_Text" type='password' id='password-input' placeholder="Password" onChange={handlePasswordChange} value={password}/>
+                <label htmlFor='remember-me-input' className="Login_Remember_Checkbox_Label">
+                    Remember Me
+                    <input type='checkbox' name='remember-me-input' id='remember-me-input' className="Login_Remember_Checkbox" />
+                </label>
+                <button type='submit' className="Login_Login_Button" onClick={handleLogin}>Submit</button>
             </div>
         </div>
     </div>
