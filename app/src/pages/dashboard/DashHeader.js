@@ -10,7 +10,6 @@ import useAuth from '../../hooks/useAuth';
 
 const DashHeader = ({ setSupportOpen, setNavOpen, setLoginModalOpen }) => {
     const { auth } = useAuth();
-    console.log(auth)
     const [dropdown, setDropdown] = useState(false);
     const date = new Date();
     const logout = useLogout();

@@ -18,7 +18,13 @@ const Dashboard = () => {
             <NavBar navOpen={navOpen} />
             <LoginModal loginModalOpen={loginModalOpen} setLoginModalOpen={setLoginModalOpen} />
             <div className='Dashboard_Content'>
-                <DashHeader name='Anthony Salerno' setSupportOpen={setSupportOpen} navOpen={navOpen} setNavOpen={setNavOpen} setLoginModalOpen={setLoginModalOpen} />
+                <DashHeader 
+                    name='Anthony Salerno' 
+                    setSupportOpen={setSupportOpen} 
+                    navOpen={navOpen} 
+                    setNavOpen={setNavOpen} 
+                    setLoginModalOpen={setLoginModalOpen} 
+                />
                 <SupportDialog supportOpen={supportOpen} setSupportOpen={setSupportOpen} />
                 <Outlet />
             </div>
