@@ -7,8 +7,11 @@ const useLogout = () => {
         console.log(auth);
         await axios({
             method: "post",
-            url: "https://localhost:7074/api/authenticate/logout",
+            url: "https://localhost:7074/api/auth/logout",
             withCredentials: true
+        })
+        .then(res => {
+            console.log(res);
         })
         .catch(err => {
             console.log(err);

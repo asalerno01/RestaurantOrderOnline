@@ -34,26 +34,35 @@ import Order from './pages/order/Order';
 import OrderItem from './pages/order/OrderItem';
 import Orders from './pages/order/Backoffice/Orders';
 import MenuPage from './raquel/pages/MenuPage';
+import Checkout from './pages/order/Checkout';
+import Register from './pages/user_pages/Register';
+import RememberLogin from './simple/RememberLogin';
+import Reviews from './pages/review/Reviews';
 
 function App() {
     return (
         <Routes>
             <Route path="salerno/login" element={<Login />} />
-            <Route path="salerno" element={<Dashboard />}>
-                <Route element={<PageLayout />}>
-                    <Route path='order' element={<Order />} />
-                    <Route path='orders' element={<Orders />} />
-                    <Route path='order/item' element={<OrderItem />} />
-                    <Route path='menu' element={<MenuPage />} />
-                    <Route path='items' element={<ItemList />} />
-                    <Route path='items/:itemId/edit' element={<Edit />} />
-                    {/* <Route path='edit/new' element={<Edit />} /> */}
-                    <Route path='items/:itemId/modifiers' element={<Modifiers />} />
+            <Route path="salerno/register" element={<Register />} />
+            <Route path="salerno/reviews" element={<Reviews />}/>
+            <Route element={<RememberLogin />}>
+                <Route path="salerno" element={<Dashboard />}>
+                    <Route element={<PageLayout />}>
+                        <Route path='order' element={<Order />} />
+                        <Route path='orders' element={<Orders />} />
+                        <Route path='order/item' element={<OrderItem />} />
+                        <Route path='order/checkout' element={<Checkout />} />
+                        <Route path='menu' element={<MenuPage />} />
+                        <Route path='items' element={<ItemList />} />
+                        <Route path='items/:itemId/edit' element={<Edit />} />
+                        {/* <Route path='edit/new' element={<Edit />} /> */}
+                        <Route path='items/:itemId/modifiers' element={<Modifiers />} />
 
-                    <Route path='employees' element={<EmployeeList />} />
-                    <Route path='employees/timeclock' element={<TimeClock />} />
-                    <Route path='employees/new' element={<NewEmployee />} />
-                    <Route path='employees/:id/edit' element={<EditEmployee />} />
+                        <Route path='employees' element={<EmployeeList />} />
+                        <Route path='employees/timeclock' element={<TimeClock />} />
+                        <Route path='employees/new' element={<NewEmployee />} />
+                        <Route path='employees/:id/edit' element={<EditEmployee />} />
+                    </Route>
                 </Route>
             </Route>
         </Routes>

@@ -24,7 +24,7 @@ namespace SalernoServer.Controllers
 
         // GET: api/Items
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Item>>> GetItems()
+        public async Task<ActionResult<IEnumerable<ItemDTO>>> GetItems()
         {
             var items = await _context.Items
                 .Include(i => i.Modifier)
@@ -34,15 +34,21 @@ namespace SalernoServer.Controllers
                 .Include(m => m.Modifier)
                 .ThenInclude(m => m.Groups)
                 .ThenInclude(g => g.GroupOptions)
+                .Include(i => i.Category)
                 .OrderBy(i => i.Category)
                 .ToListAsync();
+            List<ItemDTO> result = new List<ItemDTO>();
+            foreach (var item in items)
+            {
+                result.Add(new ItemDTO(item));
+            }
 
-            return Ok(items);
+            return Ok(result);
         }
 
         // GET: api/items/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Item>> GetItem(string id)
+        public async Task<ActionResult<ItemDTO>> GetItem(string id)
         {
             //var item = await _context.Items.FindAsync(itemId);
             var item = await _context.Items
@@ -53,14 +59,16 @@ namespace SalernoServer.Controllers
                 .Include(m => m.Modifier)
                 .ThenInclude(m => m.Groups)
                 .ThenInclude(g => g.GroupOptions)
+                .Include(i => i.Category)
                 .FirstOrDefaultAsync(i => i.ItemId.Equals(id));
 
             if (item == null)
             {
                 return NotFound();
             }
+            
 
-            return item;
+            return Ok(new ItemDTO(item));
         }
         // PUT: api/Items/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -76,14 +84,22 @@ namespace SalernoServer.Controllers
             {
                 return NotFound();
             }
-            var category = await _context.Categories.FindAsync(item.CategoryId);
-            category ??= await _context.Categories.FirstOrDefaultAsync();
+            var category = await _context.Categories.Where(c => c.Name.Equals(item.CategoryName)).FirstOrDefaultAsync();
+            if (category is null)
+            {
+                Console.WriteLine($"Creating new category: {item.CategoryName}");
+                category = new()
+                {
+                    Name = item.CategoryName
+                };
+                category.Items.Add(newItem);
+            }
 
             newItem.ItemId = item.ItemId;
             newItem.Name = item.Name;
             newItem.Description = item.Description;
             newItem.Department = item.Department;
-            newItem.Category = category;   
+            newItem.Category = category; 
             newItem.SKU = item.SKU;
             newItem.UPC = item.UPC;
             newItem.Price = item.Price;

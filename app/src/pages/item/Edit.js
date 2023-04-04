@@ -14,7 +14,7 @@ export default function Edit() {
         "name": "",
         "description": "",
         "department": "",
-        "categoryId": 0,
+        "categoryName": "",
         "upc": "",
         "sku": "",
         "price": 0,
@@ -32,6 +32,7 @@ export default function Edit() {
         "liabilityRedemptionTender": "",
         "taxGroupOrRate": "0"
     });
+    const [categories, setCategories] = useState([]);
 
     const [dialogOpen, setDialogOpen] = useState(false);
     const navigate = useNavigate();
@@ -45,9 +46,20 @@ export default function Edit() {
             console.log(err.message);
         });
     }
+    const getCategories = async () => {
+        await axios.get(`https://localhost:7074/api/category`)
+        .then(res => {
+            console.log(res.data);
+            setCategories(res.data);
+        })
+        .catch(function (err) {
+            console.log(err.message);
+        });
+    }
     useEffect(() => {
         if (itemId !== undefined)
             getItem();
+        getCategories();
     }, []);
 
     const handleSave = async event => {
@@ -118,10 +130,12 @@ export default function Edit() {
                             </div>
                             <div>
                                 <label htmlFor='category-input'>Category <QuestionIcon /></label>
-                                <select className='EditItem_Input' value={item.categoryId} attributeType="category" onChange={handleInputChange} id='category-input'>
-                                    <option value={item.category}>{item.category}</option>
-                                    <option value='2'>2</option>
-                                    <option value='3'>3</option>
+                                <select className='EditItem_Input' value={item.categoryName} attributeType="categoryName" onChange={handleInputChange} id='category-input'>
+                                {
+                                    categories.map(category => (
+                                        <option value={category.name}>{category.name}</option>
+                                    ))
+                                }
                                 </select>
                             </div>
                             <div>

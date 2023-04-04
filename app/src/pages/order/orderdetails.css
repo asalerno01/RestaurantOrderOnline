@@ -1,8 +1,8 @@
 .orderdetails__container {
-    flex: 1;
     border: 1px solid rgb(233, 234, 236);
     padding: 30px;
     min-width: 500px;
+    margin-left: 15px;
 }
 .orderdetails__header {
     text-align: left;

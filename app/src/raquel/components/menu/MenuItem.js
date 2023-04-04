@@ -23,9 +23,9 @@ import PizzaPuffImage from "../../../imgs/items/pizzapuff (Small).jpeg";
 import TomTomTamaleImage from "../../../imgs/items/tamale (Small).jpeg";
 import PlaceholderImage from "../../../imgs/items/placeholder_image.png";
 import HotDogImage from "../../../imgs/items/hotdog.webp";
+import ItemImage from '../../../components/ItemImage';
 
 const MenuItem = (props) => {
-
     function getImage(name) {
         switch(name) {
             case "Chicago Style Hot Dog":
@@ -66,12 +66,12 @@ const MenuItem = (props) => {
                 return PlaceholderImage;
         }
     }
-    const ItemImage = ({ name }) => {
-        const image = getImage(name);
-        return (
-            <img className="MenuItem_Image" src={image} alt={`${name} Image`} />
-        )
-    }
+    // const ItemImage = ({ name }) => {
+    //     const image = getImage(name);
+    //     return (
+    //         <img className="MenuItem_Image" src={image} alt={`${name} Image`} />
+    //     )
+    // }
     return (
         <div className="MenuItem">
             <button className="MenuItem_Button" onClick={() => props.handleOpenItem(props.itemId)}>
@@ -81,7 +81,7 @@ const MenuItem = (props) => {
                     <div className="MenuItem_Card_Price">{`$${props.price.toFixed(2)}`}</div>
                 </div>
                 <div className="MenuItem_Image_Wrapper">
-                    <ItemImage name={props.name} />
+                    <ItemImage itemName={props.name} />
                 </div>
             </button>
         </div>

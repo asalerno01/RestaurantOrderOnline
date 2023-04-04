@@ -1,4 +1,5 @@
 ﻿using SalernoServer.Models.ItemModels;
+using System.Text.Json.Serialization;
 
 namespace Server.Models.ItemModels
 {

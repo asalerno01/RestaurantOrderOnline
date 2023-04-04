@@ -37,8 +37,16 @@ const OrderItemNoOptions = ({ itemName, noOptions, optionsSelected, setOptionsSe
             <ul className={ModifierStyles.options}>
             {
                 noOptions.map(noOption => (
-                    <li className={ModifierStyles.option} key={noOption.noOptionId}>
-                        <button className={ModifierStyles.button} onClick={() => handleNoOptionClick({ noOptionId: noOption.noOptionId, name: noOption.name, discountPrice: noOption.discountPrice })}>
+                    <li key={noOption.noOptionId}
+                        className={ModifierStyles.option}
+                        onClick={() => handleNoOptionClick(
+                            { 
+                                noOptionId: noOption.noOptionId,
+                                name: noOption.name,
+                                discountPrice: noOption.discountPrice
+                            })}
+                    >
+                        <button className={ModifierStyles.button}>
                             <CheckBox noOptionId={noOption.noOptionId} />
                             <span className={ModifierStyles.label}>{noOption.name}</span>
                             <span className={ModifierStyles.label__price}>{formatPrice(noOption.discountPrice)}</span>

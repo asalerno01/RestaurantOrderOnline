@@ -12,7 +12,22 @@ import ItemImage from '../../components/ItemImage';
 import OrderItemStyles from './css/OrderItem.module.css';
 
 const OrderItem = ({ itemI, setOrder, setOrderItem, order, editItemIndex, setEditItemIndex }) => {
-    let item = itemI;
+    console.log(itemI)
+    let item;
+    if (itemI === undefined) {
+        item = {
+            "itemId": 0,
+            "name": "",
+            "price": 0,
+            "modifier": {
+                "addons": [],
+                "noOptions": [],
+                "groups": []
+            }
+        }
+    } else {
+        item = itemI;
+    }
     const [optionsSelected, setOptionsSelected] = useState({ groups: [], addons: [], noOptions: [] });
 
     useEffect(() => {
@@ -69,6 +84,7 @@ const OrderItem = ({ itemI, setOrder, setOrderItem, order, editItemIndex, setEdi
     }
     const handleEditItemClick = event => {
         event.preventDefault();
+        console.log("editing item")
         const orderItem = {
             "itemId": item.itemId,
             "name": item.name,
@@ -101,16 +117,17 @@ const OrderItem = ({ itemI, setOrder, setOrderItem, order, editItemIndex, setEdi
     const handleClose = event => {
         event.preventDefault();
         setOrderItem({});
+        setEditItemIndex(null);
         setOptionsSelected({ groups: [], addons: [], noOptions: [] });
     }
     const getButton = () => {
-        if (editItemIndex !== undefined)
-            <button className={OrderItemStyles.add_button} onClick={handleEditItemClick}>Update item - ${getPrice()}</button>
+        if (editItemIndex !== null)
+            return <button className={OrderItemStyles.add_button} onClick={handleEditItemClick}>Update item - ${getPrice()}</button>
         return <button className={OrderItemStyles.add_button} onClick={handleAddToCartClick}>Add to cart - ${getPrice()}</button>
     }
     console.log(item)
     console.log(item == {});
-    if (isEmpty(item)) {
+    if (isEmpty(item) && item !== undefined) {
         return <></>
     } else return (
         <div className={OrderItemStyles.backdrop} onClick={handleClose}>
@@ -143,7 +160,7 @@ const OrderItem = ({ itemI, setOrder, setOrderItem, order, editItemIndex, setEdi
                     />
                 </div>
                 <div className={OrderItemStyles.footer}>
-                    <button className={OrderItemStyles.add_button} onClick={handleAddToCartClick}>Add to cart - ${getPrice()}</button>
+                    {getButton()}
                 </div>
             </div>
         </div>

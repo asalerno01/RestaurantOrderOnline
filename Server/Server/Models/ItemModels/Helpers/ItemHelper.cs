@@ -8,7 +8,7 @@ namespace Server.Models.ItemModels.Helpers
         public string Name { get; set; }
         public string Description { get; set; }
         public string Department { get; set; }
-        public long CategoryId { get; set; }
+        public string CategoryName { get; set; }
         public string UPC { get; set; }
         public string SKU { get; set; }
         public decimal Price { get; set; }

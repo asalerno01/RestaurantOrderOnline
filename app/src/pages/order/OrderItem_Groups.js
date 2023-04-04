@@ -46,17 +46,19 @@ const OrderItemGroups = ({ groups, optionsSelected, setOptionsSelected }) => {
                     <ul className={ModifierStyles.options}>
                     {
                         group.groupOptions.map(groupOption => (
-                            <li key={`groupId-${group.groupId}-groupOptionId${groupOption.groupOptionId}`} className={ModifierStyles.option}>
-                                <button className={ModifierStyles.button}
-                                    onClick={() => handleGroupClick(
-                                        { 
-                                            groupId: group.groupId,
-                                            groupName: group.name,
-                                            groupOptionId: groupOption.groupOptionId,
-                                            groupOptionName: groupOption.name,
-                                            price: groupOption.price
-                                        }
-                                    )}>
+                            <li key={`groupId-${group.groupId}-groupOptionId${groupOption.groupOptionId}`}
+                                className={ModifierStyles.option}
+                                onClick={() => handleGroupClick(
+                                    { 
+                                        groupId: group.groupId,
+                                        groupName: group.name,
+                                        groupOptionId: groupOption.groupOptionId,
+                                        groupOptionName: groupOption.name,
+                                        price: groupOption.price
+                                    }
+                                )}
+                            >
+                                <button className={ModifierStyles.button}>
                                         <span className={ModifierStyles.radio_icon}>
                                             <CheckBox groupId={group.groupId} groupOptionId={groupOption.groupOptionId} />
                                         </span>
