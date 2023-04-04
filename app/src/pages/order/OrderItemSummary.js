@@ -73,7 +73,11 @@ const OrderItemSummary = ({ order, handleItemClick, handleRemoveItemClick, type 
                             </div>
                             <div className={OrderItemSummaryStyles.item_details}>
                                 <h3 className={OrderItemSummaryStyles.item_header}>{orderItem.name}</h3>
-                                <OrderDetailsModifiers groups={orderItem.modifier.groups} addons={orderItem.modifier.addons} noOptions={orderItem.modifier.noOptions} />
+                                <OrderDetailsModifiers 
+                                    groups={orderItem.modifier.groups} 
+                                    addons={orderItem.modifier.addons} 
+                                    noOptions={orderItem.modifier.noOptions} 
+                                />
                                 <span className={OrderItemSummaryStyles.item_price}>{`$${orderItem.price}`}</span>
                             </div>
                             <div className={OrderItemSummaryStyles.delete_button_wrapper} onClick={e => e.stopPropagation()}>

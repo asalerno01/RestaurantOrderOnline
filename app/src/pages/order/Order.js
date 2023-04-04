@@ -34,6 +34,7 @@ const Order = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     const getItems = async () => {
+        console.log("Executing getItems()");
         await axios.get("https://localhost:7074/api/Category")
         .then(res => {
             console.log(res);
@@ -55,6 +56,7 @@ const Order = () => {
     }
 
     useEffect(() => {
+        console.log("Order component, calling getItems()")
         getItems();
     }, []);
 
@@ -158,10 +160,17 @@ const Order = () => {
             return "";
     }
 
-    console.log(order)
+    console.log("Order page renders")
     return (
         <div className="order">
-            <OrderItem itemI={orderItem} setOrder={setOrder} setOrderItem={setOrderItem} order={order} editItemIndex={editItemIndex} setEditItemIndex={setEditItemIndex} />
+            <OrderItem 
+                itemI={orderItem} 
+                setOrder={setOrder} 
+                setOrderItem={setOrderItem} 
+                order={order} 
+                editItemIndex={editItemIndex} 
+                setEditItemIndex={setEditItemIndex} 
+            />
             { (response === "Success!") ? <h3 style={{color: "green"}}>{response}</h3> : (response !== null) ? <h3 style={{color: "red"}}>{response}</h3> : <></> }
                 <div className="order_header">
                     <div className="order_header_banner_wrapper">

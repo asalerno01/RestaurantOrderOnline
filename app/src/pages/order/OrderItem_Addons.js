@@ -37,7 +37,10 @@ const OrderItemAddons = ({ itemName, addons, optionsSelected, setOptionsSelected
             <ul className={ModifierStyles.options}>
             {
                 addons.map(addon => (
-                    <li className={ModifierStyles.option} key={addon.addonId} onClick={() => handleAddonClick({ addonId: addon.addonId, name: addon.name, price: addon.price })}>
+                    <li className={ModifierStyles.option} 
+                        key={addon.addonId} 
+                        onClick={() => handleAddonClick({ addonId: addon.addonId, name: addon.name, price: addon.price })}
+                    >
                         <button className={ModifierStyles.button}>
                             <CheckBox addonId={addon.addonId} />
                             <span className={ModifierStyles.label}>{addon.name}</span>

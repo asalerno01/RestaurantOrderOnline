@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './css/navbar.css';
 
 const InnerNavBar = ({ innerNavType }) => {
-    console.log(innerNavType);
     const location = useLocation();
     const navigate = useNavigate();
     

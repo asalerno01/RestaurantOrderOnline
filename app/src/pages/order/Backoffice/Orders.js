@@ -23,9 +23,7 @@ const Orders = () => {
         console.log(dateArr);
     }
     const currDate = new Date();
-    console.log(currDate);
     const [filterDate, setFilterDate] = useState(getLastSevenDays());
-    console.log(filterDate);
 
     const getOrders = async () => {
         await axios.get("https://localhost:7074/api/orders")
@@ -43,7 +41,6 @@ const Orders = () => {
 
     const openOrder = (id) => {
         const order = orders.find(order => order["orderId"] === id);
-        console.log(order);
         setOpenItem(order);
     }
 
@@ -118,11 +115,8 @@ const Orders = () => {
 
     function checkDate(date) {
         const min_time = new Date(filterDate[0].Year, filterDate[0].Month - 1, filterDate[0].Day).getTime();
-        console.log("min=>" + min_time);
         const max_time = new Date(filterDate[1].Year, filterDate[1].Month - 1, filterDate[1].Day).getTime();
-        console.log("max=>" + max_time);
         const checked_time = new Date(date).getTime();
-        console.log(checked_time);
         return checked_time < max_time && checked_time > min_time;
     }
 

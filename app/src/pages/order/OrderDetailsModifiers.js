@@ -16,7 +16,10 @@ const OrderDetailsModifiers = ({ groups, addons, noOptions }) => {
     const Groups = () => {
         if (groups.length === 0) return <></>
         return groups.map(group => (
-            <span key={`group-${group.groupId}-groupOption-${group.groupOptionId}`} className={OrderDetailsModifiersStyles.modifier}>{group.groupOptionName}</span>
+            <span 
+                key={`group-${group.groupId}-groupOption-${group.groupOptionId}`} 
+                className={OrderDetailsModifiersStyles.modifier}
+            >{group.groupOptionName}</span>
         ));
     }
     const Addons = () => {

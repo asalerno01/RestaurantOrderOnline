@@ -66,12 +66,6 @@ const MenuItem = (props) => {
                 return PlaceholderImage;
         }
     }
-    // const ItemImage = ({ name }) => {
-    //     const image = getImage(name);
-    //     return (
-    //         <img className="MenuItem_Image" src={image} alt={`${name} Image`} />
-    //     )
-    // }
     return (
         <div className="MenuItem">
             <button className="MenuItem_Button" onClick={() => props.handleOpenItem(props.itemId)}>
