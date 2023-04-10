@@ -15,5 +15,7 @@ namespace Server.Models.Authentication
         public string RefreshToken { get; set; } = "";
         [JsonIgnore]
         public List<Order> Orders { get; set; }
+        [JsonIgnore]
+        public List<Review> Reviews { get; set; }
     }
 }

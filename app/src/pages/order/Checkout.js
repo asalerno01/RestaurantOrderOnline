@@ -103,11 +103,27 @@ const Checkout = () => {
         navigate("/salerno/order");
     }
 
-    const handleSubmitOrderClick = event => {
+    const handleSubmitOrderClick = async event => {
         event.preventDefault();
         if (canSubmitOrder()) {
-            localStorage.removeItem("order");
-            navigate("/salerno/order");
+            // localStorage.removeItem("order");
+            order.customerAccountId = 1;
+            order.tax = 0;
+            order.total = 0;
+            order.tax = 0;
+            await axios({
+                method: "POST",
+                url: "https://localhost:7074/api/orders",
+                data: order,
+                withCredentials: true
+            })
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+            // navigate("/salerno/order");
         } else {
             if (firstName.length === 0) {
                 firstNameRef.current.style.borderColor = "rgb(255, 0, 0)";

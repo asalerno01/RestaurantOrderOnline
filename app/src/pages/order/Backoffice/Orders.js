@@ -117,7 +117,9 @@ const Orders = () => {
         const min_time = new Date(filterDate[0].Year, filterDate[0].Month - 1, filterDate[0].Day).getTime();
         const max_time = new Date(filterDate[1].Year, filterDate[1].Month - 1, filterDate[1].Day).getTime();
         const checked_time = new Date(date).getTime();
-        return checked_time < max_time && checked_time > min_time;
+        console.log(max_time && checked_time > min_time)
+        // return checked_time < max_time && checked_time > min_time;
+        return true;
     }
 
     const OrderItem = () => {

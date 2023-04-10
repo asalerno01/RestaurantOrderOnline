@@ -11,7 +11,7 @@ import OrderItemGroups from './OrderItem_Groups';
 import ItemImage from '../../components/ItemImage';
 import OrderItemStyles from './css/OrderItem.module.css';
 
-const OrderItem = ({ itemI, setOrder, setOrderItem, order, editItemIndex, setEditItemIndex }) => {
+const OrderItem = ({ itemI, setOrder, setOrderItem, order, editItemIndex, setEditItemIndex, openDetails }) => {
     console.log(itemI)
     let item;
     if (itemI === undefined) {
@@ -80,11 +80,11 @@ const OrderItem = ({ itemI, setOrder, setOrderItem, order, editItemIndex, setEdi
         setOrderItem({});
         setEditItemIndex(null);
         setOptionsSelected({ groups: [], addons: [], noOptions: [] });
+        openDetails(true);
         console.log(orderItem)
     }
     const handleEditItemClick = event => {
         event.preventDefault();
-        console.log("editing item")
         const orderItem = {
             "itemId": item.itemId,
             "name": item.name,
@@ -125,8 +125,6 @@ const OrderItem = ({ itemI, setOrder, setOrderItem, order, editItemIndex, setEdi
             return <button className={OrderItemStyles.add_button} onClick={handleEditItemClick}>Update item - ${getPrice()}</button>
         return <button className={OrderItemStyles.add_button} onClick={handleAddToCartClick}>Add to cart - ${getPrice()}</button>
     }
-    console.log(item)
-    console.log(item == {});
     if (isEmpty(item) && item !== undefined) {
         return <></>
     } else return (
