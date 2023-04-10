@@ -1,6 +1,9 @@
 import React from 'react';
 import './orderdetails.css';
 import OrderItemSummaryStyles from './css/OrderItemSummary.module.css';
+import { SlPencil } from 'react-icons/sl';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import { FiMinus, FiPlus } from 'react-icons/fi';
 
 import CheeseDogImage from "../../imgs/items/cheesedog (Small).jpeg";
 import ChicagoPolishImage from "../../imgs/items/chicagopolish (Small).jpeg";
@@ -80,8 +83,22 @@ const OrderItemSummary = ({ order, handleItemClick, handleRemoveItemClick, type 
                                 />
                                 <span className={OrderItemSummaryStyles.item_price}>{`$${orderItem.price}`}</span>
                             </div>
-                            <div className={OrderItemSummaryStyles.delete_button_wrapper} onClick={e => e.stopPropagation()}>
-                                <span className={OrderItemSummaryStyles.delete_button} onClick={() => handleRemoveItemClick(index)}>Remove</span>
+                            <div className={OrderItemSummaryStyles.item_buttons} onClick={e => e.stopPropagation()}>
+                                <div className={OrderItemSummaryStyles.update_count_wrapper}>
+                                    <button type="button" className={OrderItemSummaryStyles.count_button} style={{borderRadius: "25px 0 0 25px"}}><FiPlus size={"20px"} style={{borderRadius: "25% 0 0 25%"}}/></button>
+                                    <span className={OrderItemSummaryStyles.count_label}>2x</span>
+                                    <button type="button" className={OrderItemSummaryStyles.count_button}style={{borderRadius: "0 25px 25px 0"}}><FiMinus size={"20px"}/></button>
+                                </div>
+                                <div className={OrderItemSummaryStyles.item_controls}>
+                                    <button className={OrderItemSummaryStyles.delete_icon}>
+                                        <RiDeleteBin6Line size='24px' style={{minWidth: "24px"}}/>
+                                        <span className={OrderItemSummaryStyles.delete_label}>Delete</span>
+                                    </button>
+                                    <button className={OrderItemSummaryStyles.edit_icon} onClick={() => handleItemClick(orderItem.itemId, index)}>
+                                        <SlPencil size='20px' style={{minWidth: "20px"}}/>
+                                        <span className={OrderItemSummaryStyles.edit_label}>Edit</span>
+                                    </button>
+                                </div>
                             </div>
                         </button>
                     </div>

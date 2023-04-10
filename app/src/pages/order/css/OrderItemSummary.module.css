@@ -22,7 +22,7 @@
 }
 .item_image_wrapper {
     height: 68px;
-    width: 68px;
+    min-width: 68px;
     overflow: hidden;
     border-radius: 4px;
     -webkit-border-radius: 4px;
@@ -38,10 +38,11 @@
     color: rgb(25, 25, 25);
 }
 .item_price {
-    margin-top: auto;
     display: block;
     font-family: "Lato", sans-serif;
     font-size: 15px;
+    font-weight: 700;
+    color: rgb(71, 71, 71);
 }
 .item_image {
     height: 80px;
@@ -71,6 +72,14 @@
     height: 1px;
     background-color: rgb(213, 215, 219);
 }
+.item_buttons {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-direction: column;
+    min-width: 80px;
+    max-width: 80px;
+}
 .delete_button {
     text-decoration: underline;
     color: red;
@@ -80,4 +89,110 @@
     background-color: transparent;
     cursor: pointer;
     margin-right: 15px;
+}
+.delete_icon {
+    border: none;
+    cursor: pointer;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: transparent;
+    width: 24px;
+    color: #f66;
+    padding: 2px 0;
+    transition: width 0.25s;
+    -webkit-transition: width 0.25s ease-in-out;
+    -moz-transition: width 0.25s;
+    -ms-transition: width 0.25s;
+    -o-transition: width 0.25s;
+    margin-right: 5px;
+}
+.delete_icon:hover {
+    width: 80px;
+}
+.edit_icon:hover {
+    width: 56px;
+    color: rgb(27, 40, 56);
+}
+.edit_icon {
+    position: relative;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: rgb(125, 134, 149);
+    background-color: transparent;
+    width: 20px;
+    color: rgb(125, 134, 149);
+    padding: 2px 0;
+    transition: width 0.25s;
+    -webkit-transition: width 0.25s ease-in-out;
+    -moz-transition: width 0.25s;
+    -ms-transition: width 0.25s;
+    -o-transition: width 0.25s;
+}
+
+.delete_label {
+    overflow: hidden;
+    font-family: "Lato", sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: #f66;
+    position: relative;
+    bottom: 1px;
+    margin-left: 4px;
+}
+.edit_label {
+    overflow: hidden;
+    font-family: "Lato", sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    position: relative;
+    bottom: 1px;
+    margin-left: 4px;
+}
+.delete_icon_wrapper {
+    text-align: right;
+}
+.count_button {
+    position: relative;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(25, 25, 25);
+    background-color: transparent;
+    padding: 4px;
+}
+.count_button:hover {
+    background-color: rgb(230, 230, 230);
+}
+.update_count_wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0px 0 24px 0 rgba(0, 0, 0, 0.2), 0 0px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 25px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    -ms-border-radius: 25px;
+    -o-border-radius: 25px;
+}
+.count_label {
+    flex-grow: 1;
+    font-family: "Lato", sans-serif;
+    font-weight: 700;
+    color: rgb(25, 25, 25);
+    font-size: 15px;
+}
+.item_controls {
+    display: flex;
+    flex-direction: row;
 }

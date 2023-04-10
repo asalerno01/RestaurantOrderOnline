@@ -11,46 +11,46 @@ namespace Server.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Category",
-                table: "Items");
+            //migrationBuilder.DropColumn(
+            //    name: "Category",
+            //    table: "Items");
 
-            migrationBuilder.AddColumn<long>(
-                name: "CategoryId",
-                table: "Items",
-                type: "bigint",
-                nullable: false,
-                defaultValue: 0L);
+            //migrationBuilder.AddColumn<long>(
+            //    name: "CategoryId",
+            //    table: "Items",
+            //    type: "bigint",
+            //    nullable: false,
+            //    defaultValue: 0L);
 
-            migrationBuilder.CreateTable(
-                name: "Categories",
-                columns: table => new
-                {
-                    CategoryId = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Categories", x => x.CategoryId);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+            //migrationBuilder.CreateTable(
+            //    name: "Categories",
+            //    columns: table => new
+            //    {
+            //        CategoryId = table.Column<long>(type: "bigint", nullable: false)
+            //            .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+            //        Name = table.Column<string>(type: "longtext", nullable: false)
+            //            .Annotation("MySql:CharSet", "utf8mb4"),
+            //        Description = table.Column<string>(type: "longtext", nullable: false)
+            //            .Annotation("MySql:CharSet", "utf8mb4")
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_Categories", x => x.CategoryId);
+            //    })
+            //    .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Items_CategoryId",
-                table: "Items",
-                column: "CategoryId");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_Items_CategoryId",
+            //    table: "Items",
+            //    column: "CategoryId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Items_Categories_CategoryId",
-                table: "Items",
-                column: "CategoryId",
-                principalTable: "Categories",
-                principalColumn: "CategoryId",
-                onDelete: ReferentialAction.Cascade);
+            //migrationBuilder.AddForeignKey(
+            //    name: "FK_Items_Categories_CategoryId",
+            //    table: "Items",
+            //    column: "CategoryId",
+            //    principalTable: "Categories",
+            //    principalColumn: "CategoryId",
+            //    onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />

@@ -2,10 +2,9 @@
 .order {
     display: flex;
     flex-direction: column;
-    position: relative;
     padding: 16px;
     background-color: rgb(255, 255, 255);
-    overflow-y: scroll;
+    overflow-y: overlay;
 }
 .order_content_container {
     display: flex;
@@ -17,10 +16,10 @@
     margin-top: 20px;
 }
 .order__itemlist {
-    flex: 1;
+    flex-grow: 1;
     border: 1px solid rgb(231, 231, 231);
     border-radius: 10px;
-    padding: 15px;
+    padding: 0 15px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
@@ -216,6 +215,7 @@ table {
     width: 100%;
     background-color: rgb(255, 255, 255);
     padding: 0 16px;
+    font-family: "Lato", sans-serif;
 }
 .order_header_banner_wrapper {
     overflow: hidden;
@@ -256,7 +256,6 @@ table {
 }
 .order_border {
     display: block;
-    width: 100%;
     margin: 8px 16px;
     border: none;
     height: 1px;
@@ -265,8 +264,10 @@ table {
 
 .category_header {
     text-align: left;
-    padding: 0 15px;
+    padding: 0 16px;
     margin: 0;
+    font-family: "Lato Heavy", sans-serif;
+    font-weight: 700;
 }
 .category_container {
     margin-bottom: 10px;

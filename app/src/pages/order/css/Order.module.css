@@ -1,0 +1,201 @@
+.order {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    background-color: rgb(255, 255, 255);
+    overflow-y: scroll;
+}
+.order > main {
+    display: flex;
+    flex-direction: row;
+    background-color: rgb(255, 255, 255);
+    width: 100%;
+    position: relative;
+    flex-grow: 1;
+    border-top: 1px solid rgb(213, 215, 219);
+}
+.categories_container {
+    flex-grow: 1;
+}
+.categories {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+}
+
+.border {
+    height: 1px;
+    background-color: rgb(213, 215, 219);
+    display: block;
+    flex-grow: 1;
+    margin: 16px;
+}
+.order_header {
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    padding: 0 16px;
+    font-family: "Lato", sans-serif;
+}
+.banner_wrapper {
+    overflow: hidden;
+    height: 360px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+}
+.header img {
+    object-fit: cover;
+    width: 100%;
+    height: 120%;
+    transform: translate3d(0, -15%, 0);
+    -webkit-transform: translate3d(0, -15%, 0);
+    -moz-transform: translate3d(0, -15%, 0);
+    -ms-transform: translate3d(0, -15%, 0);
+    -o-transform: translate3d(0, -15%, 0);
+}
+.header {
+    padding-bottom: 24px;
+}
+.header > h1 {
+    margin: 0;
+    color: rgb(25, 25, 25);
+    text-align: left;
+}
+.header > span {
+    margin-top: 4px;
+    display: block;
+    color: rgb(118, 118, 118);
+    font-size: 20px;
+    text-align: left;
+    font-family: "Lato", sans-serif;
+    font-weight: 500;
+}
+.order_border {
+    display: block;
+    margin: 8px 15px;
+    border: none;
+    height: 1px;
+    background: rgb(231, 231, 231);
+}
+
+.category > h1 {
+    text-align: left;
+    padding: 0 15px;
+    margin: 0;
+    font-family: "Lato Heavy", sans-serif;
+    font-weight: 700;
+}
+.category {
+    margin-bottom: 10px;
+    padding: 15px;
+}
+.Order_ItemList_Button {
+    padding: 5px;
+    font-size: 16px;
+}
+
+
+.nav {
+    border-right: 1px solid rgb(213, 215, 219);
+}
+.category_button {
+    margin: 5px 0;
+    font-size: 20px;
+    font-weight: 700;
+    height: 36px;
+    flex-grow: 1;
+    border: none;
+    background-color: rgb(255, 255, 255);
+    transition: font-size 0.1s ease-in-out;
+    -webkit-transition: font-size 0.1s ease-in-out;
+    -moz-transition: font-size 0.1s ease-in-out;
+    -ms-transition: font-size 0.1s ease-in-out;
+    -o-transition: font-size 0.1s ease-in-out;
+    cursor: pointer;
+    font-family: "Lato", sans-serif;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 15px;
+}
+.category_button__selected {
+    composes: category_button;
+    font-family: "Lato Black";
+    font-size: 22px;
+}
+.category_button__selected .button_border {
+    width: 100%;
+}
+.category_button:hover, .category_button__selected {
+    font-family: "Lato Black";
+    font-size: 22px;
+}
+.category {
+    min-width: 250px;
+}
+.button_content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    pointer-events: none;
+}
+.category_button:hover .button_border {
+    width: 100%;
+}
+.button_border {
+    overflow-x: hidden;
+    height: 6px;
+    width: 0;
+    display: block;
+    background-color: rgb(0, 187, 225);
+    border-radius: 3px 3px 0 0;
+    -webkit-border-radius: 3px 3px 0 0;
+    -moz-border-radius: 3px 3px 0 0;
+    -ms-border-radius: 3px 3px 0 0;
+    -o-border-radius: 3px 3px 0 0;
+    /*transition: width 0.2s ease-in-out;
+    -webkit-transition: width 0.2s ease-in-out;
+    -moz-transition: width 0.2s ease-in-out;
+    -ms-transition: width 0.2s ease-in-out;
+    -o-transition: width 0.2s ease-in-out;*/
+}
+.category_buttons {
+    display: flex;
+    border-bottom: 1px solid rgb(213, 215, 219);
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-top: 10px;
+    width: 250px;
+}
+.cart_button {
+    margin-top: 10px;
+    text-decoration: none;
+    background: rgb(0, 187, 225);
+    color: white;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    box-shadow: rgba(0, 145, 174) 0 2px 0 0;
+    cursor: pointer;
+    font-family: "Lato", sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 15px;
+}
+.cart_button > span {
+    margin-left: 10px;
+}
+.cart_button:hover {
+    background-color: rgb(0, 145, 174);
+    color: white;
+    font-size: 22px;
+}

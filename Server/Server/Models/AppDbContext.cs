@@ -6,6 +6,7 @@ using SalernoServer.Models.Authentication;
 using Server.Models.Authentication;
 using SalernoServer.Models;
 using Server.Models.ItemModels;
+using Server.Models;
 
 namespace SalernoServer.Models
 {
@@ -27,6 +28,7 @@ namespace SalernoServer.Models
         public DbSet<OrderItemNoOption> OrderItemNoOptions { get; set; }
         public DbSet<OrderItemGroup> OrderItemGroups { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

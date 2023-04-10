@@ -1,16 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import OrderItem from './OrderItem';
 import './order.css';
+import OrderStyles from './css/Order.module.css';
+
+import { findDOMNode } from 'react-dom';
+import OrderDetailsStyles from './css/OrderDetails.module.css';
 
 import MenuItem from '../../raquel/components/menu/MenuItem';
 import OrderDetailsModifiers from './OrderDetailsModifiers';
 import { IoMdClose } from 'react-icons/io';
 import OrderDetails from './OrderDetails';
 import Banner from '../../imgs/banner.webp';
+import { StickyContainer, Sticky } from 'react-sticky';
+import StickyBox from 'react-sticky-box';
+import { ImCart } from 'react-icons/im';
 
 const Order = () => {
     const customerAccountId = 1;
+
+    const scrollRef = useRef();
 
     const [items, setItems] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -21,6 +30,8 @@ const Order = () => {
         "total": 0,
         "orderItems": []
     });
+
+    const [detailsOpen, setDetailsOpen] = useState(false);
     useEffect(() => {
         const order = localStorage.getItem("order");
         if (order !== null && order.length > 0)
@@ -159,57 +170,101 @@ const Order = () => {
         }
             return "";
     }
+    function getScroll() {
+        console.log("hi")
+        for (let i = categories.length - 1; i > -1; i--) {
+            if ((document.getElementById(i).getBoundingClientRect().top - 106) < 0) {
+                console.log(i);
+                setCurrentScroll(i);
+                break;
+            }
+        }
+    }
+    const [currentScroll, setCurrentScroll] = useState(0);
+    const handleScrollClick = event => document.getElementById(event.target.value).scrollIntoView({ block: "start", behavior: "smooth" });
 
-    console.log("Order page renders")
+    function openDetails(type) {
+        if (type) {
+            setDetailsOpen(true);
+            detailsSliderRef.current.style.width = "1100px";
+        } else {
+            detailsSliderRef.current.style.width = "0";
+            setDetailsOpen(false);
+        }
+    }
+    const detailsSliderRef = useRef();
+
+    const CartButton = () => {
+        return (
+            <button type="button" className={OrderStyles.cart_button}><ImCart size={"25px"}/></button>
+        )
+    }
     return (
-        <div className="order">
+        <div className={OrderStyles.order} onScroll={() => getScroll()}>
+            <div className={OrderDetailsStyles.backdrop} style={(detailsOpen) ? {width: "100%"} : {width: "0"}} onClick={() => openDetails(false)}></div>
+            <div className={OrderDetailsStyles.slider} ref={detailsSliderRef}>
+                <div className={OrderDetailsStyles.container}>  
+                    <OrderDetails order={order} handleItemClick={handleItemClick} handleRemoveItemClick={handleRemoveItemClick} detailsOpen={detailsOpen} openDetails={openDetails}/>
+                </div>
+            </div>
             <OrderItem 
                 itemI={orderItem} 
                 setOrder={setOrder} 
                 setOrderItem={setOrderItem} 
                 order={order} 
                 editItemIndex={editItemIndex} 
-                setEditItemIndex={setEditItemIndex} 
+                setEditItemIndex={setEditItemIndex}
+                openDetails={openDetails}
             />
             { (response === "Success!") ? <h3 style={{color: "green"}}>{response}</h3> : (response !== null) ? <h3 style={{color: "red"}}>{response}</h3> : <></> }
-                <div className="order_header">
-                    <div className="order_header_banner_wrapper">
-                        <img src={Banner} className="order_header_banner_image" />
-                    </div>
-                    <div className="order_header_content_container">
-                        <h1 className="order_header_content_header">Salerno's Red Hots</h1>
-                        <span className="order_header_content_text">197 E Veterans Pkwy, Yorkville, IL 60560, USA</span>
-                        <span className="order_header_content_text">Open Hours: 11:00 AM - 8:00 PM</span>
-                    </div>
+            <div className={OrderStyles.header}>
+                <div className={OrderStyles.banner_wrapper}>
+                    <img src={Banner}/>
                 </div>
-                <hr className="order_border"/>
-                <div className="order_content_container">
-                    <div className="order__itemlist">
-                        {
-                            categories.map(category => (
-                                <div className="category_container">
-                                    <h1 className="category_header">{category.name}</h1>
-                                    <div className="order_border"></div>
-                                    <div className="itemlist__container">
-                                    {
-                                        category.items.map(item => (
-                                            <MenuItem
-                                                key={item.itemId}
-                                                itemId={item.itemId}
-                                                name={item.name}
-                                                price={item.price}
-                                                description={item.description}
-                                                handleOpenItem={handleOpenItem}
-                                            />
-                                        ))
-                                    }
-                                    </div>
-                                </div>
-                            ))
-                        }
-                        </div>
-                    <OrderDetails order={order} handleItemClick={handleItemClick} handleRemoveItemClick={handleRemoveItemClick} />
+                    <h1>Salerno's Red Hots</h1>
+                    <span>197 E Veterans Pkwy, Yorkville, IL 60560, USA</span>
+                    <span>Open Hours: 11:00 AM - 8:00 PM</span>
             </div>
+            <main>
+                <div className={OrderStyles.nav}>
+                    <StickyBox style={{zIndex: "1"}} offsetTop={-16}>
+                            <div className={OrderStyles.category_buttons}>
+                            {
+                                categories.map((category, index) => {
+                                    if (index === currentScroll)
+                                        return <button type="button" className={OrderStyles.category_button__selected} value={index} onClick={handleScrollClick}><span className={OrderStyles.button_content}>{category.name}<span className={OrderStyles.button_border}></span></span></button>
+                                    return <button type="button" className={OrderStyles.category_button} value={index} onClick={handleScrollClick}><span className={OrderStyles.button_content}>{category.name}<span className={OrderStyles.button_border}></span></span></button>
+                                })
+                            }
+                            </div>
+                        <button type="button" className={OrderStyles.cart_button} onClick={() => openDetails(true)}><ImCart size={"24px"}/><span>Cart</span></button>
+                    </StickyBox>
+                </div>
+                <div className={OrderStyles.categories_container}>
+                {
+                    categories.map((category, index) => (
+                        <div className={OrderStyles.category} id={index}>
+                                <h1 className={OrderStyles.category_header}>{category.name}</h1>
+                                <div className={OrderStyles.order_border}></div>
+                                <div className={OrderStyles.categories}>
+                                {
+                                    category.items.map(item => (
+                                        <MenuItem
+                                            key={item.itemId}
+                                            itemId={item.itemId}
+                                            name={item.name}
+                                            price={item.price}
+                                            description={item.description}
+                                            handleOpenItem={handleOpenItem}
+                                        />
+                                    ))
+                                }
+                                </div>
+                        </div>
+                    ))
+                }
+                </div>
+            </main>
         </div>
     );
 }

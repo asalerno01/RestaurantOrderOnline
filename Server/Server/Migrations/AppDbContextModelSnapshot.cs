@@ -443,6 +443,32 @@ namespace Server.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("Server.Models.Review", b =>
+                {
+                    b.Property<long>("ReviewId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("CustomerAccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.HasKey("ReviewId");
+
+                    b.HasIndex("CustomerAccountId");
+
+                    b.ToTable("Reviews");
+                });
+
             modelBuilder.Entity("SalernoServer.Models.Authentication.Account", b =>
                 {
                     b.HasOne("SalernoServer.Models.Authentication.Employee", "Employee")
@@ -615,6 +641,17 @@ namespace Server.Migrations
                     b.Navigation("OrderItem");
                 });
 
+            modelBuilder.Entity("Server.Models.Review", b =>
+                {
+                    b.HasOne("Server.Models.Authentication.CustomerAccount", "CustomerAccount")
+                        .WithMany("Reviews")
+                        .HasForeignKey("CustomerAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CustomerAccount");
+                });
+
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Group", b =>
                 {
                     b.Navigation("GroupOptions");
@@ -652,6 +689,8 @@ namespace Server.Migrations
             modelBuilder.Entity("Server.Models.Authentication.CustomerAccount", b =>
                 {
                     b.Navigation("Orders");
+
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("Server.Models.ItemModels.Category", b =>
