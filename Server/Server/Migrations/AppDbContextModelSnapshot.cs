@@ -288,7 +288,7 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    b.Property<long>("CustomerAccountId")
+                    b.Property<long?>("CustomerAccountId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("OrderDate")
@@ -322,6 +322,9 @@ namespace Server.Migrations
                     b.Property<long>("OrderItemId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
 
                     b.Property<string>("ItemId")
                         .IsRequired()
@@ -469,6 +472,25 @@ namespace Server.Migrations
                     b.ToTable("Reviews");
                 });
 
+            modelBuilder.Entity("Server.Models.SavedOrder", b =>
+                {
+                    b.Property<long>("CustomerAccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("OrderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("SavedOrderName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("CustomerAccountId", "OrderId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("SavedOrders");
+                });
+
             modelBuilder.Entity("SalernoServer.Models.Authentication.Account", b =>
                 {
                     b.HasOne("SalernoServer.Models.Authentication.Employee", "Employee")
@@ -550,9 +572,7 @@ namespace Server.Migrations
                 {
                     b.HasOne("Server.Models.Authentication.CustomerAccount", "CustomerAccount")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerAccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CustomerAccountId");
 
                     b.Navigation("CustomerAccount");
                 });
@@ -652,6 +672,25 @@ namespace Server.Migrations
                     b.Navigation("CustomerAccount");
                 });
 
+            modelBuilder.Entity("Server.Models.SavedOrder", b =>
+                {
+                    b.HasOne("Server.Models.Authentication.CustomerAccount", "CustomerAccount")
+                        .WithMany("SavedOrders")
+                        .HasForeignKey("CustomerAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SalernoServer.Models.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CustomerAccount");
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Group", b =>
                 {
                     b.Navigation("GroupOptions");
@@ -691,6 +730,8 @@ namespace Server.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("Reviews");
+
+                    b.Navigation("SavedOrders");
                 });
 
             modelBuilder.Entity("Server.Models.ItemModels.Category", b =>

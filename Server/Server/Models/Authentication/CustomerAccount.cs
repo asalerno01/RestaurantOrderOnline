@@ -17,5 +17,7 @@ namespace Server.Models.Authentication
         public List<Order> Orders { get; set; }
         [JsonIgnore]
         public List<Review> Reviews { get; set; }
+        [JsonIgnore]
+        public List<SavedOrder> SavedOrders { get; set; }
     }
 }

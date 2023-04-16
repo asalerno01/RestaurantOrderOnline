@@ -6,7 +6,7 @@ namespace Server.Models
     public class OrderDTO
     {
         public long OrderId { get; set; }
-        public OrderCustomerAccountDTO CustomerAccount { get; set; }
+        public OrderCustomerAccountDTO? CustomerAccount { get; set; }
         public decimal Subtotal { get; set; } = 0;
         public decimal SubtotalTax { get; set; } = 0;
         public decimal Total { get; set; } = 0;

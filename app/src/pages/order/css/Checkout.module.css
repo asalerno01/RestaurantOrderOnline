@@ -4,7 +4,7 @@
     justify-content: stretch;
     align-items: center;
 }
-.checkout {
+.checkout * {
     font-family: "Lato", sans-serif;
 }
 .container {
@@ -18,6 +18,11 @@
 }
 .wrapper {
     width: 50%;
+}
+@media screen and (max-width: 1200px) {
+    .wrapper {
+      width: 90%;
+    }
 }
 .list {
     list-style-type: none;
@@ -67,10 +72,10 @@
     transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
     border: 1px solid rgb(221, 223, 225);
     border-radius: 4px;
-    color: rgb(82, 94, 113);
+    color: rgb(25, 25, 25);
     box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px 0 inset;
-    font-weight: 200;
-    font-size: 14px;
+    font-weight: 700;
+    font-size: 16px;
     font-family: Lato, sans-serif;
     background-color: white;
     width: 100%;
@@ -80,6 +85,37 @@
     height: 39px;
 }
 .input_text:focus {
+    border-color: rgb(102, 175, 233);
+    box-shadow: 0 0 8px 0 rgb(102 175 233 / 60%);
+    outline: 0;
+}
+.save_name_input_wrapper {
+    overflow: hidden;
+    margin-top: 8px;
+    height: 0;
+    width: 100%;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s, width 0.15s, height 0.15s;
+    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s, width 0.15s, height 0.15s;
+    -moz-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s, width 0.15s, height 0.15s;
+    -ms-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s, width 0.15s, height 0.15s;
+    -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s, width 0.15s, height 0.15s;
+}
+.input_text__save {
+    border: 1px solid rgb(221, 223, 225);
+    border-radius: 4px;
+    color: rgb(25, 25, 25);
+    box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px 0 inset;
+    font-weight: 700;
+    font-size: 16px;
+    font-family: Lato, sans-serif;
+    background-color: white;
+    width: 100%;
+    font-size: 16px;
+    padding: 6px 12px;
+    outline: none;
+    height: 100%;
+}
+.input_text__save:focus {
     border-color: rgb(102, 175, 233);
     box-shadow: 0 0 8px 0 rgb(102 175 233 / 60%);
     outline: 0;
@@ -96,6 +132,7 @@
     margin-right: 8px;
     color: rgb(118, 118, 118);
     cursor: pointer;
+    pointer-events: none;
 }
 .gap {
     border-top: 1px solid rgb(213, 215, 219);
@@ -121,6 +158,9 @@
     align-items: center;
     height: 65px;
     cursor: pointer;
+}
+.payment_type_button * {
+    pointer-events: none;
 }
 .payment_type_button:hover {
     background-color: rgb(248, 248, 248);
@@ -270,4 +310,42 @@
 }
 .items {
     flex-grow: 1;
+}
+
+.save_container {
+    margin-left: 25%;
+}
+.save_button {
+    padding: 0;
+    border: none;
+    outline: none;
+    background-color: rgb(255, 255, 255);
+    font-size: 15px;
+    font-weight: 700;
+    font-family: "Lato", sans-serif;
+    height: 25px;
+    line-height: 25px;
+    display: block;
+    cursor: pointer;
+}
+.save_button > span {
+    pointer-events: none;
+    cursor: pointer;
+}
+.checkbox {
+    pointer-events: none;
+    vertical-align: middle;
+    position: relative;
+    top: -2px;
+    margin-right: 5px;
+    cursor: pointer;
+    color: rgb(118, 118, 118);
+}
+.save_description {
+    font-size: 14px;
+    color: rgb(134, 136, 139);
+    font-weight: 500;
+    padding-left: 23px;
+    position: relative;
+    top: -8px;
 }

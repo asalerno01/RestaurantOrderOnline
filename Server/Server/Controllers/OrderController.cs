@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -76,10 +79,69 @@ namespace SalernoServer.Controllers
 
             return Ok(OrderToOrderDTO(order));
         }
+        [HttpGet]
+        [Route("savedorders/{id}")]
+        public async Task<ActionResult<List<SavedOrderDTO>>> GetSavedOrders(long id)
+        {
+            Console.WriteLine("bearer=>" + Request.Headers.Authorization);
+            var customerAccount = await _context.CustomerAccounts.FindAsync(id);
+            if (customerAccount is null) return NotFound();
+            var savedOrders = await _context.SavedOrders
+                    .Include(so => so.Order)
+                    .ThenInclude(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Addons)
+                    .ThenInclude(oia => oia.Addon)
+                    .Include(so => so.Order)
+                    .ThenInclude(o => o.OrderItems)
+                    .ThenInclude(oi => oi.NoOptions)
+                    .ThenInclude(oino => oino.NoOption)
+                    .Include(so => so.Order)
+                    .ThenInclude(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Groups)
+                    .ThenInclude(oig => oig.Group)
+                    .Include(so => so.Order)
+                    .ThenInclude(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Groups)
+                    .ThenInclude(oig => oig.GroupOption)
+                    .Include(so => so.Order)
+                    .ThenInclude(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Item)
+                    .ToListAsync();
+            List<SavedOrderDTO> savedOrdersDTO = new();
+            foreach (var savedOrder in savedOrders)
+            {
+                savedOrdersDTO.Add(new()
+                {
+                    CustomerAccountId = savedOrder.CustomerAccount.CustomerAccountId,
+                    SavedOrderName = savedOrder.SavedOrderName,
+                    OrderDate = savedOrder.Order.OrderDate,
+                    OrderItems = OrderItemsToSavedOrderOrderItemsDTO(savedOrder.Order.OrderItems)
+                });
+            }
+            return Ok(savedOrdersDTO);
+        }
+        private static List<SavedOrderOrderItemDTO> OrderItemsToSavedOrderOrderItemsDTO(List<OrderItem> orderItems)
+        {
+            List<SavedOrderOrderItemDTO> savedOrderOrderItems = new();
+            foreach (var orderItem in orderItems)
+            {
+                savedOrderOrderItems.Add(new()
+                {
+                    ItemId = orderItem.Item.ItemId,
+                    ItemName = orderItem.Item.Name,
+                    Count = orderItem.Count,
+                    Addons = orderItem.Addons,
+                    NoOptions = orderItem.NoOptions,
+                    Groups = orderItem.Groups
+                });
+            }
+            return savedOrderOrderItems;
+        }
 
-        // PUT: api/Items/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+
+            // PUT: api/Items/5
+            // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+            [HttpPut("{id}")]
         public async Task<IActionResult> PutOrder([FromBody] OrderHelper order)
         {
             //if (id != Order.OrderId)
@@ -119,7 +181,7 @@ namespace SalernoServer.Controllers
                 Total = order.Total
             };
             var customerAccount = await _context.CustomerAccounts.FindAsync(order.CustomerAccountId);
-            if (customerAccount is null) return BadRequest($"No customer account exists for ID => {order.CustomerAccountId}");
+            if (customerAccount is null) Console.WriteLine("Creating order for null customer account.");
             newOrder.CustomerAccount = customerAccount;
             if (order.OrderItems.IsNullOrEmpty()) return BadRequest("Order must have at least 1 order item.");
             foreach (var orderItem in order.OrderItems)
@@ -174,6 +236,13 @@ namespace SalernoServer.Controllers
                 }
                 newOrder.OrderItems.Add(newOrderItem);
             }
+            if (order.SavedOrderName is not null && customerAccount is not null)
+                await _context.SavedOrders.AddAsync(new()
+                {
+                    SavedOrderName = order.SavedOrderName,
+                    CustomerAccount = customerAccount,
+                    Order = newOrder
+                });
             await _context.Orders.AddAsync(newOrder);
             await _context.SaveChangesAsync();
             Console.WriteLine($"Added Order => {newOrder.OrderId}");
@@ -202,6 +271,7 @@ namespace SalernoServer.Controllers
 
         private static OrderDTO OrderToOrderDTO(Order order)
         {
+            Console.WriteLine(JsonSerializer.Serialize(order));
             OrderDTO orderDTO = new()
             {
                 OrderId = order.OrderId,
@@ -227,6 +297,7 @@ namespace SalernoServer.Controllers
                     OrderId = item.OrderItemId,
                     ItemId = item.Item.ItemId,
                     ItemName = item.Item.Name,
+                    Count = item.Count,
                     Groups = item.Groups,
                     Addons = item.Addons,
                     NoOptions = item.NoOptions
@@ -248,6 +319,7 @@ namespace SalernoServer.Controllers
         }
         private static OrderCustomerAccountDTO CustomerAccountToOrderCustomerAccountDTO(CustomerAccount customerAccount)
         {
+            if (customerAccount is null) return null;
             return new OrderCustomerAccountDTO
             {
                 CustomerAccountId = customerAccount.CustomerAccountId,

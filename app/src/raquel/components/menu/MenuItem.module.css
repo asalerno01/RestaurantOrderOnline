@@ -1,69 +1,91 @@
-.item {
-    position: relative;
+.menuitem {
+    flex-basis: 50%;
+    flex-grow: 1;
+    max-width: 50%;
+    padding: 10px;
 }
-
-/* add a hover effect to the .item class */
-.item:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+.savedorder {
+    flex-basis: calc(100% / 3);
+    flex-grow: 1;
+    max-width: calc(100% / 2);
+    padding: 10px;
 }
-
-.MenuItem_Image_Wrapper {
-    float: right;
-    border-top-right-radius: 6px;
-    border-top-left-radius: 6px;
+.menuitem > button, .savedorder > button {
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    width: 100%;
+    outline: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
 }
-
-.MenuItem_Image {
-    height: 150px;
-    width: 150px;
-    object-fit: cover;
+.MenuItem_Card:hover {
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
 }
-
-.content {
+.details {
+    flex: 1 1;
     text-align: left;
     padding: 1rem;
-    height: 120px; /* set height same as image */
-}
-
-.content h3 {
-    font-size: 1rem;
-    color: #2c292b;
-    margin-bottom: 0.5rem;
-}
-
-.content span {
-    font-size: 0.875rem;
-    color: #6c757d;
-    margin-bottom: 0.5rem;
-}
-
-.desc {
-    font-size: 0.875rem;
-    color: #6c757d;
-    margin-bottom: 0;
-}
-
-.overlay{
-    position: absolute;
-    top: 0;
-    left: 27rem;
-    bottom: 0;
-    right: 0;
-    display: none;
-    justify-content: center;
-    align-items: center;
-
-}
-.item:hover .overlay{
+    max-height: 160px; /* set height same as image */
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
 }
-.overlay button{
-    background-color: rgba(255,255,255,0.7);
-    padding: 9px;
-    border-radius: 25px;
-    border: none;
-    cursor: pointer;
-
+.header {
+    font-size: 20px;
+    font-family: "Lato", sans-serif;
+    font-weight: 700;
+    color: rgb(51, 51, 51);
+    margin: 0 0 5px 0;
+    user-select: none;
+    text-transform: capitalize;
 }
-
+.description {
+    font-size: 18px;
+    font-weight: 700;
+    font-family: "Lato Light", sans-serif;
+    color: rgb(118, 118, 118);
+    user-select: none;
+    
+}
+.price {
+    font-size: 18px;
+    color: rgb(51, 51, 51);
+    user-select: none;
+    font-family: "Lato", sans-serif;
+    font-weight: 700;
+    margin-top: auto;
+}
+.image_wrapper {
+    height: 160px;
+    width: 160px;
+    overflow: hidden;
+    border-radius: 0 6px 6px 0;
+}
+.image_wrapper > img {
+    height: 200px;
+    width: 200px;
+    object-fit: cover;
+    image-rendering: optimizeSpeed;
+    transform: translate3d(-20px, -22px, 1px);
+    -webkit-transform: translate3d(-20px, -22px, 1px);
+    -moz-transform: translate3d(-20px, -22px, 1px);
+    -ms-transform: translate3d(-20px, -22px, 1px);
+    -o-transform: translate3d(-20px, -22px, 1px);
+}
+.image_fit_wrapper {
+    height: 160px;
+    width: 160px;
+    overflow: hidden;
+    border-radius: 0 6px 6px 0;
+}
+.image_fit_wrapper > img {
+    height: 100%;
+    object-fit: cover;
+}

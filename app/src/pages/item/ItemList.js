@@ -27,9 +27,14 @@ const ItemList = () => {
     const getItems = async () => {
         await axios.get('https://localhost:7074/api/items')
         .then(res => {
-            console.log(res.data);
-            setInitialItems(res.data);
-            setItems(res.data);
+            let items = res.data;
+            items.forEach(item => {
+                item.markup = (item['price'] / item['assignedCost']) * 100;
+                item.margin = (item['price'] - item['assignedCost']) / item['price'] * 100;
+            })
+            console.log(items)
+            setInitialItems(items);
+            setItems(items);
             setIsLoaded(true);
         })
         .catch(function (err) {
@@ -315,12 +320,12 @@ const ItemList = () => {
                                 <div key={item['itemId']} className='ItemList_Table_Content_Row'>
                                     <div className='ItemList_Table_Content_Body_Cell' style={showHideValue.includes('Price') ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
                                         <div className='ItemList_Table_Body_Data_Container'>
-                                            <span className='ItemList_ItemDetails'>{item['price'].toFixed(2 )}</span>
+                                            <span className='ItemList_ItemDetails'>{item['price'].toFixed(2)}</span>
                                         </div>
                                     </div>
                                     <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Cost')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
                                         <div className='ItemList_Table_Body_Data_Container'>
-                                            <span className='ItemList_ItemDetails'>{item['cost'].toFixed(2 )}</span>
+                                            <span className='ItemList_ItemDetails'>{item['cost'].toFixed(2)}</span>
                                         </div>
                                     </div>
                                     <div className='ItemList_Table_Content_Body_Cell_Item_Col' style={(showHideValue.includes('Item')) ? {display: 'block'} : {display: 'none'}}>
@@ -330,12 +335,12 @@ const ItemList = () => {
                                     </div>
                                     <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Margin')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
                                         <div className='ItemList_Table_Body_Data_Container'>
-                                            <span className='ItemList_ItemDetails'>{(((item['price'] - item['assignedCost']) / item['price'].toFixed(2)) * 100).toFixed(2)}%</span>
+                                            <span className='ItemList_ItemDetails'>{item.margin.toFixed(2)}%</span>
                                         </div>
                                     </div>
                                     <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Markup')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
                                         <div className='ItemList_Table_Body_Data_Container'>
-                                            <span className='ItemList_ItemDetails'>{((item['price'] / item['assignedCost']) * 100).toFixed(2)}%</span>
+                                            <span className='ItemList_ItemDetails'>{item.markup.toFixed(2)}%</span>
                                         </div>
                                     </div>
                                     <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Quantity')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
