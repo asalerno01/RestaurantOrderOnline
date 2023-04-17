@@ -265,15 +265,15 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    b.Property<decimal>("DiscountPrice")
-                        .HasColumnType("decimal(65,30)");
-
                     b.Property<long>("ModifierId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("NoOptionId");
 
@@ -333,11 +333,16 @@ namespace Server.Migrations
                     b.Property<long>("OrderId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("SavedOrderOrderItemId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("OrderItemId");
 
                     b.HasIndex("ItemId");
 
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("SavedOrderOrderItemId");
 
                     b.ToTable("OrderItems");
                 });
@@ -474,21 +479,41 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.Models.SavedOrder", b =>
                 {
+                    b.Property<long>("SavedOrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
                     b.Property<long>("CustomerAccountId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("OrderId")
-                        .HasColumnType("bigint");
+                    b.Property<DateTime>("LastOrderDate")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<string>("SavedOrderName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("CustomerAccountId", "OrderId");
+                    b.HasKey("SavedOrderId");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("CustomerAccountId");
 
                     b.ToTable("SavedOrders");
+                });
+
+            modelBuilder.Entity("Server.Models.SavedOrderOrderItem", b =>
+                {
+                    b.Property<long>("SavedOrderOrderItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("SavedOrderId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("SavedOrderOrderItemId");
+
+                    b.HasIndex("SavedOrderId");
+
+                    b.ToTable("SavedOrderOrderItems");
                 });
 
             modelBuilder.Entity("SalernoServer.Models.Authentication.Account", b =>
@@ -591,6 +616,10 @@ namespace Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Server.Models.SavedOrderOrderItem", null)
+                        .WithMany("OrderItems")
+                        .HasForeignKey("SavedOrderOrderItemId");
+
                     b.Navigation("Item");
 
                     b.Navigation("Order");
@@ -680,15 +709,18 @@ namespace Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SalernoServer.Models.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId")
+                    b.Navigation("CustomerAccount");
+                });
+
+            modelBuilder.Entity("Server.Models.SavedOrderOrderItem", b =>
+                {
+                    b.HasOne("Server.Models.SavedOrder", "SavedOrder")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("SavedOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CustomerAccount");
-
-                    b.Navigation("Order");
+                    b.Navigation("SavedOrder");
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Group", b =>
@@ -737,6 +769,16 @@ namespace Server.Migrations
             modelBuilder.Entity("Server.Models.ItemModels.Category", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Server.Models.SavedOrder", b =>
+                {
+                    b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("Server.Models.SavedOrderOrderItem", b =>
+                {
+                    b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618
         }

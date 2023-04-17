@@ -9,9 +9,11 @@ import Cart from './Cart';
 import Banner from '../../imgs/banner.webp';
 import StickyBox from 'react-sticky-box';
 import { ImCart } from 'react-icons/im';
-import { createEmptyOrder } from './functions/OrderFunctions';
+import { createEmptyOrder, isEmptyObject } from './functions/OrderFunctions';
 import SavedOrder from './SavedOrder';
 import useAuth from '../../hooks/useAuth';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import { useLocation } from 'react-router-dom';
 
 const Order = () => {
     const customerAccountId = 1;
@@ -19,9 +21,7 @@ const Order = () => {
 
     const [items, setItems] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [cats, setCats] = useState([]);
     const [order, setOrder] = useState(createEmptyOrder());
-    const [savedOrders, setSavedOrders] = useState([]);
 
     const [selectedItemData, setSelectedItemData] = useState({ item: null, index: null });
 
@@ -35,7 +35,6 @@ const Order = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     const getItems = async () => {
-        console.log("Executing getItems()");
         await axios.get("https://localhost:7074/api/category")
         .then(res => {
             console.log(res);
@@ -47,15 +46,14 @@ const Order = () => {
                 });
             });
             setItems(items);
-            setCats(categories);
+            setCategories(categories);
+            return categories;
         })
         .catch(err => {
             console.log(err);
         });
     }
-    const getSavedOrders = async () => {
-        console.log("Executing getSavedOrders()");
-        console.log(categories);
+    const getSavedOrders = async (categories) => {
         await axios({
             method: "GET",
             url: `https://localhost:7074/api/orders/savedorders/${customerAccountId}`,
@@ -65,28 +63,26 @@ const Order = () => {
             }
         })
         .then(res => {
-            console.log(res.data);
+            console.log(res);
             if (res.data.length > 0) {
-                let data = res.data;
-                data.forEach(savedOrder => {
+                res.data.forEach(savedOrder => {
                     savedOrder.type = "SavedOrder";
                 });
-                setCategories([{ categoryId: 0, name: "Saved Orders", description: "", items: data }, ...cats]);
-                setIsLoading(false);
+                setCategories([{ categoryId: 0, name: "Saved Orders", description: "", items: [...res.data] }, ...categories]);
             }
         })
         .catch(err => {
             console.log(err);
-            setCategories(cats);
         });
     }
     useEffect(() => {
         getItems();
     }, []);
     useEffect(() => {
-        console.log(categories);
-        getSavedOrders();
-    }, [cats])
+        const tempCategories = getItems();
+        if (!isEmptyObject(auth)) getSavedOrders(tempCategories);
+        setIsLoading(false);
+    }, [auth])
 
     const handleEditItemClick = (itemId, index) => setSelectedItemData({ item: items.find(item => item.itemId === itemId), index: index });
     const handleOpenItem = (itemId) => setSelectedItemData({ item: items.find(i => i["itemId"] === itemId), index: null });
@@ -120,6 +116,50 @@ const Order = () => {
         }
     }
     const cartSliderRef = useRef();
+
+    const Items = () => {
+        if (isLoading) return <LoadingSpinner />
+        return (
+            <div className={OrderStyles.categories}>
+            {
+                categories.map((category, index) => (
+                    <div className={OrderStyles.category} id={index} key={`${category.name}-${category.categoryId}`}>
+                        <StickyBox style={{zIndex: "1", backgroundColor: "rgb(255, 255, 255)"}} offsetTop={-16}>
+                            <h1 className={OrderStyles.category_header}>{category.name}</h1>
+                            <div className={OrderStyles.border}></div>
+                        </StickyBox>
+                        <div className={OrderStyles.items}>
+                        {
+                            category.items.map(item => {
+                                if (item?.type === "SavedOrder")
+                                    return (
+                                        <SavedOrder
+                                            savedOrder={item}
+                                            order={order}
+                                            setOrder={setOrder}
+                                            key={item.itemId}
+                                        />
+                                    )
+                                else
+                                    return (
+                                        <MenuItem
+                                            key={item.itemId}
+                                            itemId={item.itemId}
+                                            name={item.name}
+                                            price={item.price}
+                                            description={item.description}
+                                            handleOpenItem={handleOpenItem}
+                                        />
+                                    )
+                            })
+                        }
+                        </div>
+                    </div>
+                ))
+            }
+            </div>
+        )
+    }
 
     return (
         <div className={OrderStyles.order} onScroll={() => getScroll()}>
@@ -166,50 +206,14 @@ const Order = () => {
                         {
                             categories.map((category, index) => {
                                 if (index === currentScroll)
-                                    return <button type="button" className={OrderStyles.category_button__selected} value={index} onClick={handleScrollClick}><span className={OrderStyles.button_content}>{category.name}<span className={OrderStyles.button_border}></span></span></button>
-                                return <button type="button" className={OrderStyles.category_button} value={index} onClick={handleScrollClick}><span className={OrderStyles.button_content}>{category.name}<span className={OrderStyles.button_border}></span></span></button>
+                                    return <button type="button" key={`scroll-index-${index}`} className={OrderStyles.category_button__selected} value={index} onClick={handleScrollClick}><span className={OrderStyles.button_content}>{category.name}<span className={OrderStyles.button_border}></span></span></button>
+                                return <button type="button" key={`scroll-index-${index}`} className={OrderStyles.category_button} value={index} onClick={handleScrollClick}><span className={OrderStyles.button_content}>{category.name}<span className={OrderStyles.button_border}></span></span></button>
                             })
                         }
                         </div>
                     </StickyBox>
                 </div>
-                <div className={OrderStyles.categories}>
-                {
-                    categories.map((category, index) => (
-                        <div className={OrderStyles.category} id={index}>
-                            <StickyBox style={{zIndex: "1", backgroundColor: "rgb(255, 255, 255)"}} offsetTop={-16}>
-                                <h1 className={OrderStyles.category_header}>{category.name}</h1>
-                                <div className={OrderStyles.border}></div>
-                            </StickyBox>
-                            <div className={OrderStyles.items}>
-                            {
-                                category.items.map(item => {
-                                    if (item?.type === "SavedOrder")
-                                        return (
-                                            <SavedOrder
-                                                savedOrder={item}
-                                                order={order}
-                                                setOrder={setOrder}
-                                            />
-                                        )
-                                    else
-                                        return (
-                                            <MenuItem
-                                                key={item.itemId}
-                                                itemId={item.itemId}
-                                                name={item.name}
-                                                price={item.price}
-                                                description={item.description}
-                                                handleOpenItem={handleOpenItem}
-                                            />
-                                        )
-                                })
-                            }
-                            </div>
-                        </div>
-                    ))
-                }
-                </div>
+                <Items />
             </main>
         </div>
     );

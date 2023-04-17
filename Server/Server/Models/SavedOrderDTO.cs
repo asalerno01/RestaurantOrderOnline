@@ -7,6 +7,6 @@ namespace Server.Models
         public string SavedOrderName { get; set; }
         public long CustomerAccountId { get; set; }
         public DateTime OrderDate { get; set; }
-        public List<SavedOrderOrderItemDTO> OrderItems { get; set; }
+        public List<OrderItem> OrderItems { get; set; }
     }
 }

@@ -24,6 +24,7 @@ const OrderItemSummary = ({ order, setOrder, handleEditItemClick, handleRemoveIt
         setOrder(temp);
         localStorage.setItem("order", JSON.stringify(temp));
     }
+    console.log(order)
     return (
         <>
         {
@@ -41,7 +42,7 @@ const OrderItemSummary = ({ order, setOrder, handleEditItemClick, handleRemoveIt
                             </div>
                             <div className={OrderItemSummaryStyles.buttons} onClick={e => e.stopPropagation()}>
                                 <div className={OrderItemSummaryStyles.count_wrapper}>
-                                    <button type="button" className={OrderItemSummaryStyles.count_button} style={{borderRadius: "25px 0 0 25px"}}><FiPlus size={"20px"} style={{borderRadius: "25% 0 0 25%"}} onClick={() => handleCountClick("increment", index)}/></button>
+                                    <button type="button" className={OrderItemSummaryStyles.count_button} style={{borderRadius: "25px 0 0 25px"}} onClick={() => handleCountClick("increment", index)}><FiPlus size={"20px"} style={{borderRadius: "25% 0 0 25%"}}/></button>
                                     <span className={OrderItemSummaryStyles.count_label}>{`${orderItem.count}x`}</span>
                                     <button type="button" className={OrderItemSummaryStyles.count_button}style={{borderRadius: "0 25px 25px 0"}} onClick={() => handleCountClick("decrement", index)}><FiMinus size={"20px"}/></button>
                                 </div>

@@ -11,6 +11,7 @@
     padding: 10px;
 }
 .menuitem > button, .savedorder > button {
+    height: 100%;
     background-color: white;
     border-radius: 6px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -47,10 +48,10 @@
     text-transform: capitalize;
 }
 .description {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 700;
     font-family: "Lato Light", sans-serif;
-    color: rgb(118, 118, 118);
+    color: rgb(71, 71, 71);
     user-select: none;
     
 }

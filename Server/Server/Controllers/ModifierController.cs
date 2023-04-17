@@ -92,7 +92,7 @@ namespace SalernoServer.Controllers
                 {
                     NoOptionId = noOption.NoOptionId,
                     Name = noOption.Name,
-                    DiscountPrice = noOption.DiscountPrice,
+                    Price = noOption.DiscountPrice,
                     Modifier = updatedModifier
                 };
                 updatedModifier.NoOptions.Add(updatedNoOption);
@@ -174,7 +174,7 @@ namespace SalernoServer.Controllers
                 var newNoOption = new NoOption
                 {
                     Name = noOption.Name,
-                    DiscountPrice = noOption.DiscountPrice,
+                    Price = noOption.DiscountPrice,
                     Modifier = newModifier
                 };
                 if (noOption.NoOptionId != 0)

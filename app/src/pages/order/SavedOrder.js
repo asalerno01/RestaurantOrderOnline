@@ -1,17 +1,15 @@
 import React from 'react';
-import MenuItemStyles from './../../raquel/components/menu/MenuItem.module.css';
+import SavedOrderStyles from './css/SavedOrder.module.css';
 
-const SavedOrder = ({ savedOrder, order, setOrder }) => {
-    console.log(savedOrder);
+const SavedOrder = (props) => {
     const handleSelectOrderClick = event => {
-        let temp = Object.assign({}, order);
-        temp.orderItems = savedOrder.orderItems;
-        setOrder(temp);
+        let temp = Object.assign({}, props.order);
+        temp.orderItems = props.savedOrder.orderItems;
+        props.setOrder(temp);
     }
     const OrderItems = ({ orderItems }) => {
-        console.log(orderItems)
         let orderItemString = "";
-        orderItems.forEach(orderItem => {
+        props.orderItems.forEach(orderItem => {
             if (orderItemString.length > 0) orderItemString += " \u2022 ";
             orderItemString += orderItem.itemName;
         });
@@ -19,17 +17,17 @@ const SavedOrder = ({ savedOrder, order, setOrder }) => {
             orderItemString = orderItemString.slice(0, orderItemString.length - 1);
         if (orderItemString.length === 0) return <></>
         return (
-            <span className={MenuItemStyles.modifiers}>
+            <span className={SavedOrderStyles.description}>
                 {orderItemString}
             </span>
         )
     }
     return (
-        <div className={MenuItemStyles.menuitem}>
+        <div className={SavedOrderStyles.savedorder} key={props.key}>
             <button onClick={handleSelectOrderClick}>
-                <div className={MenuItemStyles.details}>
-                    <h3 className={MenuItemStyles.header}>{savedOrder.savedOrderName}</h3>
-                    <OrderItems orderItems={savedOrder.orderItems}/>
+                <div className={SavedOrderStyles.details}>
+                    <h3 className={SavedOrderStyles.header}>{props.savedOrder.savedOrderName}</h3>
+                    <OrderItems orderItems={props.savedOrder.orderItems}/>
                 </div>
             </button>
         </div>

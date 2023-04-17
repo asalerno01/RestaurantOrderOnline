@@ -13,10 +13,11 @@ import { FiMinus, FiPlus } from 'react-icons/fi';
 const OrderItem = ({ selectedItemData, setSelectedItemData, order, setOrder, cartIsOpen }) => {
     const [optionsSelected, setOptionsSelected] = useState({ groups: [], addons: [], noOptions: [] });
     const [count, setCount] = useState(1);
-
+    console.log(optionsSelected.noOptions)
     useEffect(() => {
         if (selectedItemData.index !== null) {
             const selectedItem = order.orderItems[selectedItemData.index];
+            console.log(selectedItem.modifier.noOptions)
             setOptionsSelected({ groups: selectedItem.modifier.groups, addons: selectedItem.modifier.addons, noOptions: selectedItem.modifier.noOptions });
             setCount(selectedItem.count);
         }

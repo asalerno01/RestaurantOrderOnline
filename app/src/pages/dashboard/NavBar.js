@@ -12,7 +12,6 @@ const NavBar = ({ navRef, navOpen }) => {
 
     const [innerNavType, setInnerNavType] = useState("");
     const [loc, setLoc] = useState(location.pathname.substring(location.pathname.search(/^\/salerno\/items/)));
-    console.log(loc);
     return (
         <div className='NavBar' ref={navRef} style={navOpen ? {width: '260px', minWidth: '260px'} : {width: '0', minWidth: '0'}}>
             <div className='NavBar_Container' style={innerNavType.length > 0 ? { minWidth: '64px' } : { minWidth: '260px' }}>

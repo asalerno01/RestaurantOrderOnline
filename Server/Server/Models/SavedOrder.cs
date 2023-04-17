@@ -5,8 +5,10 @@ namespace Server.Models
 {
     public class SavedOrder
     {
-        public string SavedOrderName { get; set; }
+        public long SavedOrderId { get; set; }
+        public string Name { get; set; }
         public CustomerAccount CustomerAccount { get; set; }
-        public Order Order { get; set; }
+        public DateTime LastOrderDate { get; set; } = DateTime.Now;
+        public List<SavedOrderOrderItem> OrderItems { get; set; } = new();
     }
 }

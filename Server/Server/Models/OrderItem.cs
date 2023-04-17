@@ -12,6 +12,7 @@ namespace SalernoServer.Models
         [JsonIgnore]
         public Order Order { get; set; }
         public int Count { get; set; } = 1;
+        public string ItemId { get; set; }
         [JsonIgnore]
         public Item Item { get; set; }
         public List<OrderItemAddon> Addons { get; set; } = new();
