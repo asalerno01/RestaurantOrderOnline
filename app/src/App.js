@@ -55,7 +55,7 @@ function App() {
                         <Route path='menu' element={<MenuPage />} />
                         <Route path='items' element={<ItemList />} />
                         <Route path='items/:itemId/edit' element={<Edit />} />
-                        {/* <Route path='edit/new' element={<Edit />} /> */}
+                        <Route path='items/new' element={<Edit />} />
                         <Route path='items/:itemId/modifiers' element={<Modifiers />} />
 
                         <Route path='employees' element={<EmployeeList />} />

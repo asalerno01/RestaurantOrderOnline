@@ -8,6 +8,7 @@ using System.Text;
 using Server.Models.Authentication;
 using Microsoft.EntityFrameworkCore;
 using System.Web;
+using Server.Models;
 
 namespace SalernoServer
 {
@@ -66,10 +67,12 @@ namespace SalernoServer
                 Response.Cookies.Append("RefreshToken", refTokString, cookieOptions);
                 return Ok(new
                 {
-                    AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
-                    email = customerAccount.Email,
-                    firstName = customerAccount.FirstName,
-                    lastName = customerAccount.LastName
+                    customerAccountId = customerAccount.CustomerAccountId,
+                    accessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
+                    Email = customerAccount.Email,
+                    FirstName = customerAccount.FirstName,
+                    lastName = customerAccount.LastName,
+                    phoneNumber = customerAccount.PhoneNumber
                 });
             }
             return Unauthorized();
@@ -169,10 +172,12 @@ namespace SalernoServer
 
             return Ok(new
             {
-                FirstName = customerAccount.FirstName,
-                LastName = customerAccount.LastName,
-                Email = customerAccount.Email,
-                AccessToken = tok
+                customerAccountId = customerAccount.CustomerAccountId,
+                firstName = customerAccount.FirstName,
+                lastName = customerAccount.LastName,
+                email = customerAccount.Email,
+                phoneNumber = customerAccount.PhoneNumber,
+                accessToken = tok
             });
         }
         private static JwtSecurityToken CreateAccessToken(List<Claim> authClaims)

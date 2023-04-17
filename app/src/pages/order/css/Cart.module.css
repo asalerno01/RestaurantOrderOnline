@@ -26,17 +26,21 @@
     -moz-transform: translateX(500px);
     -ms-transform: translateX(500px);
     -o-transform: translateX(500px);
-    background-color: red;
+    background-color: rgb(255, 255, 255);
+}
+.cart {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 .container {
     border: 1px solid rgb(231, 231, 231);
-    padding: 30px;
+    padding: 15px 20px 20px 20px;
     max-width: 600px;
     min-width: 600px;
     position: relative;
     background-color: rgb(255, 255, 255);
     display: flex;
-    flex-direction: column;
 }
 .header {
     text-align: left;
@@ -65,7 +69,6 @@
     background-color: rgb(240, 240, 240);
 }
 .item_details {
-    margin-left: 10px;
     flex-grow: 1;
     text-align: left;
     display: flex;
@@ -183,4 +186,19 @@
 .checkout_button:hover {
     background-color: rgb(0, 145, 174);
     color: white;
+}
+.close_button_wrapper > button {
+    background-color: transparent;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    opacity: 0.5;
+}
+.close_button_wrapper > button:hover {
+    opacity: 1;
+}
+.close_button_wrapper {
+    text-align: left;
+    background-color: rgb(255, 255, 255);
 }

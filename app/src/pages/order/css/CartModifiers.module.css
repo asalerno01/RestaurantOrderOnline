@@ -1,0 +1,25 @@
+.modifier {
+    color: rgb(73, 73, 73);
+    font-weight: 500;
+    font-family: "Lato", sans-serif;
+    font-size: 13px;
+}
+.modifier:not(:first-child):before {
+    content: "\2022";
+    margin: 0 2px;
+    color: rgb(73, 73, 73);
+    font-size: 0.7em;
+}
+
+.modifier_text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: rgb(73, 73, 73);
+    font-weight: 700;
+    font-family: "Lato", sans-serif;
+    font-size: 14px;
+    padding-right: 5px;
+}

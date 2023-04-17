@@ -53,7 +53,8 @@ const Login = () => {
             const firstName = res.data?.firstName;
             const lastName = res.data?.lastName;
             const email = res.data?.email;
-            setAuth({ firstName, lastName, email, accessToken });
+            const phoneNumber = res.data?.phoneNumber;
+            setAuth({ firstName, lastName, email, phoneNumber, accessToken });
             setEmail("");
             setPassword("");
             navigate("/salerno/order");

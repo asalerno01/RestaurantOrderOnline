@@ -44,11 +44,13 @@ const LoginModal = ({ loginModalOpen, setLoginModalOpen }) => {
         .then(res => {
             console.log(res);
             console.log(res.data);
+            const customerAccountId = res.data?.customerAccountId;
             const accessToken = res.data?.accessToken;
             const firstName = res.data?.firstName;
             const lastName = res.data?.lastName;
             const email = res.data?.email;
-            setAuth({ firstName, lastName, email, accessToken });
+            const phoneNumber = res.data?.phoneNumber;
+            setAuth({ customerAccountId, firstName, lastName, email, phoneNumber, accessToken });
             setEmail("");
             setPassword("");
             setLoginModalOpen(false);

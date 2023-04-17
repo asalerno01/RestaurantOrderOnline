@@ -6,7 +6,7 @@ namespace SalernoServer.Models
     public class Order
     {
         public long OrderId { get; set; }
-        public CustomerAccount CustomerAccount { get; set; }
+        public CustomerAccount? CustomerAccount { get; set; }
         public decimal Subtotal { get; set; } = 0;
         public decimal SubtotalTax { get; set; } = 0;
         public decimal Total { get; set; } = 0;

@@ -63,8 +63,8 @@
 //             {
 //                 item["modifier"]["noOptions"].map(noOption => (
 //                     <li key={`noOption-${noOption["noOptionId"]}`}>
-//                         <button className="OrderItem_Option_Button" onClick={() => handleOptionClick("noOption", { noOptionId: noOption["noOptionId"], name: noOption["name"], discountPrice: noOption["discountPrice"] })}>
-//                             <CheckBox value={{ noOptionId: noOption["noOptionId"], name: noOption["name"], discountPrice: noOption["discountPrice"] }} optionType="noOption" />
+//                         <button className="OrderItem_Option_Button" onClick={() => handleOptionClick("noOption", { noOptionId: noOption["noOptionId"], name: noOption["name"], price: noOption["price"] })}>
+//                             <CheckBox value={{ noOptionId: noOption["noOptionId"], name: noOption["name"], price: noOption["price"] }} optionType="noOption" />
 //                             <span className="OrderItem_Option_Label">{noOption["name"]}</span>
 //                         </button>
 //                     </li>

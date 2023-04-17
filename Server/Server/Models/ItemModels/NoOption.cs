@@ -9,7 +9,7 @@ namespace SalernoServer.Models.ItemModels
     {
         public long NoOptionId { get; set; }
         public string Name { get; set; }
-        public decimal DiscountPrice { get; set; }
+        public decimal Price { get; set; }
         [JsonIgnore]
         public Modifier Modifier { get; set; }
     }

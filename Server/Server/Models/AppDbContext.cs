@@ -29,6 +29,8 @@ namespace SalernoServer.Models
         public DbSet<OrderItemGroup> OrderItemGroups { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<SavedOrder> SavedOrders { get; set; }
+        public DbSet<SavedOrderOrderItem> SavedOrderOrderItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -97,7 +99,6 @@ namespace SalernoServer.Models
                 .HasKey("OrderItemId", "NoOptionId");
             modelBuilder.Entity<OrderItemGroup>()
                 .HasKey("OrderItemId", "GroupId", "GroupOptionId");
-
 
             /*modelBuilder.Entity<NoOption>()
                 .HasOne(n => n.Modifier)

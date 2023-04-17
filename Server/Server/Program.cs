@@ -7,6 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SalernoServer;
 using Microsoft.AspNetCore.Identity;
+using SalernoServer.JwtHelpers;
+using static System.Net.WebRequestMethods;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -76,6 +78,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 app.UseCors(MyAllowSpecificOrigins);
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

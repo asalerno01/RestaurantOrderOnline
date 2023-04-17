@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -63,8 +66,10 @@ namespace SalernoServer.Controllers
                 .ThenInclude(oi => oi.Item)
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Addons)
+                .ThenInclude(a => a.Addon)
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.NoOptions)
+                .ThenInclude(no => no.NoOption)
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Groups)
                 .ThenInclude(g => g.GroupOption)
@@ -76,10 +81,88 @@ namespace SalernoServer.Controllers
 
             return Ok(OrderToOrderDTO(order));
         }
+        [HttpGet]
+        [Route("savedorders/{id}")]
+        public async Task<ActionResult<List<SavedOrder>>> GetSavedOrders(long id)
+        {
+            Console.WriteLine("bearer=>" + Request.Headers.Authorization);
+            var customerAccount = await _context.CustomerAccounts.FindAsync(id);
+            if (customerAccount is null) return NoContent();
+            //var savedOrders = await _context.SavedOrders
+            //        .Include(so => so.S)
+            //        .ThenInclude(order => order.OrderItems)
+            //        .ThenInclude(orderItem => orderItem.Addons)
+            //        .ThenInclude(addons => addons.Addon)
+            //        .Include(so => so.Order)
+            //        .ThenInclude(order => order.OrderItems)
+            //        .ThenInclude(orderItem => orderItem.NoOptions)
+            //        .ThenInclude(noOption => noOption.NoOption)
+            //        .Include(so => so.Order)
+            //        .ThenInclude(order => order.OrderItems)
+            //        .ThenInclude(orderItem => orderItem.Groups)
+            //        .ThenInclude(group => group.Group)
+            //        .Include(so => so.Order)
+            //        .ThenInclude(order => order.OrderItems)
+            //        .ThenInclude(orderItem => orderItem.Groups)
+            //        .ThenInclude(group => group.GroupOption)
+            //        .Where(so => so.CustomerAccount == customerAccount)
+            //        .Include(savedOrder => savedOrder.Order)
+            //        .ToListAsync();
 
-        // PUT: api/Items/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+            //foreach (var savedOrder in savedOrders)
+            //{
+            //    orderIds.Add(savedOrder.Order.OrderId);
+            //}
+            //var orderItems = await _context.OrderItems
+            //        .Include(orderItem => orderItem.Order)
+            //        .Include(orderItem => orderItem.Item)
+            //        .Include(oi => oi.Addons)
+            //        .ThenInclude(addons => addons.Addon)
+            //        .Include(orderItem => orderItem.NoOptions)
+            //        .ThenInclude(noOptions => noOptions.NoOption)
+            //        .Include(orderItems => orderItems.Groups)
+            //        .ThenInclude(groups => groups.Group)
+            //        .Include(orderItem => orderItem.Groups)
+            //        .ThenInclude(groups => groups.GroupOption)
+            //        .Where(orderItem => orderIds.Contains(orderItem.Order.OrderId))
+            //        .GroupBy(orderItem => orderItem.Order)
+            //        .ToListAsync();
+
+            //List<SavedOrderDTO> savedOrdersDTO = new();
+            //foreach (var savedOrder in savedOrders)
+            //{
+            //    savedOrdersDTO.Add(new()
+            //    {
+            //        CustomerAccountId = savedOrder.CustomerAccount.CustomerAccountId,
+            //        SavedOrderName = savedOrder.SavedOrderName,
+            //        OrderDate = savedOrder.Order.OrderDate,
+            //        OrderItems = orderItems.Select().ToList()
+            //    });
+            //}
+            return Ok(new List<SavedOrder>());
+        }
+        private static List<SavedOrderOrderItemDTO> OrderItemsToSavedOrderOrderItemsDTO(List<OrderItem> orderItems)
+        {
+            List<SavedOrderOrderItemDTO> savedOrderOrderItems = new();
+            foreach (var orderItem in orderItems)
+            {
+                savedOrderOrderItems.Add(new()
+                {
+                    ItemId = orderItem.Item.ItemId,
+                    ItemName = orderItem.Item.Name,
+                    Count = orderItem.Count,
+                    Addons = orderItem.Addons,
+                    NoOptions = orderItem.NoOptions,
+                    Groups = orderItem.Groups
+                });
+            }
+            return savedOrderOrderItems;
+        }
+
+
+            // PUT: api/Items/5
+            // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+            [HttpPut("{id}")]
         public async Task<IActionResult> PutOrder([FromBody] OrderHelper order)
         {
             //if (id != Order.OrderId)
@@ -119,7 +202,7 @@ namespace SalernoServer.Controllers
                 Total = order.Total
             };
             var customerAccount = await _context.CustomerAccounts.FindAsync(order.CustomerAccountId);
-            if (customerAccount is null) return BadRequest($"No customer account exists for ID => {order.CustomerAccountId}");
+            if (customerAccount is null) Console.WriteLine("Creating order for null customer account.");
             newOrder.CustomerAccount = customerAccount;
             if (order.OrderItems.IsNullOrEmpty()) return BadRequest("Order must have at least 1 order item.");
             foreach (var orderItem in order.OrderItems)
@@ -174,6 +257,16 @@ namespace SalernoServer.Controllers
                 }
                 newOrder.OrderItems.Add(newOrderItem);
             }
+            if (order.SavedOrderName is not null && customerAccount is not null)
+            {
+                SavedOrder savedOrder = new()
+                {
+                    Name = order.SavedOrderName,
+                    CustomerAccount = customerAccount
+                };
+                savedOrder.OrderItems = OrderItemsToSavedOrderOrderItems(savedOrder, newOrder);
+                await _context.SavedOrders.AddAsync(savedOrder);
+            }
             await _context.Orders.AddAsync(newOrder);
             await _context.SaveChangesAsync();
             Console.WriteLine($"Added Order => {newOrder.OrderId}");
@@ -183,7 +276,20 @@ namespace SalernoServer.Controllers
                 new { id = newOrder.OrderId },
                 newOrder);
         }
+        private static List<SavedOrderOrderItem> OrderItemsToSavedOrderOrderItems(SavedOrder savedOrder, Order order)
+        {
+            List<SavedOrderOrderItem> savedOrderOrderItems = new();
+            foreach(OrderItem orderItem in order.OrderItems)
+            {
+                savedOrderOrderItems.Add(new()
+                {
+                    SavedOrder = savedOrder,
+                    OrderItems = order.OrderItems
+                });
+            }
+            return savedOrderOrderItems;
 
+        }
         // DELETE: api/orders/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(long id)
@@ -202,6 +308,7 @@ namespace SalernoServer.Controllers
 
         private static OrderDTO OrderToOrderDTO(Order order)
         {
+            Console.WriteLine(JsonSerializer.Serialize(order));
             OrderDTO orderDTO = new()
             {
                 OrderId = order.OrderId,
@@ -227,6 +334,7 @@ namespace SalernoServer.Controllers
                     OrderId = item.OrderItemId,
                     ItemId = item.Item.ItemId,
                     ItemName = item.Item.Name,
+                    Count = item.Count,
                     Groups = item.Groups,
                     Addons = item.Addons,
                     NoOptions = item.NoOptions
@@ -240,7 +348,7 @@ namespace SalernoServer.Controllers
         }
         private static void PrintNoOption(OrderItemNoOption noOption)
         {
-            Console.WriteLine($"ID=>{noOption.NoOption.NoOptionId}, Name=>{noOption.NoOption.Name}, Price=>{noOption.NoOption.DiscountPrice}");
+            Console.WriteLine($"ID=>{noOption.NoOption.NoOptionId}, Name=>{noOption.NoOption.Name}, Price=>{noOption.NoOption.Price}");
         }
         private static void PrintGroup(OrderItemGroup group)
         {
@@ -248,6 +356,7 @@ namespace SalernoServer.Controllers
         }
         private static OrderCustomerAccountDTO CustomerAccountToOrderCustomerAccountDTO(CustomerAccount customerAccount)
         {
+            if (customerAccount is null) return null;
             return new OrderCustomerAccountDTO
             {
                 CustomerAccountId = customerAccount.CustomerAccountId,

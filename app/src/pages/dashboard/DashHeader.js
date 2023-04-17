@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { BiMenu } from 'react-icons/bi';
 import { AiFillQuestionCircle } from 'react-icons/ai';
 import useLogout from '../../hooks/useLogout';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 
 const DashHeader = ({ setSupportOpen, setNavOpen, setLoginModalOpen }) => {
@@ -14,11 +14,12 @@ const DashHeader = ({ setSupportOpen, setNavOpen, setLoginModalOpen }) => {
     const date = new Date();
     const logout = useLogout();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const signOut = async () => {
         console.log('loggin out...');
         await logout();
-        navigate("/salerno")
+        navigate(location.pathname);
     }
 
     const UserButton = () => {

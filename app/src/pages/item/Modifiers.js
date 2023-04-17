@@ -151,7 +151,7 @@ const Modifiers = () => {
     const handleAddNoOption = () => {
         console.log('x')
         let temp = Object.assign({}, modifiers);
-        temp['noOptions'].push({ "name": "New Option", "discountPrice": 0.00, "noOptionId": generateUUIDUsingMathRandom() });
+        temp['noOptions'].push({ "name": "New Option", "price": 0.00, "noOptionId": generateUUIDUsingMathRandom() });
         setModifiers(temp);
     }
 
@@ -267,7 +267,7 @@ const Modifiers = () => {
             let tempNoOption = {
                 "noOptionId": id,
                 "name": noOption["name"],
-                "discountPrice": noOption["discountPrice"]
+                "price": noOption["price"]
             };
             data["noOptions"].push(tempNoOption);
         });
@@ -577,7 +577,7 @@ const Modifiers = () => {
                                                     modifiers['noOptions'].map(noOption => (
                                                         <li key={`noOption-${noOption['noOptionId']}`}>
                                                             <input type='text' className='Modifiers_Option_Name_Input' value={noOption['name']} thistype="noOptions" thisattr="name" thisid={noOption['noOptionId']} onChange={handleInputChange} />
-                                                            <input type='text' className='Modifiers_Option_Price_Input' value={noOption['discountPrice']} thistype="noOptions" thisattr="discountPrice" thisid={noOption['noOptionId']} onChange={handleInputChange} />
+                                                            <input type='text' className='Modifiers_Option_Price_Input' value={noOption['price']} thistype="noOptions" thisattr="price" thisid={noOption['noOptionId']} onChange={handleInputChange} />
                                                             <button type='button' className='Modifiers_Delete_Button' onClick={() => handleRemoveNoOption(noOption)}>
                                                                 <IconContext.Provider value={{ style: { verticalAlign: 'top' },  size: '1.5em' }}>
                                                                     <RiDeleteBinFill />

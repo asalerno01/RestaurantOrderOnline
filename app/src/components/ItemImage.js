@@ -61,6 +61,8 @@ const ItemImage = ({ itemName }) => {
                 return TomTomTamaleImage;
             case "Chicago Style Hot Dog":
                 return HotDogImage;
+            case "Double Dog":
+                return HotDogImage;
             case "Coke":
                 return CokeImage;
             case "Sprite":
@@ -81,11 +83,10 @@ const ItemImage = ({ itemName }) => {
                 return PlaceholderImage;
         }
     }
-    
     const image = getImage(itemName);
     // if (image === null) return <></>;
     return (
-        <img className="MenuItem_Image" src={image} alt={`${itemName} Image`} />
+        <img loading="lazy" src={image} alt={`${itemName} Image`} />
     )
 }
 

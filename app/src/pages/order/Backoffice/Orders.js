@@ -10,6 +10,8 @@ import { IconContext } from 'react-icons/lib';
 import MiniCalendar from '../../../components/MiniCalendar';
 import { getLastSevenDays, monthStrings } from '../../../components/functions/DateInfo';
 import './orders.css';
+import { isEmptyObject } from '../functions/OrderFunctions';
+import StickyBox from 'react-sticky-box';
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
@@ -57,14 +59,6 @@ const Orders = () => {
             </>
         )
     }
-    
-    function isEmpty(obj) {
-        for(var prop in obj) {
-            if(obj.hasOwnProperty(prop))
-                return false;
-        }
-        return true;
-    }
 
     function getModifierLabel(modifier, type) {
         if (!isNaN(modifier[type]["price"]) && modifier[type]["price"] > 0) return `${modifier[type]["name"]} ($${modifier[type]["price"].toFixed(2)})`;
@@ -83,6 +77,7 @@ const Orders = () => {
         return `${split[1]}/${split[2]}/${split[0]}`
     }
     function formatTime(dateString) {
+        console.log(dateString)
         var date = new Date(dateString);
         var hours = date.getHours();
         var minutes = date.getMinutes();
@@ -123,7 +118,7 @@ const Orders = () => {
     }
 
     const OrderItem = () => {
-        if (isEmpty(openItem)) return <></>
+        if (isEmptyObject(openItem)) return <></>
         else return (
             <div className="Orders_OrderItem_Modal_Stretch" onClick={handleClose}>
                 <div className="Orders_OrderItem_Modal_Container" onClick={e => e.stopPropagation()}>
@@ -137,12 +132,17 @@ const Orders = () => {
                             <h2 className="Orders_OrderItem_Modal_Customer_Details_Header">Pick-Up Details</h2>
                             <div className="Orders_OrderItem_Modal_Customer_Details_Item">
                                 <div className="Orders_OrderItem_Modal_Customer_Details_Label">Customer</div>
-                                <div className="Orders_OrderItem_Modal_Customer_Details_Value">{`${openItem.customerAccount.firstName} ${openItem.customerAccount.lastName}`}</div>
+                                <div className="Orders_OrderItem_Modal_Customer_Details_Value">{(openItem.customerAccount === null) ? "New Customer" : `${openItem.customerAccount.firstName} ${openItem.customerAccount.lastName}`}</div>
                             </div>
                             <div className="Orders_OrderItem_Modal_Details_Border"></div>
                             <div className="Orders_OrderItem_Modal_Customer_Details_Item">
                                 <div className="Orders_OrderItem_Modal_Customer_Details_Label">Picked Up</div>
-                                <div className="Orders_OrderItem_Modal_Customer_Details_Value">12:00 PM<span className="Orders_OrderItem_Modal_Customer_Details_Value--description">(Quoted 12:05 PM)</span></div>
+                                <div className="Orders_OrderItem_Modal_Customer_Details_Value">
+                                    {(openItem.pickUpDate === null) ? "Pending" : formatTime(openItem.pickUpDate)}
+                                    <span style={{marginLeft: "10px"}} className="Orders_OrderItem_Modal_Customer_Details_Value--description">
+                                        {`${formatTime(new Date(openItem.orderDate).setMinutes(new Date(openItem.orderDate).getMinutes() + 20))}`}
+                                    </span>
+                                </div>
                                 <div className="Orders_OrderItem_Modal_Customer_Details_Value">{new Date(openItem["orderDate"]).toLocaleDateString()}</div>
                             </div>
                         </div>
@@ -216,11 +216,10 @@ const Orders = () => {
     if (isLoading) return <div>Loading...</div>
     return (
         <div className="Orders">
-            <div className="Orders_Header">
-                <h1 className="Orders_Header_Title">Orders</h1>
-            </div>
-            <div className="Orders_Content_Container">
                 <OrderItem />
+                <div className="Orders_Header">
+                    <h1 className="Orders_Header_Title">Orders</h1>
+                </div>
                 <div className="Orders_Content_Tabs">
                     <button type="button" className="Orders_Content_Tabs_Button">Active</button>
                     <button type="button" className="Orders_Content_Tabs_Button Current">History</button>
@@ -249,16 +248,20 @@ const Orders = () => {
                     </div>
                 </div>
                 <div className="Orders_Content_Table_Wrapper">
+                    <StickyBox style={{zIndex: "1"}} offsetTop={-41}>
+                        <table className="Orders_Sticky_Head_Table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Customer</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </StickyBox>
                     <table className="Orders_Content_Table">
-                        <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>Status</th>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Customer</th>
-                            </tr>
-                        </thead>
                         <tbody>
                         {
                             orders.map(order => {
@@ -269,7 +272,7 @@ const Orders = () => {
                                             <td><Status status={order["status"]} /></td>
                                             <td>{formatDate(order["orderDate"])}</td>
                                             <td>{formatTime(order["orderDate"])}</td>
-                                            <td className="Orders_Content_Table_Name_Col">{`${order["customerAccount"]["firstName"]} ${order["customerAccount"]["lastName"]}`}</td>
+                                            <td className="Orders_Content_Table_Name_Col">{(order.customerAccount === null) ? "New Customer" : `${(order["customerAccount"]["firstName"])} ${order["customerAccount"]["lastName"]}`}</td>
                                         </tr>
                                     )
                                 }
@@ -278,7 +281,6 @@ const Orders = () => {
                         </tbody>
                     </table>
                 </div>
-            </div>
         </div>
     )
 }

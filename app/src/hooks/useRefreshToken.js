@@ -15,9 +15,11 @@ const useRefreshToken = () => {
             console.log(response);
             return {
                 ...prev,
+                customerAccountId: response.data.customerAccountId,
                 email: response.data.email,
                 firstName: response.data.firstName,
                 lastName: response.data.lastName,
+                phoneNumber: response.data.phoneNumber,
                 accessToken: response.data.accessToken
             }
         });

@@ -3,50 +3,39 @@ import axios from 'axios';
 import OrderItem from './OrderItem';
 import './order.css';
 import OrderStyles from './css/Order.module.css';
-
-import { findDOMNode } from 'react-dom';
-import OrderDetailsStyles from './css/OrderDetails.module.css';
-
+import CartStyles from './css/Cart.module.css';
 import MenuItem from '../../raquel/components/menu/MenuItem';
-import OrderDetailsModifiers from './OrderDetailsModifiers';
-import { IoMdClose } from 'react-icons/io';
-import OrderDetails from './OrderDetails';
+import Cart from './Cart';
 import Banner from '../../imgs/banner.webp';
-import { StickyContainer, Sticky } from 'react-sticky';
 import StickyBox from 'react-sticky-box';
 import { ImCart } from 'react-icons/im';
+import { createEmptyOrder, isEmptyObject } from './functions/OrderFunctions';
+import SavedOrder from './SavedOrder';
+import useAuth from '../../hooks/useAuth';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import { useLocation } from 'react-router-dom';
 
 const Order = () => {
     const customerAccountId = 1;
-
-    const scrollRef = useRef();
+    const auth = useAuth();
 
     const [items, setItems] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [order, setOrder] = useState({
-        "orderId": generateUUIDUsingMathRandom(),
-        "subtotal": 0,
-        "subtotalTax": 0,
-        "total": 0,
-        "orderItems": []
-    });
+    const [order, setOrder] = useState(createEmptyOrder());
 
-    const [detailsOpen, setDetailsOpen] = useState(false);
+    const [selectedItemData, setSelectedItemData] = useState({ item: null, index: null });
+
+    const [cartOpen, setCartOpen] = useState(false);
     useEffect(() => {
         const order = localStorage.getItem("order");
         if (order !== null && order.length > 0)
             setOrder(JSON.parse(order));
     }, []);
-    
-    // TODO: drop subtotal.
-    const [orderItem, setOrderItem] = useState({});
-    const [editItemIndex, setEditItemIndex] = useState(null);
     const [response, setResponse] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
     const getItems = async () => {
-        console.log("Executing getItems()");
-        await axios.get("https://localhost:7074/api/Category")
+        await axios.get("https://localhost:7074/api/category")
         .then(res => {
             console.log(res);
             let items = [];
@@ -56,125 +45,59 @@ const Order = () => {
                     items.push(item);
                 });
             });
-            console.log(items);
-            setCategories(res.data);
             setItems(items);
-            setIsLoading(false)
+            setCategories(categories);
+            return categories;
         })
         .catch(err => {
             console.log(err);
         });
     }
-
-    useEffect(() => {
-        console.log("Order component, calling getItems()")
-        getItems();
-    }, []);
-
-    function generateUUIDUsingMathRandom() { 
-        // wow
-        // https://qawithexperts.com/article/javascript/generating-guiduuid-using-javascript-various-ways/372#:~:text=Generating%20GUID%2FUUID%20using%20Javascript%20%28Various%20ways%29%201%20Generate,is%20fast%20to%20generate%20an%20ASCII-safe%20GUID%20
-        var d = new Date().getTime();//Timestamp
-        var d2 = (performance && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16;//random number between 0 and 16
-            if(d > 0){ //Use timestamp until depleted
-                r = (d + r)%16 | 0;
-                d = Math.floor(d/16);
-            } else { //Use microseconds since page-load if supported
-                r = (d2 + r)%16 | 0;
-                d2 = Math.floor(d2/16);
+    const getSavedOrders = async (categories) => {
+        await axios({
+            method: "GET",
+            url: `https://localhost:7074/api/orders/savedorders/${customerAccountId}`,
+            withCredentials: true,
+            headers: {
+                Authorization: `Bearer ${auth?.accessToken}`
             }
-            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        })
+        .then(res => {
+            console.log(res);
+            if (res.data.length > 0) {
+                res.data.forEach(savedOrder => {
+                    savedOrder.type = "SavedOrder";
+                });
+                setCategories([{ categoryId: 0, name: "Saved Orders", description: "", items: [...res.data] }, ...categories]);
+            }
+        })
+        .catch(err => {
+            console.log(err);
         });
     }
+    useEffect(() => {
+        getItems();
+    }, []);
+    useEffect(() => {
+        const tempCategories = getItems();
+        if (!isEmptyObject(auth)) getSavedOrders(tempCategories);
+        setIsLoading(false);
+    }, [auth])
 
-    const handleItemClick = (itemId, index) => {
-        setEditItemIndex(index);
-        const item = items.find(i => i["itemId"] === itemId);
-        setOrderItem(item);
-    }
-    const handleOpenItem = (itemId) => {
-        console.log("items=>" + items);
-        if (orderItem["itemId"] === itemId) setOrderItem({})
-        else {
-            const item = items.find(i => i["itemId"] === itemId);
-            setOrderItem(item);
-        }
-    }
+    const handleEditItemClick = (itemId, index) => setSelectedItemData({ item: items.find(item => item.itemId === itemId), index: index });
+    const handleOpenItem = (itemId) => setSelectedItemData({ item: items.find(i => i["itemId"] === itemId), index: null });
     const handleRemoveItemClick = (index) => {
-        console.log("hey")
         const temp = Object.assign({}, order);
-        let subtotal = temp["subtotal"] - orderItem['price'];
+        let subtotal = 0;
         temp["orderItems"].splice(index, 1);
         if (isNaN(subtotal)) subtotal = 0;
         temp["subtotal"] = subtotal;
         setOrder(temp);
     }
-    const handleCheckout = async event => {
-        event.preventDefault();
-        let orderItems = [];
-        order["orderItems"].forEach(orderItem => {
-            let addons = [];
-            let noOptions = [];
-            let groupOptions = [];
-            orderItem["modifier"]["addons"].forEach(addon => {
-                addons.push({
-                    "addonId": addon["addonId"]
-                });
-            });
-            orderItem["modifier"]["noOptions"].forEach(noOption => {
-                noOptions.push({
-                    "noOptionId": noOption["noOptionId"]
-                });
-            });
-            orderItem["modifier"]["noOptions"].forEach(group => {
-                groupOptions.push({
-                    "groupId": group["groupId"],
-                    "groupOptionId": group["groupOptionId"]
-                });
-            });
-            orderItems.push({
-                "itemId": orderItem["itemId"],
-                "groupOptions": groupOptions,
-                "addons": addons,
-                "noOptions": noOptions
-            })
-        });
-        
-        await axios.post("https://localhost:7074/api/orders",
-            {
-                "customerAccountId": customerAccountId,
-                "subtotal": order["subtotal"],
-                "subtotalTax": (order["subtotal"] * 0.0825).toFixed(2),
-                "total": ((order["subtotal"] * 0.0825) + order["subtotal"]).toFixed(2),
-                "orderItems": orderItems
-            }
-        )
-        .then(res => {
-            setResponse("Success!");
-            console.log(res);
-        })
-        .catch(err => {
-            setResponse(err.message + ". \n" + err.response.data);
-            console.log(err);
-        });
 
-    }
-
-    function formatPrice(price, type) {
-        if (!isNaN(price) && price > 0) {
-            if (type === "noOptions")
-                return `-$${price.toFixed(2)}`;
-            return `+$${price.toFixed(2)}`;
-        }
-            return "";
-    }
     function getScroll() {
-        console.log("hi")
         for (let i = categories.length - 1; i > -1; i--) {
             if ((document.getElementById(i).getBoundingClientRect().top - 106) < 0) {
-                console.log(i);
                 setCurrentScroll(i);
                 break;
             }
@@ -183,72 +106,42 @@ const Order = () => {
     const [currentScroll, setCurrentScroll] = useState(0);
     const handleScrollClick = event => document.getElementById(event.target.value).scrollIntoView({ block: "start", behavior: "smooth" });
 
-    function openDetails(type) {
+    function cartIsOpen(type) {
         if (type) {
-            setDetailsOpen(true);
-            detailsSliderRef.current.style.width = "1100px";
+            setCartOpen(true);
+            cartSliderRef.current.style.width = "1100px";
         } else {
-            detailsSliderRef.current.style.width = "0";
-            setDetailsOpen(false);
+            cartSliderRef.current.style.width = "0";
+            setCartOpen(false);
         }
     }
-    const detailsSliderRef = useRef();
+    const cartSliderRef = useRef();
 
-    const CartButton = () => {
+    const Items = () => {
+        if (isLoading) return <LoadingSpinner />
         return (
-            <button type="button" className={OrderStyles.cart_button}><ImCart size={"25px"}/></button>
-        )
-    }
-    return (
-        <div className={OrderStyles.order} onScroll={() => getScroll()}>
-            <div className={OrderDetailsStyles.backdrop} style={(detailsOpen) ? {width: "100%"} : {width: "0"}} onClick={() => openDetails(false)}></div>
-            <div className={OrderDetailsStyles.slider} ref={detailsSliderRef}>
-                <div className={OrderDetailsStyles.container}>  
-                    <OrderDetails order={order} handleItemClick={handleItemClick} handleRemoveItemClick={handleRemoveItemClick} detailsOpen={detailsOpen} openDetails={openDetails}/>
-                </div>
-            </div>
-            <OrderItem 
-                itemI={orderItem} 
-                setOrder={setOrder} 
-                setOrderItem={setOrderItem} 
-                order={order} 
-                editItemIndex={editItemIndex} 
-                setEditItemIndex={setEditItemIndex}
-                openDetails={openDetails}
-            />
-            { (response === "Success!") ? <h3 style={{color: "green"}}>{response}</h3> : (response !== null) ? <h3 style={{color: "red"}}>{response}</h3> : <></> }
-            <div className={OrderStyles.header}>
-                <div className={OrderStyles.banner_wrapper}>
-                    <img src={Banner}/>
-                </div>
-                    <h1>Salerno's Red Hots</h1>
-                    <span>197 E Veterans Pkwy, Yorkville, IL 60560, USA</span>
-                    <span>Open Hours: 11:00 AM - 8:00 PM</span>
-            </div>
-            <main>
-                <div className={OrderStyles.nav}>
-                    <StickyBox style={{zIndex: "1"}} offsetTop={-16}>
-                            <div className={OrderStyles.category_buttons}>
-                            {
-                                categories.map((category, index) => {
-                                    if (index === currentScroll)
-                                        return <button type="button" className={OrderStyles.category_button__selected} value={index} onClick={handleScrollClick}><span className={OrderStyles.button_content}>{category.name}<span className={OrderStyles.button_border}></span></span></button>
-                                    return <button type="button" className={OrderStyles.category_button} value={index} onClick={handleScrollClick}><span className={OrderStyles.button_content}>{category.name}<span className={OrderStyles.button_border}></span></span></button>
-                                })
-                            }
-                            </div>
-                        <button type="button" className={OrderStyles.cart_button} onClick={() => openDetails(true)}><ImCart size={"24px"}/><span>Cart</span></button>
-                    </StickyBox>
-                </div>
-                <div className={OrderStyles.categories_container}>
-                {
-                    categories.map((category, index) => (
-                        <div className={OrderStyles.category} id={index}>
-                                <h1 className={OrderStyles.category_header}>{category.name}</h1>
-                                <div className={OrderStyles.order_border}></div>
-                                <div className={OrderStyles.categories}>
-                                {
-                                    category.items.map(item => (
+            <div className={OrderStyles.categories}>
+            {
+                categories.map((category, index) => (
+                    <div className={OrderStyles.category} id={index} key={`${category.name}-${category.categoryId}`}>
+                        <StickyBox style={{zIndex: "1", backgroundColor: "rgb(255, 255, 255)"}} offsetTop={-16}>
+                            <h1 className={OrderStyles.category_header}>{category.name}</h1>
+                            <div className={OrderStyles.border}></div>
+                        </StickyBox>
+                        <div className={OrderStyles.items}>
+                        {
+                            category.items.map(item => {
+                                if (item?.type === "SavedOrder")
+                                    return (
+                                        <SavedOrder
+                                            savedOrder={item}
+                                            order={order}
+                                            setOrder={setOrder}
+                                            key={item.itemId}
+                                        />
+                                    )
+                                else
+                                    return (
                                         <MenuItem
                                             key={item.itemId}
                                             itemId={item.itemId}
@@ -257,66 +150,73 @@ const Order = () => {
                                             description={item.description}
                                             handleOpenItem={handleOpenItem}
                                         />
-                                    ))
-                                }
-                                </div>
+                                    )
+                            })
+                        }
                         </div>
-                    ))
-                }
+                    </div>
+                ))
+            }
+            </div>
+        )
+    }
+
+    return (
+        <div className={OrderStyles.order} onScroll={() => getScroll()}>
+            <div className={CartStyles.backdrop} style={(cartOpen) ? {width: "100%"} : {width: "0"}} onClick={() => cartIsOpen(false)}></div>
+            <div className={CartStyles.slider} ref={cartSliderRef}>
+                <div className={CartStyles.container}>  
+                    <Cart
+                        order={order}
+                        setOrder={setOrder}
+                        handleEditItemClick={handleEditItemClick}
+                        handleRemoveItemClick={handleRemoveItemClick}
+                        cartOpen={cartOpen}
+                        cartIsOpen={cartIsOpen}
+                    />
                 </div>
+            </div>
+            <OrderItem 
+                selectedItemData={selectedItemData}
+                setSelectedItemData={setSelectedItemData}
+                order={order}
+                setOrder={setOrder}
+                cartIsOpen={cartIsOpen}
+            />
+            { (response === "Success!") ? <h3 style={{color: "green"}}>{response}</h3> : (response !== null) ? <h3 style={{color: "red"}}>{response}</h3> : <></> }
+            <div className={OrderStyles.header}>
+                <div className={OrderStyles.banner_wrapper}>
+                    <img src={Banner}/>
+                </div>
+                <h1>Salerno's Red Hots</h1>
+                <span>197 E Veterans Pkwy, Yorkville, IL 60560, USA</span>
+                <span>Open Hours: 11:00 AM - 8:00 PM</span>
+            </div>
+            <StickyBox style={{zIndex: "2"}} offsetTop={55}>
+                <div className={OrderStyles.cart_button_wrapper}>
+                    <button type="button" className={OrderStyles.cart_button} onClick={() => cartIsOpen(true)}><ImCart size={"24px"}/><span>Cart</span></button>
+                </div>
+            </StickyBox>
+            <main>
+                <div className={OrderStyles.nav}>
+                    <StickyBox style={{zIndex: "1"}} offsetTop={-16}>
+                        <h2 className={OrderStyles.nav_header}>Categories</h2>
+                        <div className={OrderStyles.border}></div>
+                        <div className={OrderStyles.category_buttons}>
+                        {
+                            categories.map((category, index) => {
+                                if (index === currentScroll)
+                                    return <button type="button" key={`scroll-index-${index}`} className={OrderStyles.category_button__selected} value={index} onClick={handleScrollClick}><span className={OrderStyles.button_content}>{category.name}<span className={OrderStyles.button_border}></span></span></button>
+                                return <button type="button" key={`scroll-index-${index}`} className={OrderStyles.category_button} value={index} onClick={handleScrollClick}><span className={OrderStyles.button_content}>{category.name}<span className={OrderStyles.button_border}></span></span></button>
+                            })
+                        }
+                        </div>
+                    </StickyBox>
+                </div>
+                <Items />
             </main>
         </div>
     );
 }
 
 export default Order;
-
-
-/*
-    <table className="Order_ItemList_Table">
-        <tbody>
-            {
-                items.map(item => (
-                    <tr key={item['itemId']}>
-                        <td>
-                            <div className="Order_ItemList_Grid">
-                                <div className="Order_ItemList_Grid_Button_Wrapper">
-                                    <button className="Order_ItemList_Button" onClick={handleOpenItem} value={item['itemId']} type="button">{item['name']}</button>
-                                </div>
-                                <div className="Order_ItemList_Grid_Price_Wrapper">
-                                    <div>${item['price'].toFixed(2)}</div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                ))
-            }
-        </tbody>
-    </table>
-
-    const handleAddAddonCheckboxChange = event => {
-        event.preventDefault();
-        const modifierId = event.target.attributes.modifierid.value;
-        console.log("modifierid => " + modifierId);
-        const addonId = event.target.attributes.addonid.value;
-        console.log("addonid => " + addonId);
-        const addonModifierParent = orderItem["basemodifier"].find(bm => bm["modifierId"] == modifierId);
-        console.log(JSON.stringify(addonModifierParent))
-        const addonToAdd = addonModifierParent["addons"].find(a => a["addonId"] == addonId);
-        const tempOrderItem = Object.assign({}, orderItem);
-        console.log(JSON.stringify(tempOrderItem))
-        if (event.target.checked)
-            tempOrderItem["modifier"]["addons"].push(addonToAdd);
-        else if (!event.target.checked)
-            tempOrderItem["modifier"]["addons"] = tempOrderItem["modifier"]["addons"].filter(a => a["addonId"] != addonId);
-        setOrderItem(tempOrderItem);
-    }
-    const handleAddItem = event => {
-        event.preventDefault();
-        const temp = Object.assign({}, order);
-        temp["orderItems"].push(orderItem);
-        temp["subtotal"] = temp["subtotal"] + orderItem['price']
-        setOrder(temp);
-        setOrderItem({});
-    }
-*/

@@ -83,7 +83,7 @@ const AddNewItemDialog = ({ setAddNewItemOpen, addNewItemOpen, addBasicItemOpen,
                             Sell this item in variations.
                         </div>
                         <div>
-                            <button className='AddNewItem_Dialog_Button' onClick={() => navigate('/salerno/edit/new')}>Create</button>
+                            <button className='AddNewItem_Dialog_Button' onClick={() => navigate('/salerno/items/new')}>Create</button>
                         </div>
                         <div className='AddNewItem_Image_Variants AddNewItem_Image'></div>
                     </div>

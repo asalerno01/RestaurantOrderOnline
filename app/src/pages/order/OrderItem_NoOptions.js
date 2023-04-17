@@ -6,7 +6,7 @@ const OrderItemNoOptions = ({ itemName, noOptions, optionsSelected, setOptionsSe
 
     function formatPrice(price) {
         if (!isNaN(price) && price > 0)
-            return `+$${price.toFixed(2)}`;
+            return `-$${price.toFixed(2)}`;
         else
             return "";
     }
@@ -43,13 +43,13 @@ const OrderItemNoOptions = ({ itemName, noOptions, optionsSelected, setOptionsSe
                             { 
                                 noOptionId: noOption.noOptionId,
                                 name: noOption.name,
-                                discountPrice: noOption.discountPrice
+                                price: noOption.price
                             })}
                     >
                         <button className={ModifierStyles.button}>
                             <CheckBox noOptionId={noOption.noOptionId} />
                             <span className={ModifierStyles.label}>{noOption.name}</span>
-                            <span className={ModifierStyles.label__price}>{formatPrice(noOption.discountPrice)}</span>
+                            <span className={ModifierStyles.label__price}>{formatPrice(noOption.price)}</span>
                         </button>
                     </li>
                 ))
