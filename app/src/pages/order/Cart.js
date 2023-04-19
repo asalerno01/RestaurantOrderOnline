@@ -23,7 +23,9 @@ const Cart = ({ order, setOrder, handleEditItemClick, handleRemoveItemClick, car
     return (
         <div className={CartStyles.cart}>
             <div className={CartStyles.close_button_wrapper}>
-                <button type="button" onClick={() => cartIsOpen(false)}><IoMdClose size={"26px"}/></button>
+                <button type="button" onClick={() => cartIsOpen(false)}>
+                    <IoMdClose size={"26px"}/>
+                </button>
             </div>
             <h2 className={CartStyles.header}>Order Details</h2>
             <div className={CartStyles.border}></div>

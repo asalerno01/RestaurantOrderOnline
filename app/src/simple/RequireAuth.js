@@ -10,7 +10,7 @@ const RequireAuth = ({ allowedEmployeeType }) => {
     return (
         allowedEmployeeType.includes(auth?.employee_type) // current auth employee_type is included in the routes set allowed employee_types
             ? <Outlet/>
-            : auth?.access_token
+            : auth?.
                 ? <Navigate to="/unauthorized" state={{ from: location }} replace />
                 : <Navigate to="/login" state={{ from: location }} replace />
     );

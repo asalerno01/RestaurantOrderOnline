@@ -20,7 +20,7 @@ namespace Server.Controllers
         public async Task<ActionResult<IEnumerable<ReviewDTO>>> GetReviews()
         {
             var reviews = await _context.Reviews
-                .Include(r => r.CustomerAccount)
+                .Include(r => r.Account)
                 .ToListAsync();
 
             var reviewDTOList = new List<ReviewDTO>();
@@ -29,8 +29,8 @@ namespace Server.Controllers
                 reviewDTOList.Add(new ReviewDTO
                 {
                     ReviewId = review.ReviewId,
-                    CustomerAccountId = review.CustomerAccount.CustomerAccountId,
-                    Name = review.CustomerAccount.FirstName,
+                    AccountId = review.Account.AccountId,
+                    Name = review.Account.FirstName,
                     Rating = review.Rating,
                     Message = review.Message,
                     Date = review.Date
@@ -42,7 +42,7 @@ namespace Server.Controllers
         public async Task<ActionResult<ReviewDTO>> GetReview(long id)
         {
             //var item = await _context.Items.FindAsync(itemId);
-            var review = await _context.Reviews.Include(r => r.CustomerAccount).FirstOrDefaultAsync(r => r.ReviewId == id);
+            var review = await _context.Reviews.Include(r => r.Account).FirstOrDefaultAsync(r => r.ReviewId == id);
 
             if (review is null)
             {
@@ -51,8 +51,8 @@ namespace Server.Controllers
             var reviewDTO = new ReviewDTO
             {
                 ReviewId = review.ReviewId,
-                CustomerAccountId = review.CustomerAccount.CustomerAccountId,
-                Name = review.CustomerAccount.FirstName,
+                AccountId = review.Account.AccountId,
+                Name = review.Account.FirstName,
                 Rating = review.Rating,
                 Message = review.Message,
                 Date = review.Date
@@ -66,12 +66,12 @@ namespace Server.Controllers
             Console.WriteLine("hey");
             var refreshToken = Request.Cookies["RefreshToken"];
             Console.WriteLine($"RefreshToken=>{refreshToken}");
-            var customerAccount = await _context.CustomerAccounts.Where(c => c.RefreshToken.Equals(refreshToken)).FirstOrDefaultAsync();
+            var account = await _context.Accounts.Where(c => c.RefreshToken.Equals(refreshToken)).FirstOrDefaultAsync();
 
-            if (customerAccount is null) return BadRequest();
+            if (account is null) return BadRequest();
             Review newReview = new()
             {
-                CustomerAccount = customerAccount,
+                Account = account,
                 Rating = review.Rating,
                 Message = review.Message,
                 Date = review.Date

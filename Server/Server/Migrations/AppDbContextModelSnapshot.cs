@@ -19,30 +19,6 @@ namespace Server.Migrations
                 .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("SalernoServer.Models.Authentication.Account", b =>
-                {
-                    b.Property<long>("AccountId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("EmployeeId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("RefreshToken")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("AccountId");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("Accounts");
-                });
-
             modelBuilder.Entity("SalernoServer.Models.Authentication.Employee", b =>
                 {
                     b.Property<long>("EmployeeId")
@@ -77,7 +53,7 @@ namespace Server.Migrations
 
                     b.HasKey("EmployeeId");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Addon", b =>
@@ -100,7 +76,7 @@ namespace Server.Migrations
 
                     b.HasIndex("ModifierId");
 
-                    b.ToTable("Addons");
+                    b.ToTable("Addons", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Group", b =>
@@ -124,7 +100,7 @@ namespace Server.Migrations
 
                     b.HasIndex("ModifierId");
 
-                    b.ToTable("Groups");
+                    b.ToTable("Groups", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.GroupOption", b =>
@@ -150,7 +126,7 @@ namespace Server.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("GroupOptions");
+                    b.ToTable("GroupOptions", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Item", b =>
@@ -230,7 +206,7 @@ namespace Server.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Items");
+                    b.ToTable("Items", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Modifier", b =>
@@ -256,7 +232,7 @@ namespace Server.Migrations
                     b.HasIndex("ItemId")
                         .IsUnique();
 
-                    b.ToTable("Modifiers");
+                    b.ToTable("Modifiers", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.NoOption", b =>
@@ -279,7 +255,7 @@ namespace Server.Migrations
 
                     b.HasIndex("ModifierId");
 
-                    b.ToTable("NoOptions");
+                    b.ToTable("NoOptions", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.Order", b =>
@@ -288,13 +264,13 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("CustomerAccountId")
+                    b.Property<long?>("AccountId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime?>("PickUpDate")
+                    b.Property<DateTime?>("PickupDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Status")
@@ -312,9 +288,9 @@ namespace Server.Migrations
 
                     b.HasKey("OrderId");
 
-                    b.HasIndex("CustomerAccountId");
+                    b.HasIndex("AccountId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.OrderItem", b =>
@@ -333,18 +309,13 @@ namespace Server.Migrations
                     b.Property<long>("OrderId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("SavedOrderOrderItemId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("OrderItemId");
 
                     b.HasIndex("ItemId");
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("SavedOrderOrderItemId");
-
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.OrderItemAddon", b =>
@@ -359,7 +330,7 @@ namespace Server.Migrations
 
                     b.HasIndex("AddonId");
 
-                    b.ToTable("OrderItemAddons");
+                    b.ToTable("OrderItemAddons", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.OrderItemGroup", b =>
@@ -379,7 +350,7 @@ namespace Server.Migrations
 
                     b.HasIndex("GroupOptionId");
 
-                    b.ToTable("OrderItemGroups");
+                    b.ToTable("OrderItemGroups", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.OrderItemNoOption", b =>
@@ -394,12 +365,12 @@ namespace Server.Migrations
 
                     b.HasIndex("NoOptionId");
 
-                    b.ToTable("OrderItemNoOptions");
+                    b.ToTable("OrderItemNoOptions", (string)null);
                 });
 
-            modelBuilder.Entity("Server.Models.Authentication.CustomerAccount", b =>
+            modelBuilder.Entity("Server.Models.Authentication.Account", b =>
                 {
-                    b.Property<long>("CustomerAccountId")
+                    b.Property<long>("AccountId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
@@ -427,9 +398,9 @@ namespace Server.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("CustomerAccountId");
+                    b.HasKey("AccountId");
 
-                    b.ToTable("CustomerAccounts");
+                    b.ToTable("Accounts", (string)null);
                 });
 
             modelBuilder.Entity("Server.Models.ItemModels.Category", b =>
@@ -448,7 +419,7 @@ namespace Server.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Server.Models.Review", b =>
@@ -457,7 +428,7 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    b.Property<long>("CustomerAccountId")
+                    b.Property<long>("AccountId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("Date")
@@ -472,9 +443,9 @@ namespace Server.Migrations
 
                     b.HasKey("ReviewId");
 
-                    b.HasIndex("CustomerAccountId");
+                    b.HasIndex("AccountId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("Server.Models.SavedOrder", b =>
@@ -483,7 +454,7 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    b.Property<long>("CustomerAccountId")
+                    b.Property<long>("AccountId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("LastOrderDate")
@@ -495,9 +466,9 @@ namespace Server.Migrations
 
                     b.HasKey("SavedOrderId");
 
-                    b.HasIndex("CustomerAccountId");
+                    b.HasIndex("AccountId");
 
-                    b.ToTable("SavedOrders");
+                    b.ToTable("SavedOrders", (string)null);
                 });
 
             modelBuilder.Entity("Server.Models.SavedOrderOrderItem", b =>
@@ -506,25 +477,19 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
+                    b.Property<long>("OrderItemId")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("SavedOrderId")
                         .HasColumnType("bigint");
 
                     b.HasKey("SavedOrderOrderItemId");
 
+                    b.HasIndex("OrderItemId");
+
                     b.HasIndex("SavedOrderId");
 
-                    b.ToTable("SavedOrderOrderItems");
-                });
-
-            modelBuilder.Entity("SalernoServer.Models.Authentication.Account", b =>
-                {
-                    b.HasOne("SalernoServer.Models.Authentication.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
+                    b.ToTable("SavedOrderOrderItems", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Addon", b =>
@@ -595,11 +560,11 @@ namespace Server.Migrations
 
             modelBuilder.Entity("SalernoServer.Models.Order", b =>
                 {
-                    b.HasOne("Server.Models.Authentication.CustomerAccount", "CustomerAccount")
+                    b.HasOne("Server.Models.Authentication.Account", "Account")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerAccountId");
+                        .HasForeignKey("AccountId");
 
-                    b.Navigation("CustomerAccount");
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("SalernoServer.Models.OrderItem", b =>
@@ -615,10 +580,6 @@ namespace Server.Migrations
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Server.Models.SavedOrderOrderItem", null)
-                        .WithMany("OrderItems")
-                        .HasForeignKey("SavedOrderOrderItemId");
 
                     b.Navigation("Item");
 
@@ -692,33 +653,41 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.Models.Review", b =>
                 {
-                    b.HasOne("Server.Models.Authentication.CustomerAccount", "CustomerAccount")
+                    b.HasOne("Server.Models.Authentication.Account", "Account")
                         .WithMany("Reviews")
-                        .HasForeignKey("CustomerAccountId")
+                        .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CustomerAccount");
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("Server.Models.SavedOrder", b =>
                 {
-                    b.HasOne("Server.Models.Authentication.CustomerAccount", "CustomerAccount")
+                    b.HasOne("Server.Models.Authentication.Account", "Account")
                         .WithMany("SavedOrders")
-                        .HasForeignKey("CustomerAccountId")
+                        .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CustomerAccount");
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("Server.Models.SavedOrderOrderItem", b =>
                 {
+                    b.HasOne("SalernoServer.Models.OrderItem", "OrderItem")
+                        .WithMany()
+                        .HasForeignKey("OrderItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Server.Models.SavedOrder", "SavedOrder")
                         .WithMany("OrderItems")
                         .HasForeignKey("SavedOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("OrderItem");
 
                     b.Navigation("SavedOrder");
                 });
@@ -757,7 +726,7 @@ namespace Server.Migrations
                     b.Navigation("NoOptions");
                 });
 
-            modelBuilder.Entity("Server.Models.Authentication.CustomerAccount", b =>
+            modelBuilder.Entity("Server.Models.Authentication.Account", b =>
                 {
                     b.Navigation("Orders");
 
@@ -772,11 +741,6 @@ namespace Server.Migrations
                 });
 
             modelBuilder.Entity("Server.Models.SavedOrder", b =>
-                {
-                    b.Navigation("OrderItems");
-                });
-
-            modelBuilder.Entity("Server.Models.SavedOrderOrderItem", b =>
                 {
                     b.Navigation("OrderItems");
                 });

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SalernoServer.Models.Authentication;
+using Server.Models.Authentication;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace SalernoServer

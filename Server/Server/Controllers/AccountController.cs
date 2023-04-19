@@ -33,15 +33,15 @@
 //        {
 //            try
 //            {
-//                var foundCustomerAccount = await _context.CustomerAccounts.Where(a => a.Email.Equals(accountLogin.Email, StringComparison.OrdinalIgnoreCase)).FirstOrDefaultAsync();
-//                if (foundCustomerAccount is null) return NotFound();
-//                if (!foundCustomerAccount.Password.Equals(accountLogin.Password)) return BadRequest("Invalid password");
+//                var foundAccount = await _context.Accounts.Where(a => a.Email.Equals(accountLogin.Email, StringComparison.OrdinalIgnoreCase)).FirstOrDefaultAsync();
+//                if (foundAccount is null) return NotFound();
+//                if (!foundAccount.Password.Equals(accountLogin.Password)) return BadRequest("Invalid password");
 
 //                var RefreshToken = JwtHelpers.JwtHelpers.GetRefreshToken(new UserTokens()
 //                {
-//                    Email = foundCustomerAccount.Email,
+//                    Email = foundAccount.Email,
 //                    GuidId = 123,
-//                    Id = foundCustomerAccount.CustomerAccountId,
+//                    Id = foundAccount.AccountId,
 //                }, jwtSettings);
 //                Console.WriteLine("Refresh token => {0}", RefreshToken.Token);
 

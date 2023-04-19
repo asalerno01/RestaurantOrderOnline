@@ -8,6 +8,7 @@ namespace SalernoServer.Models
 {
     public class OrderItem
     {
+        //[JsonIgnore]
         public long OrderItemId { get; set; }
         [JsonIgnore]
         public Order Order { get; set; }

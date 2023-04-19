@@ -67,11 +67,11 @@ const Login = () => {
             https://stackoverflow.com/questions/62964902/axios-post-extracting-data-from-response
         */
         .then(function(res) {
-            const access_token = res.data?.access_token;
+            const  = res.data?.;
             const first_name = res.data?.first_name;
             const last_name = res.data?.last_name;
             const employee_type = res.data?.employee_type;
-            setAuth({ employeeID, first_name, last_name, employee_type, access_token });
+            setAuth({ employeeID, first_name, last_name, employee_type,  });
             setEmployeeID("");
             setPassword("");
             navigate(from, { replace: true });

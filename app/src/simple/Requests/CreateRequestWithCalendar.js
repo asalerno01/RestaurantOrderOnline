@@ -36,11 +36,11 @@ const CreateRequestWithCalendar = (props) => {
             // https://flaviocopes.com/axios-send-authorization-header
             try {
                 const response = await axiosPrivate.get('ptobalance', {
-                    access_token: auth.access_token
+                    : auth.
                 },
                 {
                     headers: {
-                        'Authorization': `Bearer ${auth.access_token}`
+                        'Authorization': `Bearer ${auth.}`
                     }
                 });
                 console.log(response.data);
@@ -64,14 +64,14 @@ const CreateRequestWithCalendar = (props) => {
         try {
             
             const response = await axiosPrivate.post('/ticket/create', {
-                access_token: auth.access_token,
+                : auth.,
                 date: selectedDays,
                 pto_type_id: parseInt(selectedPTOType),
                 request_note: requestNote
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${auth.access_token}`
+                    'Authorization': `Bearer ${auth.}`
                 }
             });
             if (response.status === 201) navigate('/', { state: { from: location }, replace: true });

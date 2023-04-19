@@ -1,24 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
-import OrderItemAddons from './OrderItem_Addons';
-import OrderItemNoOptions from './OrderItem_NoOptions';
-import OrderItemGroups from './OrderItem_Groups';
 import ItemImage from '../../components/ItemImage';
 import OrderItemStyles from './css/OrderItem.module.css';
 import { getOrderItemPrice } from './functions/OrderFunctions';
 import OrderItemSummaryStyles from './css/OrderItemSummary.module.css';
 import { FiMinus, FiPlus } from 'react-icons/fi';
+import { Addons, Groups, NoOptions } from './BaseItemModifiers';
 
 
 const OrderItem = ({ selectedItemData, setSelectedItemData, order, setOrder, cartIsOpen }) => {
     const [optionsSelected, setOptionsSelected] = useState({ groups: [], addons: [], noOptions: [] });
     const [count, setCount] = useState(1);
-    console.log(optionsSelected.noOptions)
     useEffect(() => {
         if (selectedItemData.index !== null) {
             const selectedItem = order.orderItems[selectedItemData.index];
-            console.log(selectedItem.modifier.noOptions)
-            setOptionsSelected({ groups: selectedItem.modifier.groups, addons: selectedItem.modifier.addons, noOptions: selectedItem.modifier.noOptions });
+            console.log(selectedItem.noOptions)
+            setOptionsSelected({ groups: selectedItem.groups, addons: selectedItem.addons, noOptions: selectedItem.noOptions });
             setCount(selectedItem.count);
         }
     }, [selectedItemData.index]);
@@ -43,52 +40,32 @@ const OrderItem = ({ selectedItemData, setSelectedItemData, order, setOrder, car
             "name": selectedItemData.item.name,
             "price": getOrderItemPrice(selectedItemData.item.price, 1, optionsSelected.addons, optionsSelected.noOptions, optionsSelected.groups),
             "count": count,
-            "modifier": {
-                "addons": optionsSelected.addons,
-                "noOptions": optionsSelected.noOptions,
-                "groups": optionsSelected.groups
-            }
+            "addons": optionsSelected.addons,
+            "noOptions": optionsSelected.noOptions,
+            "groups": optionsSelected.groups
         }
         const temp = Object.assign({}, order);
         if (selectedItemData.index !== null) {
             temp.orderItems[selectedItemData.index] = orderItem;
         } else {
             temp["orderItems"].push(orderItem);
+            cartIsOpen(true);
         }
         setOrder(temp);
         setSelectedItemData({ item: null, index: null })
         setOptionsSelected({ groups: [], addons: [], noOptions: [] });
         setCount(1);
-        cartIsOpen(true);
-    }
-    const handleEditItemClick = event => {
-        const orderItem = {
-            "itemId": selectedItemData.item.itemId,
-            "name": selectedItemData.item.name,
-            "price": selectedItemData.item.price,
-            "count": count,
-            "modifier": {
-                "addons": optionsSelected.addons,
-                "noOptions": optionsSelected.noOptions,
-                "groups": optionsSelected.groups
-            }
-        }
-        const temp = Object.assign({}, order);
-        temp.orderItems[selectedItemData.index] = orderItem;
-        setOrder(temp);
-        setCount(1);
-        setSelectedItemData({ item: null, index: null })
-        setOptionsSelected({ groups: [], addons: [], noOptions: [] });
     }
 
     const handleClose = event => {
         setSelectedItemData({ item: null, index: null })
         setOptionsSelected({ groups: [], addons: [], noOptions: [] });
+        setCount(1);
     }
     const OrderItemButton = () => {
-        const orderItemPrice = getOrderItemPrice(selectedItemData.item.price, 1, optionsSelected.addons, optionsSelected.noOptions, optionsSelected.groups)
+        const orderItemPrice = getOrderItemPrice(selectedItemData.item.price, count, optionsSelected.addons, optionsSelected.noOptions, optionsSelected.groups)
         if (selectedItemData.index !== null)
-            return <button className={OrderItemStyles.add_button} onClick={handleEditItemClick}>Update item - ${orderItemPrice.toFixed(2)}</button>
+            return <button className={OrderItemStyles.add_button} onClick={handleAddToCartClick}>Update item - ${orderItemPrice.toFixed(2)}</button>
         return <button className={OrderItemStyles.add_button} onClick={handleAddToCartClick}>Add to cart - ${orderItemPrice.toFixed(2)}</button>
     }
     function isDrink(itemName) { return ["Diet Coke", "Sprite", "Coke", "Root Beer", "Dr Pepper", "Mountain Dew", "Pepsi", "Orange Crush", "Dasani Water"].includes(itemName); }
@@ -106,20 +83,20 @@ const OrderItem = ({ selectedItemData, setSelectedItemData, order, setOrder, car
                     <div className={isDrink(selectedItemData.item.name) ? OrderItemStyles.image_fit_wrapper : OrderItemStyles.image_wrapper}>
                         <ItemImage itemName={selectedItemData.item.name}/>
                     </div>
-                    <OrderItemGroups
-                        groups={selectedItemData.item.modifier.groups}
+                    <Groups
+                        baseItemGroups={selectedItemData.item.modifier.groups}
                         optionsSelected={optionsSelected}
                         setOptionsSelected={setOptionsSelected}
                     />
-                    <OrderItemAddons 
+                    <Addons 
                         itemName={selectedItemData.item.name}
-                        addons={selectedItemData.item.modifier.addons}
+                        baseItemAddons={selectedItemData.item.modifier.addons}
                         optionsSelected={optionsSelected}
                         setOptionsSelected={setOptionsSelected}
                     />
-                    <OrderItemNoOptions 
+                    <NoOptions 
                         itemName={selectedItemData.item.name}
-                        noOptions={selectedItemData.item.modifier.noOptions}
+                        baseItemNoOptions={selectedItemData.item.modifier.noOptions}
                         optionsSelected={optionsSelected}
                         setOptionsSelected={setOptionsSelected}
                     />
@@ -130,7 +107,7 @@ const OrderItem = ({ selectedItemData, setSelectedItemData, order, setOrder, car
                         <span className={OrderItemSummaryStyles.count_label} style={{ width: "20px", margin: "0 7px 0 5px" }}>{`${count}x`}</span>
                         <button type="button" className={(count === 1) ? OrderItemSummaryStyles.count_button__disabled : OrderItemSummaryStyles.count_button} style={{borderRadius: "0 25px 25px 0", height: "36px", width: "36px" }} onClick={() => handleCountClick("decrement")}><FiMinus size={"20px"}/></button>
                     </div>
-                    <OrderItemButton />
+                        <OrderItemButton />
                 </div>
             </div>
         </div>

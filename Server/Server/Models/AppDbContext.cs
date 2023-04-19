@@ -15,7 +15,6 @@ namespace SalernoServer.Models
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
         public DbSet<Item> Items { get; set; }
         public DbSet<Account> Accounts { get; set; }
-        public DbSet<CustomerAccount> CustomerAccounts { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Modifier> Modifiers { get; set; }
         public DbSet<Group> Groups { get; set; }

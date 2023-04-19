@@ -119,9 +119,11 @@ const Checkout = () => {
 
     const handleSubmitOrderClick = async event => {
         event.preventDefault();
+        console.log(inputData.saveOrder);
         if (canSubmitOrder(inputData)) {
-            order.customerAccountId = auth.customerAccountId;
+            order.accountId = auth.accountId;
             order.savedOrderName = inputData.saveOrderName;
+            order.saveOrder = inputData.saveOrder;
             order.tax = 0;
             order.total = 0;
             order.tax = 0;
@@ -133,6 +135,8 @@ const Checkout = () => {
             })
             .then(res => {
                 console.log(res);
+                localStorage.removeItem("order");
+                navigate("/salerno/order");
             })
             .catch(err => {
                 console.log(err);
@@ -153,6 +157,10 @@ const Checkout = () => {
             if (inputData.email.length === 0) {
                 emailRef.current.style.borderColor = "rgb(255, 0, 0)";
                 emailRef.current.style.boxShadow = "0 0 8px 0 rgb(255 0 0 / 60%)"
+            }
+            if (inputData.saveOrder && inputData.saveOrderName.length === 0) {
+                saveOrderNameRef.current.lastChild.style.borderColor = "rgb(255, 0, 0)";
+                saveOrderNameRef.current.lastChild.style.boxShadow = "0 0 8px 0 rgb(255 0 0 / 60%)"
             }
         }
     }
@@ -187,6 +195,12 @@ const Checkout = () => {
             emailRef.current.style.boxShadow = "none"
         }
     }, [inputData.email]);
+    useEffect(() => {
+        if (saveOrderNameRef.current.lastChild.style.borderColor = "rgb(255, 0, 0)") {
+            saveOrderNameRef.current.lastChild.style.borderColor = "rgb(221, 223, 225)";
+            saveOrderNameRef.current.lastChild.style.boxShadow = "none"
+        }
+    }, [inputData.saveOrderName, inputData.saveOrder]);
 
     const PaymentSetIcon = ({ paymentType }) => {
         if (inputData.paymentType === paymentType)

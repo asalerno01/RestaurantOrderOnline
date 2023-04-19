@@ -67,7 +67,7 @@ const NewTicket = () => {
             request_note: requestNote
         },
         headers: {
-            'Authorization': `Bearer ${auth.access_token}`
+            'Authorization': `Bearer ${auth.}`
         }
         })
         /*

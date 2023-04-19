@@ -53,11 +53,11 @@ const RequestManager = () => {
             // https://flaviocopes.com/axios-send-authorization-header
             try {
                 const response = await axiosPrivate.get('ticket/get/leader', {
-                    access_token: auth.access_token
+                    : auth.
                 },
                 {
                     headers: {
-                        'Authorization': `Bearer ${auth.access_token}`
+                        'Authorization': `Bearer ${auth.}`
                     }
                 });
                 isMounted = true;
@@ -84,11 +84,11 @@ const RequestManager = () => {
             // https://flaviocopes.com/axios-send-authorization-header
             try {
                 const response = await axiosPrivate.get('/manager/getEmployees', {
-                    access_token: auth.access_token
+                    : auth.
                 },
                 {
                     headers: {
-                        'Authorization': `Bearer ${auth.access_token}`
+                        'Authorization': `Bearer ${auth.}`
                     }
                 });
                 isMounted = true;
@@ -119,11 +119,11 @@ const RequestManager = () => {
             // https://flaviocopes.com/axios-send-authorization-header
             try {
                 const response = await axiosPrivate.get('pto/getleader', {
-                    access_token: auth.access_token
+                    : auth.
                 },
                 {
                     headers: {
-                        'Authorization': `Bearer ${auth.access_token}`
+                        'Authorization': `Bearer ${auth.}`
                     }
                 });
                 isMounted = true;
@@ -153,14 +153,14 @@ const RequestManager = () => {
         // https://flaviocopes.com/axios-send-authorization-header
         try {
             const response = await axiosPrivate.post(url, {
-                access_token: auth.access_token,
+                : auth.,
                 ticket_id: openRequestID.ticket_id,
                 response_note: responseNote,
                 invalid_dates: []
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${auth.access_token}`
+                    'Authorization': `Bearer ${auth.}`
                 }
             });
             setOpenRequestID({});

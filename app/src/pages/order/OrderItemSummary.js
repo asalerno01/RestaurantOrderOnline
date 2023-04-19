@@ -24,7 +24,6 @@ const OrderItemSummary = ({ order, setOrder, handleEditItemClick, handleRemoveIt
         setOrder(temp);
         localStorage.setItem("order", JSON.stringify(temp));
     }
-    console.log(order)
     return (
         <>
         {
@@ -37,8 +36,12 @@ const OrderItemSummary = ({ order, setOrder, handleEditItemClick, handleRemoveIt
                             </div>
                             <div className={OrderItemSummaryStyles.details}>
                                 <span className={OrderItemSummaryStyles.name}>{orderItem.name}</span>
-                                <CartModifiers modifier={orderItem.modifier}/>
-                                <span className={OrderItemSummaryStyles.price}>{`$${getOrderItemPrice(orderItem.price, orderItem.count, orderItem.modifier.addons, orderItem.modifier.noOptions, orderItem.modifier.groups).toFixed(2)}`}</span>
+                                <CartModifiers
+                                    addons={orderItem.addons}
+                                    noOptions={orderItem.noOptions}
+                                    groups={orderItem.groups}
+                                />
+                                <span className={OrderItemSummaryStyles.price}>{`$${getOrderItemPrice(orderItem.price, orderItem.count, orderItem.addons, orderItem.noOptions, orderItem.groups).toFixed(2)}`}</span>
                             </div>
                             <div className={OrderItemSummaryStyles.buttons} onClick={e => e.stopPropagation()}>
                                 <div className={OrderItemSummaryStyles.count_wrapper}>

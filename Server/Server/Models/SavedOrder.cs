@@ -7,7 +7,7 @@ namespace Server.Models
     {
         public long SavedOrderId { get; set; }
         public string Name { get; set; }
-        public CustomerAccount CustomerAccount { get; set; }
+        public Account Account { get; set; }
         public DateTime LastOrderDate { get; set; } = DateTime.Now;
         public List<SavedOrderOrderItem> OrderItems { get; set; } = new();
     }

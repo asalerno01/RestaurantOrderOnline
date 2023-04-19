@@ -22,11 +22,11 @@ const ClosedRequests = () => {
             // https://flaviocopes.com/axios-send-authorization-header
             try {
                 const response = await axiosPrivate.get('/ticket/closed', {
-                    access_token: auth.access_token
+                    : auth.
                 },
                 {
                     headers: {
-                        'Authorization': `Bearer ${auth.access_token}`
+                        'Authorization': `Bearer ${auth.}`
                     }
                 });
                 console.log(response.data)

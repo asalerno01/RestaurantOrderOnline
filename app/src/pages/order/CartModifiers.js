@@ -1,18 +1,18 @@
 import React from 'react';
 import OrderDetailsModifiersStyles from './css/CartModifiers.module.css';
 
-const CartModifiers = ({ modifier }) => {
+const CartModifiers = ({ addons, noOptions, groups }) => {
     let modifierString = "";
 
-    modifier.groups.forEach(group => {
+    groups.forEach(group => {
         if (modifierString.length > 0) modifierString += " \u2022 ";
         modifierString += group.groupOptionName;
     });
-    modifier.addons.forEach(addon => {
+    addons.forEach(addon => {
         if (modifierString.length > 0) modifierString += " \u2022 ";
         modifierString += addon.name;
     });
-    modifier.noOptions.forEach(noOption => {
+    noOptions.forEach(noOption => {
         if (modifierString.length > 0) modifierString += " \u2022 ";
         modifierString += noOption.name;
     });

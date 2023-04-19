@@ -9,13 +9,12 @@ const useRefreshToken = () => {
             method: 'GET',
             url: 'https://localhost:7074/api/auth/refresh',
             withCredentials: true
-        })
+        });
         setAuth(prev => {
-            console.log("refreshing auth...")
-            console.log(response);
+            if (response.status === 204) return {};
             return {
                 ...prev,
-                customerAccountId: response.data.customerAccountId,
+                accountId: response.data.accountId,
                 email: response.data.email,
                 firstName: response.data.firstName,
                 lastName: response.data.lastName,

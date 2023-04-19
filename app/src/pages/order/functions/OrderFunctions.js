@@ -1,6 +1,4 @@
 export function removeOrderItem(order, index) {
-    console.log("removeOrderItem=>" + order);
-    console.log("Removing order item at index: " + index + ", " + "\n" + JSON.stringify(order.orderItems[index]));
     const temp = Object.assign({}, order);
     if (temp.orderItems.length === 1) {
         temp.orderItems = [];
@@ -41,14 +39,14 @@ export function getOrderSubtotal(order) {
     order.orderItems.forEach(orderItem => {
         subtotal += getOrderItemPrice(orderItem.price,
                             orderItem.count,
-                            orderItem.modifier.addons,
-                            orderItem.modifier.noOptions,
-                            orderItem.modifier.groups);
+                            orderItem.addons,
+                            orderItem.noOptions,
+                            orderItem.groups);
     });
     return Number(subtotal);
 }
 export function getOrderItemPrice(basePrice, orderItemCount, addons, noOptions, groups) {
-    console.log(noOptions)
+    
     let orderItemPrice = basePrice;
     addons.forEach(addon => { orderItemPrice += Number(addon.price); });
     noOptions.forEach(noOption => { orderItemPrice -= Number(noOption.price); });
