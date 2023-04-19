@@ -8,24 +8,21 @@ const RememberLogin = () => {
     const [isLoading, setIsLoading] = useState(true);
     const refresh = useRefreshToken();
     const { auth, remember } = useAuth();
-
     useEffect(() => {
-        if (!isEmptyObject(auth)) {
-            console.log("Attempting refresh.");
+        if (isEmptyObject(auth)) {
             let isMounted = true;
             const verifyRefreshToken = async () => {
                 try {
                     await refresh();
                 }
                 catch (err) {
-                    console.error(err);
+                    console.log(err);
                 }
                 finally {
                     isMounted && setIsLoading(false);
                 }
             }
-
-            !auth?.access_token && remember ? verifyRefreshToken() : setIsLoading(false);
+            !auth?.accessToken && remember ? verifyRefreshToken() : setIsLoading(false);
 
             return () => isMounted = false;
         } else {

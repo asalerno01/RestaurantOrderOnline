@@ -19,10 +19,10 @@ const useRefreshToken = () => {
                 first_name: response.data.first_name,
                 last_name: response.data.last_name,
                 employee_type: response.data.employee_type,
-                access_token: response.data.access_token
+                : response.data.
             }
         });
-        return response.data.access_token;
+        return response.data.;
     }
     return refresh;
 };

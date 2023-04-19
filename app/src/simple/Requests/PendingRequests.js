@@ -21,11 +21,11 @@ const PendingRequest = () => {
             // https://flaviocopes.com/axios-send-authorization-header
             try {
                 const response = await axiosPrivate.get('/ticket/pending', {
-                    access_token: auth.access_token
+                    : auth.
                 },
                 {
                     headers: {
-                        'Authorization': `Bearer ${auth.access_token}`
+                        'Authorization': `Bearer ${auth.}`
                     }
                 });
                 console.log(response.data.tickets)

@@ -1,15 +1,43 @@
 import React from 'react';
 import SavedOrderStyles from './css/SavedOrder.module.css';
+import { getOrderItemPrice } from './functions/OrderFunctions';
 
 const SavedOrder = (props) => {
     const handleSelectOrderClick = event => {
         let temp = Object.assign({}, props.order);
-        temp.orderItems = props.savedOrder.orderItems;
+        temp.orderItems = [];
+        props.savedOrder.orderItems.forEach(orderItem => {
+            temp.orderItems.push({
+                "itemId": orderItem.itemId,
+                "name": orderItem.itemName,
+                "price": getOrderItemPrice(orderItem.price, 1, orderItem.addons.map(addon => {
+                    return addon.addon;
+                }),
+                orderItem.noOptions.map(noOption => {
+                    return noOption.noOption
+                }),
+                orderItem.groups.map(group => {
+                    return group.group;
+                })),
+                "count": orderItem.count,
+                "addons": orderItem.addons.map(addon => {
+                    return addon.addon;
+                }),
+                "noOptions": orderItem.noOptions.map(noOption => {
+                    return noOption.noOption
+                }),
+                "groups": orderItem.groups.map(group => {
+                    return group.group;
+                })
+            });
+        });
+        console.log(temp)
         props.setOrder(temp);
+        props.cartIsOpen(true);
     }
     const OrderItems = ({ orderItems }) => {
         let orderItemString = "";
-        props.orderItems.forEach(orderItem => {
+        orderItems.forEach(orderItem => {
             if (orderItemString.length > 0) orderItemString += " \u2022 ";
             orderItemString += orderItem.itemName;
         });
@@ -23,7 +51,7 @@ const SavedOrder = (props) => {
         )
     }
     return (
-        <div className={SavedOrderStyles.savedorder} key={props.key}>
+        <div className={SavedOrderStyles.savedorder}>
             <button onClick={handleSelectOrderClick}>
                 <div className={SavedOrderStyles.details}>
                     <h3 className={SavedOrderStyles.header}>{props.savedOrder.savedOrderName}</h3>

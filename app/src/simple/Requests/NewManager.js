@@ -30,11 +30,11 @@ const NewManager = () => {
             // https://flaviocopes.com/axios-send-authorization-header
             try {
                 const response = await axiosPrivate.get('/ticket/get/leader/closed', {
-                    access_token: auth.access_token
+                    : auth.
                 },
                 {
                     headers: {
-                        'Authorization': `Bearer ${auth.access_token}`
+                        'Authorization': `Bearer ${auth.}`
                     }
                 });
                 isMounted = true;

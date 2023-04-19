@@ -14,7 +14,7 @@
     bottom: 0;
     right: 0;
     left: 0;
-    background-color: hsla(0, 0%, 0%, 0.6);
+    background-color: hsla(0, 0%, 0%, 0.7);
     z-index: 4;
 }
 .Login * {

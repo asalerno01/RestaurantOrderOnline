@@ -10,7 +10,7 @@ const useLogout = () => {
             url: "http://localhost:7074/api/auth/logout",
             withCredentials: true,
             data: {
-                access_token: auth.accessToken
+                : auth.accessToken
             }
         })
         .catch(err => {

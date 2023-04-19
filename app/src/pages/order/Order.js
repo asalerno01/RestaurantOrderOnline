@@ -13,33 +13,36 @@ import { createEmptyOrder, isEmptyObject } from './functions/OrderFunctions';
 import SavedOrder from './SavedOrder';
 import useAuth from '../../hooks/useAuth';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { useLocation } from 'react-router-dom';
 
 const Order = () => {
-    const customerAccountId = 1;
-    const auth = useAuth();
+    const { auth } = useAuth();
 
     const [items, setItems] = useState([]);
     const [categories, setCategories] = useState([]);
     const [order, setOrder] = useState(createEmptyOrder());
+    const [response, setResponse] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const [selectedItemData, setSelectedItemData] = useState({ item: null, index: null });
 
     const [cartOpen, setCartOpen] = useState(false);
     useEffect(() => {
-        const order = localStorage.getItem("order");
+        let order = localStorage.getItem("order");
         if (order !== null && order.length > 0)
-            setOrder(JSON.parse(order));
+            if (!isEmptyObject(auth))
+                setOrder(JSON.parse(order))
+            else {
+                console.log("removing localstorage order key");
+                localStorage.removeItem("order");
+            }
     }, []);
-    const [response, setResponse] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
 
     const getItems = async () => {
+        let categories = [];
         await axios.get("https://localhost:7074/api/category")
         .then(res => {
-            console.log(res);
             let items = [];
-            let categories = res.data;
+            categories = res.data;
             categories.forEach(category => {
                 category.items.forEach(item => {
                     items.push(item);
@@ -47,28 +50,26 @@ const Order = () => {
             });
             setItems(items);
             setCategories(categories);
-            return categories;
         })
         .catch(err => {
             console.log(err);
         });
+        if (!isEmptyObject(auth)) getSavedOrders(categories);
     }
     const getSavedOrders = async (categories) => {
         await axios({
             method: "GET",
-            url: `https://localhost:7074/api/orders/savedorders/${customerAccountId}`,
+            url: `https://localhost:7074/api/orders/savedorders/${auth.accountId}`,
             withCredentials: true,
             headers: {
                 Authorization: `Bearer ${auth?.accessToken}`
             }
         })
         .then(res => {
-            console.log(res);
             if (res.data.length > 0) {
-                res.data.forEach(savedOrder => {
-                    savedOrder.type = "SavedOrder";
-                });
-                setCategories([{ categoryId: 0, name: "Saved Orders", description: "", items: [...res.data] }, ...categories]);
+                res.data.forEach(savedOrder => savedOrder.type = "SavedOrder");
+                categories =  [{ categoryId: 0, name: "Saved Orders", description: "", items: [...res.data] }, ...categories];
+                setCategories(categories)
             }
         })
         .catch(err => {
@@ -77,10 +78,10 @@ const Order = () => {
     }
     useEffect(() => {
         getItems();
+        setIsLoading(false);
     }, []);
     useEffect(() => {
-        const tempCategories = getItems();
-        if (!isEmptyObject(auth)) getSavedOrders(tempCategories);
+        getItems();
         setIsLoading(false);
     }, [auth])
 
@@ -118,7 +119,6 @@ const Order = () => {
     const cartSliderRef = useRef();
 
     const Items = () => {
-        if (isLoading) return <LoadingSpinner />
         return (
             <div className={OrderStyles.categories}>
             {
@@ -130,20 +130,21 @@ const Order = () => {
                         </StickyBox>
                         <div className={OrderStyles.items}>
                         {
-                            category.items.map(item => {
+                            category.items.map((item, index) => {
                                 if (item?.type === "SavedOrder")
                                     return (
                                         <SavedOrder
                                             savedOrder={item}
                                             order={order}
                                             setOrder={setOrder}
-                                            key={item.itemId}
+                                            cartIsOpen={cartIsOpen}
+                                            key={`SavedOrderKey=${index}`}
                                         />
                                     )
                                 else
                                     return (
                                         <MenuItem
-                                            key={item.itemId}
+                                            key={`MenuItemKey-${item.itemId}`}
                                             itemId={item.itemId}
                                             name={item.name}
                                             price={item.price}

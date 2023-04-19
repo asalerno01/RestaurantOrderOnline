@@ -26,7 +26,7 @@ const Requests = () => {
             url: 'http://localhost:3001/ticket',
             withCredentials: true,
             headers: {
-                'Authorization': `Bearer ${auth.access_token}`
+                'Authorization': `Bearer ${auth.}`
             }
         })
         /*

@@ -33,7 +33,7 @@ const ManagerRequests = () => {
             url: 'http://localhost:3001/ticketresponse/create',
             withCredentials: true,
             // headers: {
-            //     'Authorization': `Bearer ${auth.access_token}`
+            //     'Authorization': `Bearer ${auth.}`
             // },
             data: {
                 ticket_id: 1,

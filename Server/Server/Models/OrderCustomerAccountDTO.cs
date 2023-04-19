@@ -2,9 +2,9 @@
 
 namespace Server.Models
 {
-    public class OrderCustomerAccountDTO
+    public class OrderAccountDTO
     {
-        public long? CustomerAccountId { get; set; }
+        public long? AccountId { get; set; }
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

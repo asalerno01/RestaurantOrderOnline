@@ -26,7 +26,7 @@ namespace SalernoServer
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> LoginCustomerAccount([FromBody] LoginModel loginModel)
+        public async Task<IActionResult> LoginAccount([FromBody] LoginModel loginModel)
         {
             var cookie = Request.Cookies["RefreshToken"];
             foreach (string s in Request.Cookies.Keys)
@@ -37,12 +37,12 @@ namespace SalernoServer
             {
                 Console.WriteLine($"===== Cookie Value=>{cookie}");
             }
-            var customerAccount = _context.CustomerAccounts.Where(a => a.Email.Equals(loginModel.Email)).FirstOrDefault();
-            if (customerAccount is not null && customerAccount.Password.Equals(loginModel.Password))
+            var account = _context.Accounts.Where(a => a.Email.Equals(loginModel.Email)).FirstOrDefault();
+            if (account is not null && account.Password.Equals(loginModel.Password))
             {
                 var authClaims = new List<Claim>
                 {
-                    new Claim("Email", customerAccount.Email),
+                    new Claim("Email", account.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 };
 
@@ -50,9 +50,9 @@ namespace SalernoServer
                 var refreshToken = CreateRefreshToken(authClaims);
 
                 var refTokString = new JwtSecurityTokenHandler().WriteToken(refreshToken);
-                customerAccount.RefreshToken = refTokString;
+                account.RefreshToken = refTokString;
 
-                _context.Update(customerAccount);
+                _context.Update(account);
                 await _context.SaveChangesAsync();
 
                 var cookieOptions = new CookieOptions
@@ -67,12 +67,12 @@ namespace SalernoServer
                 Response.Cookies.Append("RefreshToken", refTokString, cookieOptions);
                 return Ok(new
                 {
-                    customerAccountId = customerAccount.CustomerAccountId,
+                    accountId = account.AccountId,
                     accessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
-                    Email = customerAccount.Email,
-                    FirstName = customerAccount.FirstName,
-                    lastName = customerAccount.LastName,
-                    phoneNumber = customerAccount.PhoneNumber
+                    Email = account.Email,
+                    FirstName = account.FirstName,
+                    lastName = account.LastName,
+                    phoneNumber = account.PhoneNumber
                 });
             }
             return Unauthorized();
@@ -82,9 +82,9 @@ namespace SalernoServer
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel registerModel)
         {
-            var customerAccountExists = _context.CustomerAccounts.Where(ca => ca.Email.Equals(registerModel.Email)).Any();
-            if (customerAccountExists) return StatusCode(500);
-            CustomerAccount customerAccount = new()
+            var accountExists = _context.Accounts.Where(ca => ca.Email.Equals(registerModel.Email)).Any();
+            if (accountExists) return StatusCode(500);
+            Account account = new()
             {
                 Email = registerModel.Email,
                 FirstName = registerModel.FirstName,
@@ -92,7 +92,7 @@ namespace SalernoServer
                 Password = registerModel.Password,
                 PhoneNumber = registerModel.PhoneNumber
             };
-            var result = await _context.CustomerAccounts.AddAsync(customerAccount);
+            var result = await _context.Accounts.AddAsync(account);
             await _context.SaveChangesAsync();
 
             return Ok();
@@ -103,7 +103,7 @@ namespace SalernoServer
         {
             var refreshToken = Request.Cookies["RefreshToken"];
             Console.WriteLine($"Logout refresh token=>{refreshToken}");
-            var foundAccount = await _context.CustomerAccounts.Where(ca => ca.RefreshToken.Equals(refreshToken)).FirstOrDefaultAsync();
+            var foundAccount = await _context.Accounts.Where(ca => ca.RefreshToken.Equals(refreshToken)).FirstOrDefaultAsync();
             if (foundAccount is null) return BadRequest("Can't find account");
             foundAccount.RefreshToken = "";
             _context.Update(foundAccount);
@@ -125,8 +125,8 @@ namespace SalernoServer
         {
             Console.WriteLine("refreshing");
             string? refreshToken = Request.Cookies["RefreshToken"];
-            if (string.IsNullOrEmpty(refreshToken)) return StatusCode(403);
-            Console.WriteLine(refreshToken);
+            if (string.IsNullOrEmpty(refreshToken)) return NoContent();
+            Console.WriteLine("RefreshToken==============>" + refreshToken);
             
             var principal = ValidateToken(refreshToken);
             if (principal is null)
@@ -136,8 +136,8 @@ namespace SalernoServer
             string emailFromClaim = principal.Claims.Where(c => c.Type.Equals("Email")).FirstOrDefault().Value;
             if (emailFromClaim is null) return BadRequest("Bad email");
             Console.WriteLine(emailFromClaim);
-            var customerAccount = _context.CustomerAccounts.Where(a => a.Email.Equals(emailFromClaim)).FirstOrDefault();
-            if (customerAccount is null)
+            var account = _context.Accounts.Where(a => a.Email.Equals(emailFromClaim)).FirstOrDefault();
+            if (account is null)
                 return BadRequest("Invalid token account!");
             Console.WriteLine(DateTime.UtcNow.TimeOfDay.Ticks + " - " + principal.Claims.Where(c => c.Type.Equals("exp")).FirstOrDefault().Value);
             var tokenDate = DateTimeOffset.FromUnixTimeSeconds(long.Parse(principal.Claims.Where(c => c.Type.Equals("exp")).FirstOrDefault().Value)).UtcDateTime;
@@ -148,19 +148,19 @@ namespace SalernoServer
             Console.WriteLine($"Token Date => {tokenDate}, Current Date => {now}");
             if (!valid)
             {
-                customerAccount.RefreshToken = "";
+                account.RefreshToken = "";
                 Response.Cookies.Delete("refreshtoken");
                 return StatusCode(403);
             }
-            if (!customerAccount.RefreshToken.Equals(refreshToken))
+            if (!account.RefreshToken.Equals(refreshToken))
             {
-                customerAccount.RefreshToken = "";
+                account.RefreshToken = "";
                 return BadRequest("Token does not match DB");
             }
 
             var authClaims = new List<Claim>
                 {
-                    new Claim("Email", customerAccount.Email),
+                    new Claim("Email", account.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
@@ -172,11 +172,11 @@ namespace SalernoServer
 
             return Ok(new
             {
-                customerAccountId = customerAccount.CustomerAccountId,
-                firstName = customerAccount.FirstName,
-                lastName = customerAccount.LastName,
-                email = customerAccount.Email,
-                phoneNumber = customerAccount.PhoneNumber,
+                accountId = account.AccountId,
+                firstName = account.FirstName,
+                lastName = account.LastName,
+                email = account.Email,
+                phoneNumber = account.PhoneNumber,
                 accessToken = tok
             });
         }
