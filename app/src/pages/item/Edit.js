@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import FilterButton from '../../components/FilterButton';
 import QuestionIcon from "../../components/QuestionIcon";
 import ButtonTabs from "../../components/ButtonTabs";
@@ -9,12 +9,14 @@ import './css/edit.css';
 
 export default function Edit() {
     const { itemId } = useParams();
+    const location = useLocation();
+
     const [item, setItem] = useState({
         "itemId": "",
         "name": "",
         "description": "",
         "department": "",
-        "categoryName": "",
+        "categoryId": 0,
         "upc": "",
         "sku": "",
         "price": 0,
@@ -36,6 +38,7 @@ export default function Edit() {
 
     const [dialogOpen, setDialogOpen] = useState(false);
     const navigate = useNavigate();
+
     const getItem = async () => {
         await axios.get(`https://localhost:7074/api/items/${itemId}`)
         .then(res => {
@@ -47,9 +50,10 @@ export default function Edit() {
         });
     }
     const getCategories = async () => {
-        await axios.get(`https://localhost:7074/api/category`)
+        await axios.get(`https://localhost:7074/api/category/simple`)
         .then(res => {
-            console.log(res.data);
+            if (location.pathname === "/salerno/items/new")
+                item.categoryId = res.data[0].categoryId;
             setCategories(res.data);
         })
         .catch(function (err) {
@@ -57,22 +61,27 @@ export default function Edit() {
         });
     }
     useEffect(() => {
-        if (itemId !== undefined)
-            getItem();
+        if (itemId !== undefined && location.pathname !== "/salerno/items/new") getItem();
         getCategories();
     }, []);
 
     const handleSave = async event => {
-        event.preventDefault();
-        console.log("SAVING ITEM => " + JSON.stringify(item));
-        await axios.put(`https://localhost:7074/api/items/${item.itemId}`, item)
-        .then(res => {
-            console.log(res);
-            navigate("/salerno/items");
-        })
-        .catch(err => {
-            console.log(err);
-        });
+        console.log(JSON.stringify(item))
+        if (itemId === undefined) {
+            await axios.post("https://localhost:7074/api/items", item)
+            .catch(err => console.log(err));
+        }
+        else {
+            console.log("putting")
+            await axios.put(`https://localhost:7074/api/items/${item.itemId}`, item)
+            .then(res => {
+                console.log(res);
+                navigate("/salerno/items");
+            })
+            .catch(err => {
+                console.log(err);
+            });
+        }
     }
     const handleSaveButtonClick = () => {
         console.log("saving item...");
@@ -84,9 +93,10 @@ export default function Edit() {
         const attributeType = event.target.attributes.attributeType.value;
         let tempItem = Object.assign({}, item);
         tempItem[attributeType] = value;
+        console.log(JSON.stringify(tempItem))
         setItem(tempItem);
     }
-    console.log(item)
+    if ((itemId === undefined || itemId === "undefined") && location.pathname !== "/salerno/items/new") return navigate("/salerno/items");
 
     return (
         <div className='EditItem'>
@@ -130,10 +140,10 @@ export default function Edit() {
                             </div>
                             <div>
                                 <label htmlFor='category-input'>Category <QuestionIcon /></label>
-                                <select className='EditItem_Input' value={item.categoryName} attributeType="categoryName" onChange={handleInputChange} id='category-input'>
+                                <select className='EditItem_Input' value={item.categoryId} attributeType="categoryId" onChange={handleInputChange} id='category-input'>
                                 {
                                     categories.map(category => (
-                                        <option value={category.name}>{category.name}</option>
+                                        <option key={`category-${category.categoryId}`} value={category.categoryId}>{category.name}</option>
                                     ))
                                 }
                                 </select>
@@ -155,7 +165,7 @@ export default function Edit() {
                         <div className='edit-content-test edit-dark-border'>
                             <div>
                                 <label htmlFor='sale-price-input'>Sales Price <div className='EditItem_Required_Field_Indicator'></div></label>
-                                <input type='text' className='EditItem_Input' value={item['price']} attributeType="price" onChange={handleInputChange} id='sale-price-input'/>
+                                <input type='text' className='EditItem_Input' value={item.price} attributeType="price" onChange={handleInputChange} id='sale-price-input'/>
                             </div>
                             <div>
                                 <label htmlFor='price-type-input'>Price Type</label>

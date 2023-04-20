@@ -49,6 +49,13 @@ namespace SalernoServer.Controllers
             }
             return Ok(categoryDTOList);
         }
+        [HttpGet]
+        [Route("simple")]
+        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategoriesSimple()
+        {
+            var categories = await _context.Categories.ToListAsync();
+            return Ok(categories.Select(category => new CategoryDTO(category.CategoryId, category.Name, category.Description)).ToList());
+        }
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryDTO>> GetCategory(long id)
         {

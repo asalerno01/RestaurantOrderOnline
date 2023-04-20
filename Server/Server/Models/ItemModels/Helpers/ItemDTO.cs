@@ -10,7 +10,7 @@ namespace Server.Models.ItemModels.Helpers
             Name = item.Name;
             Description = item.Description;
             Department = item.Department;
-            CategoryName = item.Category.Name;
+            CategoryId = item.Category.CategoryId;
             UPC = item.UPC;
             SKU = item.SKU;
             Price = item.Price;
@@ -33,7 +33,7 @@ namespace Server.Models.ItemModels.Helpers
         public string Name { get; set; }
         public string Description { get; set; }
         public string Department { get; set; }
-        public String CategoryName { get; set; }
+        public long CategoryId { get; set; }
         public string UPC { get; set; }
         public string SKU { get; set; }
         public decimal Price { get; set; }

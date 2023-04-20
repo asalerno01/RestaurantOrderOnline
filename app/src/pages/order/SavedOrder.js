@@ -7,18 +7,11 @@ const SavedOrder = (props) => {
         let temp = Object.assign({}, props.order);
         temp.orderItems = [];
         props.savedOrder.orderItems.forEach(orderItem => {
+            console.log(orderItem)
             temp.orderItems.push({
                 "itemId": orderItem.itemId,
                 "name": orderItem.itemName,
-                "price": getOrderItemPrice(orderItem.price, 1, orderItem.addons.map(addon => {
-                    return addon.addon;
-                }),
-                orderItem.noOptions.map(noOption => {
-                    return noOption.noOption
-                }),
-                orderItem.groups.map(group => {
-                    return group.group;
-                })),
+                "price": orderItem.price,
                 "count": orderItem.count,
                 "addons": orderItem.addons.map(addon => {
                     return addon.addon;

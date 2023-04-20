@@ -128,7 +128,7 @@
 
 .Orders_OrderItem_Modal_Container {
     position: absolute;
-    z-index: 1;
+    z-index: 5;
     width: 500px;
     top: 0;
     bottom: 0;
@@ -194,7 +194,7 @@
         "count addons addons"
         "count noOptions noOptions"
         "count groups groups";
-    padding: 15px 0;
+    margin: 15px 0;
 }
 .Orders_OrderItem_Modal_Details_Content_Item_Base_Details {
     grid-area: details;
