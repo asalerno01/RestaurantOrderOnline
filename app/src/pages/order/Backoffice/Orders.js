@@ -4,13 +4,11 @@ import { BsFillCheckCircleFill, BsCheckSquareFill, BsCalendarWeek } from 'react-
 import { TiArrowSortedUp, TiArrowSortedDown } from 'react-icons/ti';
 import { MdPending, MdOutlinePending, MdOutlineCheckCircleOutline } from 'react-icons/md';
 import { IoMdClose } from 'react-icons/io';
-import { TbSquare } from 'react-icons/tb';
-import { FcCheckmark } from 'react-icons/fc';
 import { IconContext } from 'react-icons/lib';
 import MiniCalendar from '../../../components/MiniCalendar';
 import { getLastSevenDays, monthStrings } from '../../../components/functions/DateInfo';
 import './orders.css';
-import { isEmptyObject } from '../functions/OrderFunctions';
+import { getOrderItemPrice, isEmptyObject } from '../functions/OrderFunctions';
 import StickyBox from 'react-sticky-box';
 
 const Orders = () => {
@@ -20,42 +18,38 @@ const Orders = () => {
     const [miniCalendarOpen, setMiniCalendarOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
-
-    const handleFilterDate = (dateArr) => {
-        console.log(dateArr);
-    }
-    const currDate = new Date();
+    const [items, setItems] = useState([]);
     const [filterDate, setFilterDate] = useState(getLastSevenDays());
 
     const getOrders = async () => {
-        await axios.get("https://localhost:7074/api/orders")
-            .then(res => {
-                console.log(res.data);
-                setOrders(res.data);
-            }).catch(err => {
-                console.log(err);
-            });
+        await axios({
+            method: "POST",
+            url: "https://localhost:7074/api/orders/date",
+            data: {
+                startDate: new Date(filterDate[0].Year, filterDate[0].Month - 1, filterDate[0].Day).toISOString(),
+                endDate: new Date(filterDate[1].Year, filterDate[1].Month - 1, filterDate[1].Day).toISOString()
+            }
+        })
+        .then(res => {
+            console.log(res.data)
+            setOrders(res.data);
+            setIsLoading(false);
+        })
+        .catch(err => {
+            console.log(err);
+        });
     }
-    useEffect(() => {
-        getOrders();
-        setIsLoading(false);
-    }, []);
+    useEffect(() => { getOrders(); }, [filterDate]);
 
-    const openOrder = (id) => {
-        const order = orders.find(order => order["orderId"] === id);
-        setOpenItem(order);
-    }
 
     const CalendarButton = () => {
         return (
             <>
                 <button className="Orders_OrderItem_Calendar_Button" onClick={() => setMiniCalendarOpen(prev => !prev)}>
-                    <IconContext.Provider value={{ style: { verticalAlign: 'middle', marginRight: "5px"}, size: '1em' }}>
-                        <BsCalendarWeek className='calendar-icon' />
-                    </IconContext.Provider>
-                    <div>{`${monthStrings[filterDate[0].Month - 1]} ${filterDate[0].Day}, ${filterDate[0].Year} - ${monthStrings[filterDate[1].Month - 1]} ${filterDate[1].Day}, ${filterDate[1].Year}`}</div>
+                    <BsCalendarWeek size={"1em"} style={{ verticalAlign: 'middle', marginRight: "5px" }} className='calendar-icon' />
+                    <span>{`${monthStrings[filterDate[0].Month - 1]} ${filterDate[0].Day}, ${filterDate[0].Year} - ${monthStrings[filterDate[1].Month - 1]} ${filterDate[1].Day}, ${filterDate[1].Year}`}</span>
                 </button>
-                <MiniCalendar handleFilterDate={handleFilterDate} miniCalendarOpen={miniCalendarOpen} setMiniCalendarOpen={setMiniCalendarOpen} daySelected={daySelected} setDaySelected={setDaySelected} setFilterDate={setFilterDate} />
+                <MiniCalendar miniCalendarOpen={miniCalendarOpen} setMiniCalendarOpen={setMiniCalendarOpen} setFilterDate={setFilterDate} filterDate={filterDate}/>
             </>
         )
     }
@@ -64,24 +58,17 @@ const Orders = () => {
         if (!isNaN(modifier[type]["price"]) && modifier[type]["price"] > 0) return `${modifier[type]["name"]} ($${modifier[type]["price"].toFixed(2)})`;
         return modifier[type]["name"];
     }
-
-    const Status = ({ status }) => {
-        if (status === "Complete") return <><span className="Orders_Status_Checkmark_Icon_Wrapper"><MdOutlineCheckCircleOutline size={"1em"}/></span>{status}</>
-        return <><span className="Orders_Status_Checkmark_Icon_Wrapper"><MdOutlinePending size={"1em"}/></span>{status}</>
-    }
-
-    function formatDate(dateString) {
-        let split = dateString.split("T")[0].split("-");
-        if (split[1][0] === "0") split[1] = split[1][1];
-        if (split[2][0] === "0") split[2] = split[2][1];
-        return `${split[1]}/${split[2]}/${split[0]}`
+    function getOrderItemPrice(orderItem) {
+        let orderItemPrice = orderItem.basePrice;
+        orderItem.addons.forEach(addon => { orderItemPrice += Number(addon.addon.price); });
+        orderItem.noOptions.forEach(noOption => { orderItemPrice -= Number(noOption.noOption.price); });
+        orderItem.groups.forEach(group => { orderItemPrice += Number(group.group.price); });
+        return Number(orderItemPrice * orderItem.count);
     }
     function formatTime(dateString) {
-        console.log(dateString)
         var date = new Date(dateString);
         var hours = date.getHours();
         var minutes = date.getMinutes();
-          
         // Check whether AM or PM
         var newformat = hours >= 12 ? 'PM' : 'AM';
           
@@ -90,14 +77,9 @@ const Orders = () => {
           
         // To display "0" as "12"
         hours = hours ? hours : 12;
-        minutes = minutes < 10 ? '0' + minutes : minutes;
+        // minutes = minutes < 10 ? '0' + minutes : minutes;
         
-        return `${hours}:${minutes} ${newformat}`;
-    }
-
-    const handleClose = event => {
-        event.preventDefault();
-        setOpenItem({});
+        return `${hours}:${(minutes < 10) ? "0" + minutes : minutes} ${newformat}`;
     }
 
     const Checkbox = () => {
@@ -107,40 +89,39 @@ const Orders = () => {
             </span>
         )
     }
-
-    function checkDate(date) {
-        const min_time = new Date(filterDate[0].Year, filterDate[0].Month - 1, filterDate[0].Day).getTime();
-        const max_time = new Date(filterDate[1].Year, filterDate[1].Month - 1, filterDate[1].Day).getTime();
-        const checked_time = new Date(date).getTime();
-        console.log(max_time && checked_time > min_time)
-        // return checked_time < max_time && checked_time > min_time;
-        return true;
+    const handleOrderItemClick = async (orderId) => {
+        await axios({
+            method: "GET",
+            url: `https://localhost:7074/api/orders/${orderId}`
+        })
+        .then(res => setOpenItem(res.data))
+        .catch(err => console.log(err));
     }
 
-    const OrderItem = () => {
+    const OpenItem = () => {
         if (isEmptyObject(openItem)) return <></>
         else return (
-            <div className="Orders_OrderItem_Modal_Stretch" onClick={handleClose}>
+            <div className="Orders_OrderItem_Modal_Stretch" onClick={() => setOpenItem({})}>
                 <div className="Orders_OrderItem_Modal_Container" onClick={e => e.stopPropagation()}>
                     <div className="Orders_OrderItem_Modal">
                         <div className="Orders_OrderItem_Modal_Header">
                             <h2 className="Orders_OrderItem_Modal_Header_Title">Order #{openItem.orderId}</h2>
-                            <div className="Orders_OrderItem_Modal_Close_Button" onClick={handleClose}><IoMdClose size={"1.5em"}/></div>
+                            <div className="Orders_OrderItem_Modal_Close_Button" onClick={() => setOpenItem({})}><IoMdClose size={"1.5em"}/></div>
                         </div>
                         <div className="Orders_OrderItem_Modal_Gap"></div>
                         <div className="Orders_OrderItem_Modal_Customer_Details">
                             <h2 className="Orders_OrderItem_Modal_Customer_Details_Header">Pick-Up Details</h2>
                             <div className="Orders_OrderItem_Modal_Customer_Details_Item">
                                 <div className="Orders_OrderItem_Modal_Customer_Details_Label">Customer</div>
-                                <div className="Orders_OrderItem_Modal_Customer_Details_Value">{(openItem.customerAccount === null) ? "New Customer" : `${openItem.customerAccount.firstName} ${openItem.customerAccount.lastName}`}</div>
+                                <div className="Orders_OrderItem_Modal_Customer_Details_Value">{(openItem.account === null) ? "New Customer" : `${openItem.account.firstName} ${openItem.account.lastName}`}</div>
                             </div>
                             <div className="Orders_OrderItem_Modal_Details_Border"></div>
                             <div className="Orders_OrderItem_Modal_Customer_Details_Item">
                                 <div className="Orders_OrderItem_Modal_Customer_Details_Label">Picked Up</div>
                                 <div className="Orders_OrderItem_Modal_Customer_Details_Value">
-                                    {(openItem.pickUpDate === null) ? "Pending" : formatTime(openItem.pickUpDate)}
+                                    {(openItem.pickUpDate === null) ? "Pending" : formatTime(openItem.pickupDate)}
                                     <span style={{marginLeft: "10px"}} className="Orders_OrderItem_Modal_Customer_Details_Value--description">
-                                        {`${formatTime(new Date(openItem.orderDate).setMinutes(new Date(openItem.orderDate).getMinutes() + 20))}`}
+                                        {`(Quoted ${formatTime(new Date(openItem.orderDate).setMinutes(new Date(openItem.orderDate).getMinutes() + 20))})`}
                                     </span>
                                 </div>
                                 <div className="Orders_OrderItem_Modal_Customer_Details_Value">{new Date(openItem["orderDate"]).toLocaleDateString()}</div>
@@ -153,16 +134,16 @@ const Orders = () => {
                             {
                                 openItem["orderItems"].map(orderItem => (
                                     <div key={`order-${openItem["orderId"]}-orderitem-${orderItem["orderItemId"]}`} className="Orders_OrderItem_Modal_Details_Content_Item">
-                                        <div className="Orders_OrderItem_Modal_Details_Content_Item_Count">1x</div>
+                                        <div className="Orders_OrderItem_Modal_Details_Content_Item_Count">{orderItem.count}x</div>
                                         <div className="Orders_OrderItem_Modal_Details_Content_Item_Base_Details">
                                             <div className="Orders_OrderItem_Modal_Details_Content_Item_Name">{orderItem["itemName"]}</div>
-                                            <div className="Orders_OrderItem_Modal_Details_Content_Item_Price">$11.95</div>
+                                            <div className="Orders_OrderItem_Modal_Details_Content_Item_Price">${getOrderItemPrice(orderItem).toFixed(2)}</div>
                                         </div>
                                         <div className="Orders_OrderItem_Modal_Details_Content_Item_Modifiers_Addons">
                                         {
                                             (orderItem["addons"].length === 0) ? <></> : orderItem["addons"].map(addon => (
                                                 <div key={`order-${openItem["orderId"]}-orderitem-${orderItem["orderItemId"]}-addon-${addon["addon"]["addonId"]}`}>
-                                                    <span className="Orders_OrderItem_Modal_Details_Content_Item_Modifiers_List_Item_Modifier_Label">Add-On:</span>
+                                                    <span className="Orders_OrderItem_Modal_Details_Content_Item_Modifiers_List_Item_Modifier_Label">Addon:</span>
                                                     <span className="Orders_OrderItem_Modal_Details_Content_Item_Modifiers_List_Item_Modifier">{getModifierLabel(addon, "addon")}</span>
                                                 </div>
                                             ))
@@ -216,7 +197,7 @@ const Orders = () => {
     if (isLoading) return <div>Loading...</div>
     return (
         <div className="Orders">
-                <OrderItem />
+                <OpenItem />
                 <div className="Orders_Header">
                     <h1 className="Orders_Header_Title">Orders</h1>
                 </div>
@@ -264,19 +245,16 @@ const Orders = () => {
                     <table className="Orders_Content_Table">
                         <tbody>
                         {
-                            orders.map(order => {
-                                if (checkDate(order["orderDate"])) {
-                                    return (
-                                        <tr key={"orderid-" + order["orderId"]} onClick={() => openOrder(order["orderId"])}>
-                                            <td>{order["orderId"]}</td>
-                                            <td><Status status={order["status"]} /></td>
-                                            <td>{formatDate(order["orderDate"])}</td>
-                                            <td>{formatTime(order["orderDate"])}</td>
-                                            <td className="Orders_Content_Table_Name_Col">{(order.customerAccount === null) ? "New Customer" : `${(order["customerAccount"]["firstName"])} ${order["customerAccount"]["lastName"]}`}</td>
-                                        </tr>
-                                    )
-                                }
-                            })
+                            (isLoading) ? <></> : orders.map(order => (
+                                    <tr key={"orderid-" + order["orderId"]} onClick={() => handleOrderItemClick(order.orderId)}>
+                                        <td>{order["orderId"]}</td>
+                                        <td>{order.status}</td>
+                                        <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+                                        <td>{formatTime(order["orderDate"])}</td>
+                                        <td className="Orders_Content_Table_Name_Col">{`${(order["firstName"])} ${order["lastName"]}`}</td>
+                                    </tr>
+                                )
+                            )
                         }
                         </tbody>
                     </table>

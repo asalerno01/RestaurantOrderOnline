@@ -3,13 +3,13 @@ import { firstDayOfMonth, getDaysPerMonth } from './functions/DateInfo';
 import NavArrow from './NavArrow';
 import './css/minicalendar.css';
 
-const MiniCalendar = ({ miniCalendarOpen, setMiniCalendarOpen, setFilterDate }) => {
+const MiniCalendar = ({ miniCalendarOpen, setMiniCalendarOpen, setFilterDate, filterDate }) => {
 
     const [highlight, setHighlight] = useState(null);
     const date = new Date();
     const [currentDateSelected, setCurrentDateSelected] = useState({ Day: 1, Month: date.getMonth() + 1, Year: date.getFullYear() });
     
-    const [dateSelected, setDateSelected] = useState([]);
+    const [dateSelected, setDateSelected] = useState(filterDate);
     
     if (!miniCalendarOpen) return;
 
@@ -456,14 +456,14 @@ const MiniCalendar = ({ miniCalendarOpen, setMiniCalendarOpen, setFilterDate }) 
                             <div className='StartDate'>
                                 <label htmlFor='start-date'>
                                     Start Date
-                                    <input type='text' id='start-date' value={getStartDate()} />
+                                    <input type='text' id='start-date' disabled={true} value={getStartDate()} />
                                 </label>
                                 
                             </div>
                             <div className='EndDate'>
                                 <label htmlFor='end-date'>
                                     End Date
-                                    <input type='text' id='end-date' value={getEndDate()} />
+                                    <input type='text' id='end-date' disabled={true} value={getEndDate()} />
                                 </label>
                             </div>
                         </div>

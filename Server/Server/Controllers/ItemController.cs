@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using SalernoServer.Models;
 using SalernoServer.Models.ItemModels;
 using Server.Models.ItemModels.Helpers;
@@ -84,22 +85,14 @@ namespace SalernoServer.Controllers
             {
                 return NotFound();
             }
-            var category = await _context.Categories.Where(c => c.Name.Equals(item.CategoryName)).FirstOrDefaultAsync();
-            if (category is null)
-            {
-                Console.WriteLine($"Creating new category: {item.CategoryName}");
-                category = new()
-                {
-                    Name = item.CategoryName
-                };
-                category.Items.Add(newItem);
-            }
+            var category = await _context.Categories.FindAsync(item.CategoryId);
+            if (category is null) return BadRequest("Bad category");
 
             newItem.ItemId = item.ItemId;
             newItem.Name = item.Name;
             newItem.Description = item.Description;
             newItem.Department = item.Department;
-            newItem.Category = category; 
+            newItem.Category = category;
             newItem.SKU = item.SKU;
             newItem.UPC = item.UPC;
             newItem.Price = item.Price;
@@ -123,18 +116,42 @@ namespace SalernoServer.Controllers
             return Ok();
         }
 
-        // POST: api/Items
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Item>> PostItem(Item item)
+        public async Task<ActionResult<Item>> PostItem([FromBody] ItemHelper itemHelper)
         {
-            _context.Items.Add(item);
+            if (itemHelper is null) return BadRequest("ItemHelper is null");
+            var category = await _context.Categories.FindAsync(itemHelper.CategoryId);
+            if (category is null) return BadRequest("Bad category");
+
+            Item newItem = new()
+            {
+                ItemId = itemHelper.ItemId.Equals("") ? Guid.NewGuid().ToString() : itemHelper.ItemId,
+                Name = itemHelper.Name,
+                Description = itemHelper.Description,
+                Department = itemHelper.Department,
+                Category = category,
+                SKU = itemHelper.SKU,
+                UPC = itemHelper.UPC,
+                Price = itemHelper.Price,
+                Discountable = itemHelper.Discountable,
+                Taxable = itemHelper.Taxable,
+                TrackingInventory = itemHelper.TrackingInventory,
+                Cost = itemHelper.Cost,
+                AssignedCost = itemHelper.AssignedCost,
+                Quantity = itemHelper.Quantity,
+                ReorderTrigger = itemHelper.ReorderTrigger,
+                RecommendedOrder = itemHelper.RecommendedOrder,
+                LastSoldDate = itemHelper.LastSoldDate,
+                Supplier = itemHelper.Supplier,
+                LiabilityItem = itemHelper.LiabilityItem,
+                LiabilityRedemptionTender = itemHelper.LiabilityRedemptionTender,
+                TaxGroupOrRate = itemHelper.TaxGroupOrRate
+            };
+
+            await _context.Items.AddAsync(newItem);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(
-                nameof(GetItem), 
-                new { id = item.ItemId }, 
-                item);
+            return Ok();
         }
 
         // DELETE: api/Items/5

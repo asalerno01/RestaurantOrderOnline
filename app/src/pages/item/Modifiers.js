@@ -16,6 +16,8 @@ const Modifiers = () => {
     const { itemId } = useParams();
     const navigate = useNavigate();
     const [items, setItems] = useState([]);
+    const [basePrice, setBasePrice] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
 
     const [modifiers, setModifiers] = useState({
         "name": "",
@@ -35,6 +37,7 @@ const Modifiers = () => {
         .then(res => {
             console.log(res);
             if (res.data.modifier == null) {
+                console.log("hey")
                 setModifiers({
                     "modifierId": 0,
                     "name": res.data.name,
@@ -47,6 +50,7 @@ const Modifiers = () => {
             } else {
                 let temp = res.data.modifier;
                 temp["name"] = res.data.name;
+                console.log(temp)
                 setModifiers(temp);
             }
             
@@ -58,17 +62,19 @@ const Modifiers = () => {
     const getItems = async () => {
         await axios.get('https://localhost:7074/api/items')
         .then(res => {
+            const data = res.data;
+            setBasePrice((data => data.itemId === itemId).price);
+            setModifiers((data => data.itemId === itemId).modifier);
             setItems(res.data);
+            setIsLoading(false);
         })
         .catch(function (err) {
             console.log(err.message);
         });
     }
     useEffect(() => {
-        if (itemId !== undefined) {
-            getModifiers();
-            getItems();
-        }
+        getModifiers();
+        getItems();
     }, []);
 
     const handleAddGroup = () => {
@@ -217,7 +223,7 @@ const Modifiers = () => {
             "groups": [],
             "addons": [],
             "noOptions": []
-        }
+        };
         modifiers["groups"].forEach(group => {
             let id;
             if (isNaN(group["groupId"]) || modifiers["modifierId"] === 0) 
@@ -271,7 +277,7 @@ const Modifiers = () => {
             };
             data["noOptions"].push(tempNoOption);
         });
-        console.log(JSON.stringify(data));
+        console.log(data)
 
         await axios.post("https://localhost:7074/api/modifier", data)
             .then(res => {
@@ -295,6 +301,7 @@ const Modifiers = () => {
     }
     const handleCopyModifiers = (id) => {
         console.log(id)
+        console.log(modifiers)
         const newModifiers = items.find(item => item["itemId"] === id);
         let r = newModifiers["modifier"]
         let x = {
@@ -306,9 +313,13 @@ const Modifiers = () => {
             "addons": r["addons"],
             "noOptions": r["noOptions"]
         }
+        console.log(x);
         setModifiers(x);
         setCopyDropdown({ "type": "Groups", "value": newModifiers["name"]})
     }
+    console.log(isLoading)
+    if (itemId === undefined || itemId === "undefined") return navigate("/salerno/items");
+    if (isLoading) return <></>
     return (
         <div className='Modifiers'>
             <div className='PageLayout_Header'>
@@ -322,7 +333,7 @@ const Modifiers = () => {
                 <div className='Modifiers_Content_Border_Fix'>    
                     <div className='Modifiers_Content'>    
                         <div className='Modifiers_Item_Name_Container' id='item-name-row'>
-                            <div className='Modifiers_Item_Name'>{modifiers['name']}</div>
+                            <div className='Modifiers_Item_Name'>NAME</div>
                         </div>
                         <div className='Modifiers_Grid'>
                             <div className='Modifiers_Base_Sale_Header'>
@@ -330,7 +341,7 @@ const Modifiers = () => {
                                     <span className='Modififers_Base_Sale_Label'>
                                         <b>Base Sales Price</b>
                                     </span>
-                                    <span className='Modififers_Base_Sale_Value'>0.00</span>
+                                    <span className='Modififers_Base_Sale_Value'>{`${basePrice}`}</span>
                                 </div>
                                 <div className='Modifiers_Show_Checkbox_Container'>
                                     <input type='checkbox' className='Modifiers_Show_Checkbox' id='Modifiers_Show_Checkbox' />
@@ -370,7 +381,7 @@ const Modifiers = () => {
                             </div>
                             <div className='Modififers_Groups_Wrapper'>
                                 {
-                                    (modifiers === null || modifiers['groups'].length === 0) ?
+                                    (modifiers === undefined || modifiers['groups'].length === 0) ?
                                         <div className='Modifiers_Groups_Empty_Container'>
                                             <ul className='Modifiers_Groups_Empty_List'>
                                                 <li className='Modifiers_Groups_Empty_List_Item'>Group modifiers allow you to select one option from a list</li>
@@ -494,7 +505,7 @@ const Modifiers = () => {
                             <div className='Modififers_AddOns_Wrapper'>
                                 <div className='Modifiers_AddOns_Header'><b>Add-ons</b></div>
                                 {
-                                    (modifiers === null || modifiers['addons'].length === 0) ?
+                                    (modifiers === undefined || modifiers['addons'].length === 0) ?
                                         <div className='Modifiers_Groups_Empty_Container'>
                                             <ul className='Modifiers_Groups_Empty_List'>
                                                 <li className='Modifiers_Groups_Empty_List_Item'>Add-on Options will print on all receipts when activated</li>
@@ -548,7 +559,7 @@ const Modifiers = () => {
                             <div className='Modififers_NoOptions_Wrapper'>
                                 <div className='Modifiers_NoOptions_Header'><b>"NO" Options</b></div>
                                 {
-                                    (modifiers === null || modifiers['noOptions'].length === 0) ?
+                                    (modifiers === undefined || modifiers['noOptions'].length === 0) ?
                                     <div className='Modifiers_Groups_Empty_Container'>
                                         <ul className='Modifiers_Groups_Empty_List'>
                                             <li className='Modifiers_Groups_Empty_List_Item'>"NO" Options are activated by default and do not print on receipts</li>

@@ -133,28 +133,21 @@ namespace SalernoServer.Controllers
         [HttpPost]
         public async Task<IActionResult> PostModifier([FromBody] ModifierHelper modifier)
         {
-            if (modifier == null)
-            {
-                return BadRequest();
-            }
-            var foundModifier = await _context.Modifiers.FindAsync(modifier.ModifierId);
+            if (modifier is null) return BadRequest();
+            var foundModifier = await _context.Modifiers.Where(m => m.ItemId.Equals(modifier.ItemId)).FirstOrDefaultAsync();
+            
             if (foundModifier is not null)
             {
                 _context.Modifiers.Remove(foundModifier);
                 await _context.SaveChangesAsync();
             }
-            var foundItem = await _context.Items.FindAsync(modifier.ItemId);
-            if (foundItem == null) return BadRequest($"Modifier ItemID {modifier.ItemId} not found");
             var newModifier = new Modifier
             {
                 Name = modifier.Name,
                 Description = modifier.Description,
-                ItemId = foundItem.ItemId
+                ItemId = modifier.ItemId
             };
-            if (modifier.ModifierId != 0)
-            {
-                newModifier.ModifierId = modifier.ModifierId;
-            }
+            if (foundModifier is not null) newModifier.ModifierId = foundModifier.ModifierId;
             foreach (var addon in modifier.Addons)
             {
                 var newAddon = new Addon

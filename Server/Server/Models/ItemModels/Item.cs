@@ -1,4 +1,6 @@
 ﻿using Server.Models.ItemModels;
+using Server.Models.ItemModels.Helpers;
+using System.Text.Json.Serialization;
 
 namespace SalernoServer.Models.ItemModels
 {
@@ -25,6 +27,8 @@ namespace SalernoServer.Models.ItemModels
         public bool LiabilityItem { get; set; } = false;
         public string LiabilityRedemptionTender { get; set; }
         public string TaxGroupOrRate { get; set; }
-        public virtual Modifier Modifier { get; set; } = new();
+        [JsonIgnore]
+        public Modifier Modifier { get; set; } = new();
+        
     }
 }

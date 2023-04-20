@@ -14,6 +14,8 @@ using SalernoServer.Models;
 using SalernoServer.Models.ItemModels;
 using Server.Models;
 using Server.Models.Authentication;
+using Server.Models.ItemModels.Helpers;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace SalernoServer.Controllers
 {
@@ -57,6 +59,31 @@ namespace SalernoServer.Controllers
             }
             return Ok(ordersDTO);
         }
+        [HttpGet]
+        [Route("simple")]
+        public async Task<ActionResult<IEnumerable<SimpleOrder>>> GetSimpleOrders()
+        {
+            var orders = await _context.Orders
+                    .Include(o => o.Account)
+                    .ToListAsync();
+            return Ok(orders.Select(order => new SimpleOrder(order)).ToList());
+        }
+        public class DateHelper
+        {
+            public DateTime StartDate { get; set; }
+            public DateTime EndDate { get; set; }
+        }
+        [HttpPost]
+        [Route("date")]
+        public async Task<ActionResult<IEnumerable<SimpleOrder>>> GetOrdersByDate([FromBody] DateHelper dateHelper)
+        {
+            Console.WriteLine(dateHelper.StartDate);
+            var orders = await _context.Orders
+                    .Include(order => order.Account)
+                    .Where(o => o.OrderDate <= dateHelper.EndDate.AddDays(1).AddTicks(-1) && o.OrderDate >= dateHelper.StartDate.AddDays(-1).AddTicks(1))
+                    .ToListAsync();
+            return Ok(orders.Select(order => new SimpleOrder(order)).ToList());
+        }
 
         // GET: api/items/5
         [HttpGet("{id}")]
@@ -76,10 +103,9 @@ namespace SalernoServer.Controllers
                 .ThenInclude(oi => oi.Groups)
                 .ThenInclude(g => g.GroupOption)
                 .Include (o => o.Account)
-                .Where(o => o.OrderId == id)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(order => order.OrderId == id);
 
-            if (order == null) return NotFound();
+            if (order is null) return NotFound();
 
             return Ok(OrderToOrderDTO(order));
         }
@@ -163,38 +189,6 @@ namespace SalernoServer.Controllers
             return savedOrderItemsDTO;
         }
 
-
-            // PUT: api/Items/5
-            // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-            [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder([FromBody] OrderHelper order)
-        {
-            //if (id != Order.OrderId)
-            //{
-            //    return BadRequest();
-            //}
-
-            //var order = await _context.Orders.FindAsync(id);
-            //if (order == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //// _context.Entry(Order).State = EntityState.Modified;
-
-            //try
-            //{
-            //    await _context.SaveChangesAsync();
-            //}
-            //catch (Exception)
-            //{
-            //    return NotFound();
-            //}
-
-            return NoContent();
-        }
-
-        // POST: api/order
         [HttpPost]
         public async Task<ActionResult<Order>> CreateOrder([FromBody] OrderHelper order)
         {
@@ -216,7 +210,8 @@ namespace SalernoServer.Controllers
                 var newOrderItem = new OrderItem
                 {
                     Order = newOrder,
-                    Item = foundItem
+                    Item = foundItem,
+                    Count = orderItem.Count
                 };
                 foreach (var groupOption in orderItem.GroupOptions)
                 {
@@ -315,14 +310,21 @@ namespace SalernoServer.Controllers
             OrderDTO orderDTO = new()
             {
                 OrderId = order.OrderId,
-                Account = AccountToOrderAccountDTO(order.Account),
                 Subtotal = order.Subtotal,
                 SubtotalTax = order.SubtotalTax,
                 Total = order.Total,
                 Status = order.Status,
                 OrderDate = order.OrderDate,
                 PickupDate = order.PickupDate,
-                OrderItems = OrderItemsToOrderItemDTOs(order.OrderItems)
+                OrderItems = OrderItemsToOrderItemDTOs(order.OrderItems),
+                Account = (order.Account is null) ? null : new OrderAccountDTO()
+                {
+                    AccountId = order.Account.AccountId,
+                    Email = order.Account.Email,
+                    FirstName = order.Account.FirstName,
+                    LastName = order.Account.LastName,
+                    PhoneNumber = order.Account.PhoneNumber
+                }
             };
             return orderDTO;
         }
@@ -337,6 +339,7 @@ namespace SalernoServer.Controllers
                     OrderId = item.Order.OrderId,
                     ItemId = item.Item.ItemId,
                     ItemName = item.Item.Name,
+                    BasePrice = item.Item.Price,
                     Count = item.Count,
                     Groups = item.Groups,
                     Addons = item.Addons,

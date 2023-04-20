@@ -9,6 +9,7 @@ namespace Server.Models
         public long OrderId { get; set; }
         public string ItemId { get; set; }
         public string ItemName { get; set; }
+        public decimal BasePrice { get; set; }
         public int Count { get; set; }
         public List<OrderItemAddon> Addons { get; set; }
         public List<OrderItemNoOption> NoOptions { get; set; }

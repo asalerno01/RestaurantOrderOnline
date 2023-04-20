@@ -7,7 +7,7 @@ namespace SalernoServer.Models.ItemModels
     public class Modifier
     {
         public long ModifierId { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
         public string Description { get; set; } = "";
         //public string ItemId { get; set; }
         //[JsonIgnore]
