@@ -2,6 +2,7 @@
     flex-basis: calc(100% / 3);
     flex-grow: 1;
     max-width: calc(100% / 2);
+    min-height: 140px;
     padding: 10px;
 }
 .savedorder > button {
@@ -30,6 +31,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
+    margin-bottom: auto;
 }
 .header {
     font-size: 20px;

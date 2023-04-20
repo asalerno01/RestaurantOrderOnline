@@ -60,6 +60,16 @@ namespace SalernoServer.Controllers
             return Ok(ordersDTO);
         }
         [HttpGet]
+        [Route("simple/active")]
+        public async Task<ActionResult<IEnumerable<SimpleOrder>>> GetSimpleOrdersActive()
+        {
+            var orders = await _context.Orders
+                    .Include(o => o.Account)
+                    .Where(order => order.Status.Equals("Pending") || order.Status.Equals("Accepted"))
+                    .ToListAsync();
+            return Ok(orders.Select(order => new SimpleOrder(order)).ToList());
+        }
+        [HttpGet]
         [Route("simple")]
         public async Task<ActionResult<IEnumerable<SimpleOrder>>> GetSimpleOrders()
         {

@@ -37,6 +37,14 @@ const Order = () => {
             }
     }, []);
 
+    function timeout(delay) {
+        return new Promise( res => setTimeout(res, delay) );
+    }
+    async function wait(delay) {
+        await timeout(500); //for 1 sec delay
+        setIsLoading(false);
+    }
+
     const getItems = async () => {
         let categories = [];
         await axios.get("https://localhost:7074/api/category")
@@ -78,12 +86,11 @@ const Order = () => {
     }
     useEffect(() => {
         getItems();
-        setIsLoading(false);
+        wait();
     }, []);
     useEffect(() => {
         getItems();
-        setIsLoading(false);
-    }, [auth])
+    }, [auth]);
 
     const handleEditItemClick = (itemId, index) => setSelectedItemData({ item: items.find(item => item.itemId === itemId), index: index });
     const handleOpenItem = (itemId) => setSelectedItemData({ item: items.find(i => i["itemId"] === itemId), index: null });
@@ -119,6 +126,7 @@ const Order = () => {
     const cartSliderRef = useRef();
 
     const Items = () => {
+        if (isLoading) return <LoadingSpinner />
         return (
             <div className={OrderStyles.categories}>
             {
@@ -161,7 +169,13 @@ const Order = () => {
             </div>
         )
     }
-
+    function getCartCount() {
+        let count = 0;
+        order.orderItems.forEach(orderItem => {
+            count += orderItem.count;
+        });
+        return count;
+    }
     return (
         <div className={OrderStyles.order} onScroll={() => getScroll()}>
             <div className={CartStyles.backdrop} style={(cartOpen) ? {width: "100%"} : {width: "0"}} onClick={() => cartIsOpen(false)}></div>
@@ -195,7 +209,9 @@ const Order = () => {
             </div>
             <StickyBox style={{zIndex: "2"}} offsetTop={55}>
                 <div className={OrderStyles.cart_button_wrapper}>
-                    <button type="button" className={OrderStyles.cart_button} onClick={() => cartIsOpen(true)}><ImCart size={"24px"}/><span>Cart</span></button>
+                    <button type="button" className={OrderStyles.cart_button} onClick={() => cartIsOpen(true)}><ImCart size={"24px"}/>
+                        <span>{`Cart (${getCartCount()})`}</span>
+                    </button>
                 </div>
             </StickyBox>
             <main>

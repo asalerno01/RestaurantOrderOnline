@@ -86,7 +86,7 @@ const ItemImage = ({ itemName }) => {
     const image = getImage(itemName);
     // if (image === null) return <></>;
     return (
-        <img loading="lazy" src={image} alt={`${itemName} Image`} />
+        <img src={image} alt={`${itemName} Image`} />
     )
 }
 
