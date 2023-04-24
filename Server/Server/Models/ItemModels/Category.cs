@@ -9,5 +9,11 @@ namespace Server.Models.ItemModels
         public string Name { get; set; }
         public string Description { get; set; } = "";
         public List<Item> Items { get; set; } = new();
+        public Category(long categoryId, string name, string description)
+        {
+            CategoryId = categoryId;
+            Name = name;
+            Description = description;
+        }
     }
 }

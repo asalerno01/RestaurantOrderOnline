@@ -32,7 +32,8 @@ export default function Edit() {
         "supplier": "",
         "liabilityItem": false,
         "liabilityRedemptionTender": "",
-        "taxGroupOrRate": "0"
+        "taxGroupOrRate": "0",
+        "isEnabled": true
     });
     const [categories, setCategories] = useState([]);
 
@@ -66,7 +67,6 @@ export default function Edit() {
     }, []);
 
     const handleSave = async event => {
-        console.log(JSON.stringify(item))
         if (itemId === undefined) {
             await axios.post("https://localhost:7074/api/items", item)
             .catch(err => console.log(err));
@@ -83,17 +83,14 @@ export default function Edit() {
             });
         }
     }
-    const handleSaveButtonClick = () => {
-        console.log("saving item...");
-    }
     const handleInputChange = event => {
         // TODO: Validate input number vs string.
-        event.preventDefault();
-        const value = event.target.value;
-        const attributeType = event.target.attributes.attributeType.value;
+        let value = event.target.value;
+        let attributeType = event.target.attributes.attributeType.value;
         let tempItem = Object.assign({}, item);
-        tempItem[attributeType] = value;
-        console.log(JSON.stringify(tempItem))
+        console.log(item.isEnabled)
+        if (attributeType === "isEnabled") tempItem.isEnabled = !item.isEnabled;
+        else tempItem[attributeType] = value;
         setItem(tempItem);
     }
     if ((itemId === undefined || itemId === "undefined") && location.pathname !== "/salerno/items/new") return navigate("/salerno/items");
@@ -120,9 +117,9 @@ export default function Edit() {
                                 <input className='EditItem_Input' type='text' value={item['name']} attributeType="name" onChange={handleInputChange} id='name-input'/>
                             </div>
                             <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "flex-start"}}>
-                                <label htmlFor='Register_Status_Open'>Register Status <QuestionIcon style={{verticalAlign: "middle", position: "relative", top: "-5px"}}/></label>
+                                <label htmlFor='Register_Status_Open'>Menu Status <QuestionIcon style={{verticalAlign: "middle", position: "relative", top: "-5px"}}/></label>
                                 <div className='EditItem_ActiveRegister_Wrapper'>
-                                    <input className='EditItem_Register_Checkbox' type='checkbox' id='Register_Status_Open'/>
+                                    <input className='EditItem_Register_Checkbox' type='checkbox' checked={item.isEnabled} onChange={handleInputChange} attributeType="isEnabled" id='Register_Status_Open'/>
                                     <label htmlFor='Register_Status_Open' className='EditItem_Register_Checkbox_Label'>Active</label>
                                 </div>
                             </div>

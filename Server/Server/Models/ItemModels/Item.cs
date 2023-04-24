@@ -27,6 +27,7 @@ namespace SalernoServer.Models.ItemModels
         public bool LiabilityItem { get; set; } = false;
         public string LiabilityRedemptionTender { get; set; }
         public string TaxGroupOrRate { get; set; }
+        public bool IsEnabled { get; set; }
         [JsonIgnore]
         public Modifier Modifier { get; set; } = new();
         

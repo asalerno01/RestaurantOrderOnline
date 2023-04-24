@@ -28,6 +28,7 @@ namespace Server.Models.ItemModels.Helpers
             LiabilityRedemptionTender = item.LiabilityRedemptionTender;
             TaxGroupOrRate = item.TaxGroupOrRate;
             Modifier = item.Modifier;
+            IsEnabled = item.IsEnabled;
         }
         public string ItemId { get; set; }
         public string Name { get; set; }
@@ -50,6 +51,7 @@ namespace Server.Models.ItemModels.Helpers
         public bool LiabilityItem { get; set; } = false;
         public string LiabilityRedemptionTender { get; set; }
         public string TaxGroupOrRate { get; set; }
+        public bool IsEnabled { get; set; }
         public virtual Modifier Modifier { get; set; } = new();
 
         private static CategoryHelper CategoryToCategoryHelper(Category category)

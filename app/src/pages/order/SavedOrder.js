@@ -1,6 +1,5 @@
 import React from 'react';
 import SavedOrderStyles from './css/SavedOrder.module.css';
-import { getOrderItemPrice } from './functions/OrderFunctions';
 
 const SavedOrder = (props) => {
     const handleSelectOrderClick = event => {

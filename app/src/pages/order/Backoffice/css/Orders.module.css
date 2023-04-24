@@ -24,3 +24,306 @@
     font-size: 18px;
     letter-spacing: -.5px;
 }
+
+.orders {
+    width: 100%;
+    height: 100%;
+    padding: 40px 50px 50px 50px;
+    background-color: white;
+    overflow-y: scroll;
+}
+.header {
+    text-align: left;
+    margin: 0 0 15px;
+}
+
+
+
+.tab_button {
+    cursor: pointer;
+    background-color: white;
+    color: rgb(25, 25, 25);
+    font-weight: 500;
+    border: none;
+    outline: none;
+    font-weight: 700;
+    margin-right: 5px;
+    font-size: 14px;
+    padding-bottom: 5px;
+    border-bottom: none;
+}
+.tab_buttons {
+    border-bottom: 1px solid rgb(213, 215, 219);
+    margin: 0 -50px 0 -50px;
+    text-align: left;
+    padding-left: 50px;
+}
+.tab_button__current {
+    composes: tab_button;
+    color: rgb(0, 187, 225);
+    border-bottom: 2px solid rgb(0, 187, 225);
+}
+.controls {
+    display: flex;
+    flex-direction: row;
+    margin: 15px 0;
+    position: relative;
+}
+.search_wrapper {
+    flex: 1;
+    text-align: right;
+}
+.search {
+    border: 1px solid #dddfe1;
+    border-radius: 5px;
+    box-shadow: inset 0 1px 3px 0 rgb(0 0 0 / 10%);
+    height: 100%;
+    width: 200px;
+    color: #525e71;
+    font-size: 12px;
+    font-weight: 300;
+    padding: 4px 10px;
+    height: 30px;
+    outline: none;
+}
+.table {
+    width: 100%;
+    table-layout: fixed;
+    height: 100%;
+}
+.sticky_table {
+    table-layout: fixed;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+}
+
+.total_item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+.total_label {
+    font-size: 14px;
+    font-weight: 600;
+}
+.total_value {
+    font-size: 14px;
+    font-weight: 500;
+}
+.price {
+    font-size: 16px;
+    text-align: right;
+    font-family: "Lato", sans-serif;
+}
+.name {
+    text-align: left;
+    grid-area: name;
+    font-size: 18px;
+    font-family: "Lato", sans-serif;
+    font-weight: 700;
+}
+.count {
+    font-family: "Lato", sans-serif;
+    font-size: 16px;
+    margin-right: 50px;
+}
+.item_details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    margin-bottom: 5px;
+}
+
+.details_header {
+    margin: 0;
+}
+.details {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: 30px;
+    background-color: rgb(255, 255, 255);
+    height: 100%;
+    text-align: left;
+}
+.item {
+    display: flex;
+    margin: 15px 0;
+}
+.gap {
+    border-top: 1px solid rgb(213, 215, 219);
+    border-bottom: 1px solid rgb(213, 215, 219);
+    background-color: rgb(233, 234, 236);
+    width: 100%;
+    height: 8px;
+}
+
+.pickup {
+    background-color: rgb(255, 255, 255);
+    padding: 30px;
+}
+.pickup_header {
+    margin: 0 0 15px 0;
+    text-align: left;
+}
+.pickup_value {
+    text-transform: capitalize;
+    text-align: left;
+    color: rgb(25, 25, 25);
+}
+.pickup_label {
+    text-align: left;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.border {
+    margin: 16px 0;
+    height: 1px;
+    background-color: rgb(213, 215, 219);
+}
+.close_button {
+    user-select: none;
+    cursor: pointer;
+    opacity: 0.75;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    padding: 0;
+}
+.modal_wrapper {
+    position: absolute;
+    z-index: 5;
+    width: 500px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgb(233, 234, 236);
+    box-shadow: rgba(0, 0, 0, 0.25) 0 5px 15px 0;
+}
+.modal_header_wrapper {
+    background-color: rgb(255, 255, 255);
+    text-align: left;
+    border-bottom: rgb(233, 234, 236);
+    padding: 30px;
+}
+.modal_header {
+    margin: 0;
+}
+.stretch {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 54px;
+    bottom: 0;
+}
+
+.dropdown_container {
+    display: relative;
+}
+.dropdown {
+    z-index: 2;
+    position: absolute;
+    width: 150px;
+    background-color: white;
+    border: 1px solid #dddfe1;
+    border-radius: 0 0 5px 5px;
+    border-top: none;
+    padding-bottom: 3px;
+}
+.dropdown_list {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+.dropdown_item {
+    width: 100%;
+    user-select: none;
+    height: 30px;
+    line-height: 30px;
+    cursor: pointer;
+    color: rgb(25, 25, 25);
+    background-color: rgb(255, 255, 255);
+    text-align: left;
+    padding: 0 15px;
+    font-size: 14px;
+    font-weight: 600;
+}
+.dropdown_item:hover {
+    background-color: rgb(245, 245, 245);
+}
+
+.table > tbody * {
+    user-select: none;
+}
+.table > tbody > tr {
+    height: 70px;
+}
+.table > tbody > tr:hover {
+    background-color: rgb(233, 234, 236);
+}
+.orders tr {
+    border-bottom: 1px solid lightgray;
+}
+.sticky_table > thead > tr > th {
+    font-size: 16px;
+    font-weight: 700;
+    padding: 12px 16px;
+    text-align: left;
+}
+.sticky_table > thead > tr {
+    border-top: 1px solid lightgray;
+}
+.table td {
+    text-align: left;
+    font-size: 16px;
+    font-family: "Lato", sans-serif;
+    padding: 18px 16px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: hsla(0, 0%, 0%, 0.7);
+    
+    z-index: 3;
+}
+.slider {
+    position: absolute;
+    width: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    z-index: 3;
+    transform: translateX(500px);
+    background-color: rgb(255, 255, 255);
+    transition: width 0.25s ease-in-out;
+    -webkit-transition: width 0.25s ease-in-out;
+    -moz-transition: width 0.25s ease-in-out;
+    -ms-transition: width 0.25s ease-in-out;
+    -o-transition: width 0.25s ease-in-out;
+    -webkit-transform: translateX(500px);
+    -moz-transform: translateX(500px);
+    -ms-transform: translateX(500px);
+    -o-transform: translateX(500px);
+    background-color: rgb(255, 255, 255);
+    box-shadow: rgba(0, 0, 0, 0.25) 0 5px 15px 0;
+}
+.open_order {
+    max-width: 600px;
+    min-width: 600px;
+    position: relative;
+    background-color: rgb(255, 255, 255);
+    max-height: 100vh;
+    overflow-y: overlay;
+}

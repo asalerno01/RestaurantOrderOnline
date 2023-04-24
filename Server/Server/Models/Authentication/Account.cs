@@ -8,10 +8,11 @@ namespace Server.Models.Authentication
     {
         public long AccountId { get; set; }
         public string Email { get; set; }
-        public string Password { get; set; }
+        public string? Password { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
+        public int OrderCount { get; set; } = 0;
         public string RefreshToken { get; set; } = "";
         [JsonIgnore]
         public List<Order> Orders { get; set; }

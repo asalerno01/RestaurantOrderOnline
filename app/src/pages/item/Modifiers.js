@@ -18,7 +18,7 @@ const Modifiers = () => {
     const [items, setItems] = useState([]);
     const [basePrice, setBasePrice] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
-
+    const [item, setItem] = useState({});
     const [modifiers, setModifiers] = useState({
         "name": "",
         "itemId": itemId,
@@ -27,6 +27,7 @@ const Modifiers = () => {
         "addons": [],
         "noOptions": []
     });
+    const [copySearchValue, setCopySearchValue] = useState("");
     
     const getModifiers = async () => {
         await axios({
@@ -62,9 +63,9 @@ const Modifiers = () => {
     const getItems = async () => {
         await axios.get('https://localhost:7074/api/items')
         .then(res => {
-            const data = res.data;
-            setBasePrice((data => data.itemId === itemId).price);
-            setModifiers((data => data.itemId === itemId).modifier);
+            let item = res.data.find(i => i.itemId === itemId);
+            setModifiers(item.modifier);
+            setItem(item);
             setItems(res.data);
             setIsLoading(false);
         })
@@ -73,7 +74,6 @@ const Modifiers = () => {
         });
     }
     useEffect(() => {
-        getModifiers();
         getItems();
     }, []);
 
@@ -288,12 +288,15 @@ const Modifiers = () => {
                 console.log(err);
             });
     }
+    const handleCopySearchChange = event => {
+        setCopySearchValue(event.target.value);
+    }
 
     const getItemsWithModifiers = () => {
         let x = [];
         items.forEach(item => {
             if (item["modifier"] != null) {
-                x.push(item);
+                if (item.name.toLowerCase().includes(copySearchValue) || copySearchValue === "") x.push(item);
             }
         });
         console.log(x)
@@ -313,7 +316,6 @@ const Modifiers = () => {
             "addons": r["addons"],
             "noOptions": r["noOptions"]
         }
-        console.log(x);
         setModifiers(x);
         setCopyDropdown({ "type": "Groups", "value": newModifiers["name"]})
     }
@@ -333,7 +335,7 @@ const Modifiers = () => {
                 <div className='Modifiers_Content_Border_Fix'>    
                     <div className='Modifiers_Content'>    
                         <div className='Modifiers_Item_Name_Container' id='item-name-row'>
-                            <div className='Modifiers_Item_Name'>NAME</div>
+                            <div className='Modifiers_Item_Name'>{item.name}</div>
                         </div>
                         <div className='Modifiers_Grid'>
                             <div className='Modifiers_Base_Sale_Header'>
@@ -341,7 +343,7 @@ const Modifiers = () => {
                                     <span className='Modififers_Base_Sale_Label'>
                                         <b>Base Sales Price</b>
                                     </span>
-                                    <span className='Modififers_Base_Sale_Value'>{`${basePrice}`}</span>
+                                    <span className='Modififers_Base_Sale_Value'>{`${item.price}`}</span>
                                 </div>
                                 <div className='Modifiers_Show_Checkbox_Container'>
                                     <input type='checkbox' className='Modifiers_Show_Checkbox' id='Modifiers_Show_Checkbox' />
@@ -364,7 +366,7 @@ const Modifiers = () => {
                                     <div className={`Modifiers_Groups_Copy_Import_Dropdown_Container`} style={(copyDropdown["type"] === "Groups") ? {display: "block"} : {display: "none"}} onClick={e => e.stopPropagation()}>
                                         <div className={(copyDropdown["type"] === "Groups") ? 'Modifiers_Groups_Copy_Import_Select_Dropdown' : "Modifiers_Groups_Copy_Import_Select_Dropdown"}>
                                             <div className='Modifiers_Groups_Copy_Import_Select_Dropdown_Search_Wrapper'>
-                                                <input type='text' className='Modifiers_Groups_Copy_Import_Select_Dropdown_Search' autoComplete="off" />
+                                                <input type='text' className='Modifiers_Groups_Copy_Import_Select_Dropdown_Search' value={copySearchValue} onChange={handleCopySearchChange} autoComplete="off" />
                                             </div>
                                             <div className='Modifiers_Groups_Copy_Import_Select_Dropdown_Scroll_Container'>
                                                 <ul className='Modifiers_Groups_Copy_Import_Select_Dropdown_List'>
@@ -427,17 +429,6 @@ const Modifiers = () => {
                                                                             <li key={`groupId-${group['groupId']}-groupOptionId-${option['groupOptionId']}`}>
                                                                                 <input type='text' className='Modifiers_Option_Name_Input' value={option['name']} thistype="groupOptions" groupid={group['groupId']} thisattr="name" thisid={option['groupOptionId']} onChange={handleInputChange} />
                                                                                 <input type='text' className='Modifiers_Option_Price_Input' value={option['price']} thistype="groupOptions" groupid={group['groupId']} thisattr="price" thisid={option['groupOptionId']} onChange={handleInputChange} />
-                                                                                {
-                                                                                (option["isDefault"]) ?
-                                                                                    <span className='FilterItemList_Checkbox_Icon_Wrapper'>
-                                                                                        <BsSquare size='14px' className='FilterItemList_Checkbox_Icon'/>
-                                                                                        <FcCheckmark size='21px' className='FilterItemList_Checkbox_Checked_Icon'/>
-                                                                                    </span>
-                                                                                    :
-                                                                                    <span className='FilterItemList_Checkbox_Icon_Wrapper'>
-                                                                                        <BsSquare size='14px' className='FilterItemList_Checkbox_Icon' groupid={group['groupId']} groupoptionid={option['groupOptionId']} onClick={handleGroupOptionDefaultChange} />
-                                                                                    </span>
-                                                                                }
                                                                                 <button type='button' className='Modifiers_Delete_Button' groupoptionid={option['groupOptionId']} groupid={group['groupId']} onClick={handleRemoveGroupOption}>
                                                                                     <IconContext.Provider value={{ style: { verticalAlign: 'top' },  size: '1.5em' }}>
                                                                                         <RiDeleteBinFill />
@@ -477,30 +468,6 @@ const Modifiers = () => {
                                 <span className='Modifiers_Groups_Header_Label'>
                                     <b>Options - Multiple Choice</b>
                                 </span>
-                                <div className="Modifiers_Copy_Dropdown_Container">
-                                    <button 
-                                        className={`Modifiers_Groups_Copy_Import_Select_Dropdown_Selected ${(copyDropdown["type"] === "Options") ? "Modifiers_Groups_Copy_Import_Select_Dropdown_Selected_Is_Open" : ""}`}
-                                        onClick={() => (copyDropdown["type"] === "Options") ? setCopyDropdown({ "type": "", "value": "Copy/Import from another item"}) : setCopyDropdown({ "type": "Options", "value": "" })}>
-                                        {(copyDropdown["type"] === "Options") ? copyDropdown["value"] : "Copy/Import from another item"}
-                                        <IconContext.Provider value={{ style: { verticalAlign: 'middle', height: '100%', float: 'right', color: 'rgb(139, 139, 139)' }, size: '1.25em' }}>
-                                            { (copyDropdown["type"] === "Options") ? <TiArrowSortedUp className='Modifiers_Groups_Copy_Import_Arrow' /> : <TiArrowSortedDown className='Modifiers_Groups_Copy_Import_Arrow' /> }
-                                        </IconContext.Provider>
-                                    </button>
-                                    <div className={`Modifiers_Groups_Copy_Import_Dropdown_Container`} style={(copyDropdown["type"] === "Options") ? {display: "block"} : {display: "none"}} onClick={e => e.stopPropagation()}>
-                                        <div className={(copyDropdown["type"] === "Options") ? 'Modifiers_Groups_Copy_Import_Select_Dropdown' : "Modifiers_Groups_Copy_Import_Select_Dropdown"}>
-                                            <div className='Modifiers_Groups_Copy_Import_Select_Dropdown_Search_Wrapper'>
-                                                <input type='text' className='Modifiers_Groups_Copy_Import_Select_Dropdown_Search' autoComplete="off" />
-                                            </div>
-                                            <div className='Modifiers_Groups_Copy_Import_Select_Dropdown_Scroll_Container'>
-                                                <ul className='Modifiers_Groups_Copy_Import_Select_Dropdown_List'>
-                                                    <li className='Modifiers_Groups_Copy_Import_Select_Dropdown_List_Item'>Chicago Style Hot Dog</li>
-                                                    <li className='Modifiers_Groups_Copy_Import_Select_Dropdown_List_Item'>Maxwell Street Polish</li>
-                                                    <li className='Modifiers_Groups_Copy_Import_Select_Dropdown_List_Item'>Chicken Tenders</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                             <div className='Modififers_AddOns_Wrapper'>
                                 <div className='Modifiers_AddOns_Header'><b>Add-ons</b></div>
