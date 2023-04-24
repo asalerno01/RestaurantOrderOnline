@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import './cart.css';
 import CartStyles from './css/Cart.module.css';
 import { IoMdClose } from 'react-icons/io';
 import OrderItemSummary from './OrderItemSummary';

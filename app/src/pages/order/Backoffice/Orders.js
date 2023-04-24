@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { BsCheckSquareFill, BsCalendarWeek } from 'react-icons/bs';
 import { TiArrowSortedUp, TiArrowSortedDown } from 'react-icons/ti';
@@ -10,6 +10,8 @@ import './orders.css';
 import { isEmptyObject } from '../functions/OrderFunctions';
 import StickyBox from 'react-sticky-box';
 import OrdersStyles from './css/Orders.module.css';
+import LoadingSpinner from '../../../components/LoadingSpinner';
+import ItemModifiers from './ItemModifiers';
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
@@ -18,6 +20,8 @@ const Orders = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
     const [filterDate, setFilterDate] = useState(getLastSevenDays());
+    const [orderOpen, setOrderOpen] = useState(false);
+    const openOrderRef = useRef();
 
     const getOrders = async () => {
         await axios({
@@ -52,10 +56,7 @@ const Orders = () => {
         )
     }
 
-    function getModifierLabel(modifier, type) {
-        if (!isNaN(modifier[type]["price"]) && modifier[type]["price"] > 0) return `${modifier[type]["name"]} ($${modifier[type]["price"].toFixed(2)})`;
-        return modifier[type]["name"];
-    }
+    
     function getOrderItemPrice(orderItem) {
         let orderItemPrice = orderItem.basePrice;
         orderItem.addons.forEach(addon => { orderItemPrice += Number(addon.addon.price); });
@@ -79,6 +80,15 @@ const Orders = () => {
         
         return `${hours}:${(minutes < 10) ? "0" + minutes : minutes} ${newformat}`;
     }
+    function orderIsOpen(type) {
+        if (type) {
+            setOrderOpen(true);
+            openOrderRef.current.style.width = "1100px";
+        } else {
+            openOrderRef.current.style.width = "0";
+            setOrderOpen(false);
+        }
+    }
 
     const Checkbox = () => {
         return (
@@ -88,6 +98,8 @@ const Orders = () => {
         )
     }
     const handleOrderItemClick = async (orderId) => {
+        orderIsOpen(true);
+        setOpenOrder({})
         await axios({
             method: "GET",
             url: `https://localhost:7074/api/orders/${orderId}`
@@ -97,14 +109,32 @@ const Orders = () => {
     }
 
     const OpenOrder = () => {
-        if (isEmptyObject(openOrder)) return <></>
+        if (!orderOpen) return <></>
+        else if (isEmptyObject(openOrder)) {
+            return (
+                <div className={OrdersStyles.modal}>
+                    <div className={OrdersStyles.modal_header_wrapper}>
+                        <button className={OrdersStyles.close_button} onClick={() => orderIsOpen(false)}>
+                            <IoMdClose size={"1.5em"}/>
+                        </button>
+                        <h2 className={OrdersStyles.modal_header}></h2>
+                    </div>
+                    <LoadingSpinner />
+                </div>
+            )
+        }
         else return (
-            <div className={OrdersStyles.stretch} onClick={() => setOpenOrder({})}>
-                <div onClick={e => e.stopPropagation()}>
                     <div className={OrdersStyles.modal}>
                         <div className={OrdersStyles.modal_header_wrapper}>
+                            <button className={OrdersStyles.close_button} onClick={() => orderIsOpen(false)}>
+                                <IoMdClose size={"1.5em"}/>
+                            </button>
                             <h2 className={OrdersStyles.modal_header}>Order #{openOrder.orderId}</h2>
-                            <div className={OrdersStyles.close_button} onClick={() => setOpenOrder({})}><IoMdClose size={"1.5em"}/></div>
+                        </div>
+                        <div className={OrdersStyles.gap}></div>
+                        <div className={OrdersStyles.choice_wrapper}>
+                            <button type="button" className={OrdersStyles.choice_button}>Accept</button>
+                            <button type="button" className={OrdersStyles.choice_button}>Decline</button>
                         </div>
                         <div className={OrdersStyles.gap}></div>
                         <div className={OrdersStyles.pickup}>
@@ -132,40 +162,13 @@ const Orders = () => {
                             {
                                 openOrder.orderItems.map(orderItem => (
                                     <div key={`order-${openOrder["orderId"]}-orderitem-${orderItem["orderItemId"]}`} className={OrdersStyles.item}>
-                                        <div className={OrdersStyles.count}>{orderItem.count}x</div>
-                                        <div className={OrdersStyles.item_details}>
-                                            <div className={OrdersStyles.name}>{orderItem["itemName"]}</div>
-                                            <div className={OrdersStyles.price}>${getOrderItemPrice(orderItem).toFixed(2)}</div>
-                                        </div>
-                                        <div className={OrdersStyles.addons}>
-                                        {
-                                            (orderItem["addons"].length === 0) ? <></> : orderItem["addons"].map(addon => (
-                                                <div key={`order-${openOrder["orderId"]}-orderitem-${orderItem["orderItemId"]}-addon-${addon["addon"]["addonId"]}`}>
-                                                    <span className={OrdersStyles.modifier_label}>Addon:</span>
-                                                    <span className={OrdersStyles.modifier_text}>{getModifierLabel(addon, "addon")}</span>
-                                                </div>
-                                            ))
-                                        }
-                                        </div>
-                                        <div className={OrdersStyles.noOptions}>
-                                        {
-                                            (orderItem["noOptions"].length === 0) ? <></> : orderItem["noOptions"].map(noOption => (
-                                                <div key={`order-${openOrder["orderId"]}-orderitem-${orderItem["orderItemId"]}-noOption-${noOption["noOption"]["noOptionId"]}`}>
-                                                    <span className={OrdersStyles.modifier_label}>Remove:</span>
-                                                    <span className={OrdersStyles.modifier_text}>{getModifierLabel(noOption, "noOption")}</span>
-                                                </div>
-                                            ))
-                                        }
-                                        </div>
-                                        <div className={OrdersStyles.groups}>
-                                        {
-                                            (orderItem["groups"].length === 0) ? <></> : orderItem["groups"].map(group => (
-                                                <div key={`order-${openOrder["orderId"]}-orderitem-${orderItem["orderItemId"]}-group-${group["group"]["groupId"]}-groupOption-${group["groupOption"]["groupOptionId"]}`}>
-                                                    <span className={OrdersStyles.modifier_label}>{group["group"]["name"]}</span>
-                                                    <span className={OrdersStyles.modifier_text}>{getModifierLabel(group, "groupOption")}</span>
-                                                </div>
-                                            ))
-                                        }
+                                        <span className={OrdersStyles.count}>{orderItem.count}x</span>
+                                        <div style={{ flexGrow: "1" }}>
+                                            <span className={OrdersStyles.item_details}>
+                                                <span className={OrdersStyles.name}>{orderItem["itemName"]}</span>
+                                                <span className={OrdersStyles.price}>${getOrderItemPrice(orderItem).toFixed(2)}</span>
+                                            </span>
+                                            <ItemModifiers orderItem={orderItem}/>
                                         </div>
                                     </div>
                                 ))
@@ -173,10 +176,10 @@ const Orders = () => {
                             <div>
                                 <div className={OrdersStyles.total_item}>
                                     <span className={OrdersStyles.total_label}>Subtotal</span>
-                                    <span className={OrdersStyles.total_label}>{`$${openOrder["subtotal"].toFixed(2)}`}</span>
+                                    <span className={OrdersStyles.total_value}>{`$${openOrder["subtotal"].toFixed(2)}`}</span>
                                 </div>
                                 <div className={OrdersStyles.total_item}>
-                                    <span cclassName={OrdersStyles.item_label}>Subtotal Tax</span>
+                                    <span className={OrdersStyles.item_label}>Subtotal Tax</span>
                                     <span className={OrdersStyles.total_value}>{`$${openOrder["subtotalTax"].toFixed(2)}`}</span>
                                 </div>
                                 <div className={OrdersStyles.total_item}>
@@ -187,15 +190,18 @@ const Orders = () => {
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
         )
     }
 
-    if (isLoading) return <div>Loading...</div>
+    if (isLoading) return <LoadingSpinner />
     return (
         <div className={OrdersStyles.orders}>
-                <OpenOrder />
+                <div className={OrdersStyles.backdrop} style={(orderOpen) ? {width: "100%"} : {width: "0"}} onClick={() => orderIsOpen(false)}></div>
+                <div className={OrdersStyles.slider} ref={openOrderRef} onClick={e => e.stopPropagation()}>
+                    <div className={OrdersStyles.open_order}>  
+                        <OpenOrder />
+                    </div>
+                </div>
                 <h1 className={OrdersStyles.header}>Orders</h1>
                 <div className={OrdersStyles.tab_buttons}>
                     <button type="button" className={OrdersStyles.tab_button__current}>Active</button>
@@ -247,7 +253,7 @@ const Orders = () => {
                                         <td>{order.status}</td>
                                         <td>{new Date(order.orderDate).toLocaleDateString()}</td>
                                         <td>{formatTime(order["orderDate"])}</td>
-                                        <td className="Orders_Content_Table_Name_Col">{`${(order["firstName"])} ${order["lastName"]}`}</td>
+                                        <td style={{ textTransform: "capitalize" }}>{`${(order["firstName"])} ${order["lastName"]}`}</td>
                                     </tr>
                                 )
                             )

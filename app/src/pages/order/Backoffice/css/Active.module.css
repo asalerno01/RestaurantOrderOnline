@@ -193,6 +193,9 @@
 }
 .modal_header_wrapper {
     border-bottom: rgb(233, 234, 236);
+    background-color: rgb(255, 255, 255);
+    text-align: left;
+    
 }
 .modal_header {
     margin: 0;

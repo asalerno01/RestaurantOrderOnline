@@ -42,12 +42,7 @@ namespace SalernoServer.Controllers
                 .ThenInclude(m => m.Groups)
                 .ThenInclude(g => g.GroupOptions)
                 .ToListAsync();
-            var categoryDTOList = new List<CategoryDTO>();
-            foreach (var category in categories)
-            {
-                categoryDTOList.Add(CategoryToCategoryDTO(category));
-            }
-            return Ok(categoryDTOList);
+            return Ok(categories.Select(category => CategoryToCategoryDTO(category)).ToList());
         }
         [HttpGet]
         [Route("simple")]
@@ -73,28 +68,20 @@ namespace SalernoServer.Controllers
                 .ThenInclude(g => g.GroupOptions)
                 .FirstOrDefaultAsync(c => c.CategoryId == id);
 
-            if (category == null)
-            {
-                return NotFound();
-            }
+            if (category is null) return NotFound();
             var categoryDTO = CategoryToCategoryDTO(category);
 
             return Ok(categoryDTO);
         }
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> CreateCategory([FromBody] CategoryHelper category)
+        public async Task<IActionResult> CreateCategory([FromBody] Category category)
         {
             if (category is null) return BadRequest("Category is null");
             var foundCategory = await _context.Categories.Where(c => c.Name.Equals(category.Name, StringComparison.OrdinalIgnoreCase)).FirstOrDefaultAsync();
             if (foundCategory is not null) return BadRequest($"Category with {category.Name} already exists");
-            Category newCategory = new()
-            {
-                Name = category.Name,
-                Description = category.Description,
-                Items = new()
-            };
-            await _context.Categories.AddAsync(newCategory);
+            
+            await _context.Categories.AddAsync(category);
             await _context.SaveChangesAsync();
             return Ok();
         }
@@ -108,7 +95,7 @@ namespace SalernoServer.Controllers
             };
             foreach (var item in category.Items)
             {
-                categoryDTO.Items.Add(new CategoryItemDTO(item.ItemId, item.Name, item.Description, item.Price, item.Modifier));
+                categoryDTO.Items.Add(new CategoryItemDTO(item.ItemId, item.Name, item.Description, item.Price, item.Modifier, item.IsEnabled));
             }
             return categoryDTO;
         }

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import OrderItem from './OrderItem';
-import './order.css';
 import OrderStyles from './css/Order.module.css';
 import CartStyles from './css/Cart.module.css';
 import MenuItem from '../../raquel/components/menu/MenuItem';

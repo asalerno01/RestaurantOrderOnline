@@ -1,5 +1,4 @@
 import React from 'react';
-import './cart.css';
 import OrderItemSummaryStyles from './css/OrderItemSummary.module.css';
 import { SlPencil } from 'react-icons/sl';
 import { RiDeleteBin6Line } from 'react-icons/ri';

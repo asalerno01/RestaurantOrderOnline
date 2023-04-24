@@ -38,13 +38,26 @@ namespace SalernoServer.Controllers
                 .Include(i => i.Category)
                 .OrderBy(i => i.Category)
                 .ToListAsync();
-            List<ItemDTO> result = new List<ItemDTO>();
-            foreach (var item in items)
-            {
-                result.Add(new ItemDTO(item));
-            }
+            return Ok(items.Select(item => new ItemDTO(item)).ToList());
+        }
+        [HttpGet]
+        [Route("menu")]
+        public async Task<ActionResult<IEnumerable<ItemDTO>>> GetMenuItems()
+        {
+            var items = await _context.Items
+                .Include(i => i.Modifier)
+                .ThenInclude(m => m.Addons)
+                .Include(m => m.Modifier)
+                .ThenInclude(m => m.NoOptions)
+                .Include(m => m.Modifier)
+                .ThenInclude(m => m.Groups)
+                .ThenInclude(g => g.GroupOptions)
+                .Include(i => i.Category)
+                .Where(item => item.IsEnabled)
+                .OrderBy(i => i.Category)
+                .ToListAsync();
 
-            return Ok(result);
+            return Ok(items.Select(item => new ItemDTO(item)).ToList());
         }
 
         // GET: api/items/5
@@ -109,6 +122,7 @@ namespace SalernoServer.Controllers
             newItem.LiabilityItem = item.LiabilityItem;
             newItem.LiabilityRedemptionTender = item.LiabilityRedemptionTender;
             newItem.TaxGroupOrRate = item.TaxGroupOrRate;
+            newItem.IsEnabled = item.IsEnabled;
 
             _context.Update(newItem);
             await _context.SaveChangesAsync();
@@ -145,7 +159,8 @@ namespace SalernoServer.Controllers
                 Supplier = itemHelper.Supplier,
                 LiabilityItem = itemHelper.LiabilityItem,
                 LiabilityRedemptionTender = itemHelper.LiabilityRedemptionTender,
-                TaxGroupOrRate = itemHelper.TaxGroupOrRate
+                TaxGroupOrRate = itemHelper.TaxGroupOrRate,
+                IsEnabled = itemHelper.IsEnabled
             };
 
             await _context.Items.AddAsync(newItem);
