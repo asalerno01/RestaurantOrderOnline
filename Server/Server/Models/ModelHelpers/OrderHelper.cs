@@ -4,6 +4,7 @@ namespace SalernoServer.Models
 {
     public class OrderHelper
     {
+        public long OrderId { get; set; } = 0;
         public long? AccountId { get; set; }
         public decimal Subtotal { get; set; } = 0;
         public decimal SubtotalTax { get; set; } = 0;

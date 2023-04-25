@@ -52,12 +52,7 @@ namespace SalernoServer.Controllers
                     .ThenInclude(oi => oi.Item)
                     .ToListAsync();
 
-            List<OrderDTO> ordersDTO = new();
-            foreach (var order in orders)
-            {
-                ordersDTO.Add(OrderToOrderDTO(order));
-            }
-            return Ok(ordersDTO);
+            return Ok(orders.Select(order => new OrderDTO(order)).ToList());
         }
         [HttpGet]
         [Route("simple/active")]
@@ -77,6 +72,22 @@ namespace SalernoServer.Controllers
                     .Include(o => o.Account)
                     .ToListAsync();
             return Ok(orders.Select(order => new SimpleOrder(order)).ToList());
+        }
+        public class OrderUpdateHelper
+        {
+            public long OrderId { get; set; }
+            public string Status { get; set; }
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutOrder(long id, [FromBody] OrderUpdateHelper order)
+        {
+            if (id != order.OrderId) return BadRequest();
+            var foundOrder = await _context.Orders.FindAsync(id);
+            if (foundOrder is null) return BadRequest();
+            foundOrder.Status = order.Status;
+            _context.Update(foundOrder);
+            await _context.SaveChangesAsync();
+            return Ok();
         }
         public class DateHelper
         {
@@ -117,7 +128,7 @@ namespace SalernoServer.Controllers
 
             if (order is null) return NotFound();
 
-            return Ok(OrderToOrderDTO(order));
+            return Ok(new OrderDTO(order));
         }
         [HttpGet]
         [Route("savedorders/{id}")]
@@ -178,27 +189,7 @@ namespace SalernoServer.Controllers
             return Ok(savedOrderDTOList);
 
         }
-        private static List<SavedOrderOrderItemDTO> OrderItemsToSavedOrderOrderItemsDTO(List<SavedOrderOrderItem> savedOrderOrderItems)
-        {
-            List<SavedOrderOrderItemDTO> savedOrderItemsDTO = new();
-            foreach (var savedOrderOrderItem in savedOrderOrderItems)
-            {
-                foreach (var orderItem in savedOrderOrderItems)
-                {
-                    savedOrderItemsDTO.Add(new()
-                    {
-                        ItemId = orderItem.OrderItem.ItemId,
-                        ItemName = orderItem.OrderItem.Item.Name,
-                        Count = orderItem.OrderItem.Count,
-                        Addons = orderItem.OrderItem.Addons,
-                        NoOptions = orderItem.OrderItem.NoOptions,
-                        Groups = orderItem.OrderItem.Groups
-                    });
-                };
-            }
-            return savedOrderItemsDTO;
-        }
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      \wwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq                                                                                                                   qw qw                                                                                                                                                                                                                                                                     wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwqwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           q                                                                                           e                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
         [HttpPost]
         public async Task<ActionResult<Order>> CreateOrder([FromBody] OrderHelper order)
         {
@@ -315,49 +306,6 @@ namespace SalernoServer.Controllers
             return NoContent();
         }
 
-        private static OrderDTO OrderToOrderDTO(Order order)
-        {
-            OrderDTO orderDTO = new()
-            {
-                OrderId = order.OrderId,
-                Subtotal = order.Subtotal,
-                SubtotalTax = order.SubtotalTax,
-                Total = order.Total,
-                Status = order.Status,
-                OrderDate = order.OrderDate,
-                PickupDate = order.PickupDate,
-                OrderItems = OrderItemsToOrderItemDTOs(order.OrderItems),
-                Account = (order.Account is null) ? null : new OrderAccountDTO()
-                {
-                    AccountId = order.Account.AccountId,
-                    Email = order.Account.Email,
-                    FirstName = order.Account.FirstName,
-                    LastName = order.Account.LastName,
-                    PhoneNumber = order.Account.PhoneNumber
-                }
-            };
-            return orderDTO;
-        }
-        private static List<OrderItemDTO> OrderItemsToOrderItemDTOs(List<OrderItem> orderItems)
-        {
-            List<OrderItemDTO> newOrderItems = new();
-            foreach (var item in orderItems)
-            {
-                newOrderItems.Add(new()
-                {
-                    OrderItemId = item.OrderItemId,
-                    OrderId = item.Order.OrderId,
-                    ItemId = item.Item.ItemId,
-                    ItemName = item.Item.Name,
-                    BasePrice = item.Item.Price,
-                    Count = item.Count,
-                    Groups = item.Groups,
-                    Addons = item.Addons,
-                    NoOptions = item.NoOptions
-                });
-            }
-            return newOrderItems;
-        }
         private static void PrintAddon(OrderItemAddon addon)
         {
             Console.WriteLine($"ID=>{addon.Addon.AddonId}, Name=>{addon.Addon.Name}, Price=>{addon.Addon.Price}");

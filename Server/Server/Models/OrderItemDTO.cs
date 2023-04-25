@@ -14,5 +14,17 @@ namespace Server.Models
         public List<OrderItemAddon> Addons { get; set; }
         public List<OrderItemNoOption> NoOptions { get; set; }
         public List<OrderItemGroup> Groups { get; set; }
+        public OrderItemDTO(OrderItem orderItem)
+        {
+            OrderItemId = orderItem.OrderItemId;
+            OrderId = orderItem.Order.OrderId;
+            ItemId = orderItem.ItemId;
+            ItemName = orderItem.Item.Name;
+            BasePrice = orderItem.Item.Price;
+            Count = orderItem.Count;
+            Addons = orderItem.Addons;
+            NoOptions = orderItem.NoOptions;
+            Groups = orderItem.Groups;
+        }
     }
 }

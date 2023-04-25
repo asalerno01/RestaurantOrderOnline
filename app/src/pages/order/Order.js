@@ -40,7 +40,7 @@ const Order = () => {
         return new Promise( res => setTimeout(res, delay) );
     }
     async function wait(delay) {
-        await timeout(500); //for 1 sec delay
+        await timeout(delay); //for 1 sec delay
         setIsLoading(false);
     }
 
