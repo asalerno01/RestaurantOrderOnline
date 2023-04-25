@@ -38,10 +38,12 @@ import Checkout from './pages/order/Checkout';
 import Register from './pages/user_pages/Register';
 import RememberLogin from './simple/RememberLogin';
 import Reviews from './pages/review/Reviews';
+import Home from './pages/home/Home';
 
 function App() {
     return (
         <Routes>
+            <Route path="salerno/home" element={<Home />} />
             <Route path="salerno/login" element={<Login />} />
             <Route path="salerno/register" element={<Register />} />
             <Route path="salerno/reviews" element={<Reviews />}/>
