@@ -7,11 +7,12 @@
         public string Description { get; set; }
         public List<CategoryItemDTO>? Items { get; set; } = new();
         public CategoryDTO() { }
-        public CategoryDTO(long categoryId, string name, string description)
+        public CategoryDTO(Category category)
         {
-            CategoryId = categoryId;
-            Name = name;
-            Description = description;
+            CategoryId = category.CategoryId;
+            Name = category.Name;
+            Description = category.Description;
+            Items = category.Items.Select(item => new CategoryItemDTO(item.ItemId, item.Name, item.Description, item.Price, item.Modifier, item.IsEnabled)).Where(item => item.IsEnabled).ToList();
         }
     }
 }

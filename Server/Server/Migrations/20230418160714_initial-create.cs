@@ -88,7 +88,7 @@ namespace Server.Migrations
                 {
                     OrderId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    AccountId = table.Column<long>(type: "bigint", nullable: true),
+                    AccountId = table.Column<long>(type: "bigint", nullable: false),
                     Subtotal = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     SubtotalTax = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     Total = table.Column<decimal>(type: "decimal(65,30)", nullable: false),

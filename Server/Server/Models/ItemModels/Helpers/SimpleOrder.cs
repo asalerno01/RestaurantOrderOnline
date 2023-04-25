@@ -9,14 +9,16 @@ namespace Server.Models.ItemModels.Helpers
         public string Status { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public DateTime OrderDate { get; set; }
+        public string OrderDate { get; set; }
+        public string OrderTime { get; set; }
         public SimpleOrder(Order order)
         {
             OrderId = order.OrderId;
             Status = order.Status;
             FirstName = (order.Account is null) ? "New" : order.Account.FirstName;
             LastName = (order.Account is null) ? "Customer" : order.Account.LastName;
-            OrderDate = order.OrderDate;
+            OrderDate = order.OrderDate.ToShortDateString();
+            OrderTime = order.OrderDate.ToShortTimeString();
         }
     }
 }

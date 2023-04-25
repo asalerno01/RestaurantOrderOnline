@@ -42,14 +42,14 @@ namespace SalernoServer.Controllers
                 .ThenInclude(m => m.Groups)
                 .ThenInclude(g => g.GroupOptions)
                 .ToListAsync();
-            return Ok(categories.Select(category => CategoryToCategoryDTO(category)).ToList());
+            return Ok(categories.Select(category => new CategoryDTO(category)).ToList());
         }
         [HttpGet]
         [Route("simple")]
         public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategoriesSimple()
         {
             var categories = await _context.Categories.ToListAsync();
-            return Ok(categories.Select(category => new CategoryDTO(category.CategoryId, category.Name, category.Description)).ToList());
+            return Ok(categories.Select(category => new CategoryDTO(category)).ToList());
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryDTO>> GetCategory(long id)
@@ -69,9 +69,8 @@ namespace SalernoServer.Controllers
                 .FirstOrDefaultAsync(c => c.CategoryId == id);
 
             if (category is null) return NotFound();
-            var categoryDTO = CategoryToCategoryDTO(category);
 
-            return Ok(categoryDTO);
+            return Ok(new CategoryDTO(category));
         }
         [HttpPost]
         [Route("create")]
@@ -92,11 +91,8 @@ namespace SalernoServer.Controllers
                 CategoryId = category.CategoryId,
                 Name = category.Name,
                 Description = category.Description,
+                Items = category.Items.Select(item => new CategoryItemDTO(item.ItemId, item.Name, item.Description, item.Price, item.Modifier, item.IsEnabled)).Where(item => item.IsEnabled).ToList()
             };
-            foreach (var item in category.Items)
-            {
-                categoryDTO.Items.Add(new CategoryItemDTO(item.ItemId, item.Name, item.Description, item.Price, item.Modifier, item.IsEnabled));
-            }
             return categoryDTO;
         }
     }

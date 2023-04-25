@@ -267,13 +267,16 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("AccountId")
+                    b.Property<long>("AccountId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<DateTime?>("PickupDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("QuotedDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Status")
@@ -385,6 +388,9 @@ namespace Server.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -393,6 +399,7 @@ namespace Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Password")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("PhoneNumber")
@@ -567,7 +574,9 @@ namespace Server.Migrations
                 {
                     b.HasOne("Server.Models.Authentication.Account", "Account")
                         .WithMany("Orders")
-                        .HasForeignKey("AccountId");
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Account");
                 });
