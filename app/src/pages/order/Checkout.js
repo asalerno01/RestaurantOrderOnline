@@ -6,7 +6,7 @@ import { IoLogoVenmo, IoStorefrontOutline, IoLogoPaypal } from 'react-icons/io5'
 import { ImCheckboxChecked, ImCheckboxUnchecked } from 'react-icons/im';
 import CheckoutStyles from './css/Checkout.module.css';
 import OrderItemSummary from './OrderItemSummary';
-import { createEmptyOrder, getOrderSubtotal, isEmptyObject, removeOrderItem } from './functions/OrderFunctions';
+import { getOrderSubtotal, isEmptyObject } from './functions/OrderFunctions';
 import axios from 'axios';
 import OrderItem from './OrderItem';
 import { useNavigate } from 'react-router-dom';
@@ -16,14 +16,12 @@ import useAuth from '../../hooks/useAuth';
 
 const Checkout = () => {
     const { auth } = useAuth();
-    const [order, setOrder] = useState(createEmptyOrder());
-    const [items, setItems] = useState([]);
-    const [editItemIndex, setEditItemIndex] = useState(null);
+    const [order, setOrder] = useState([]);
+    const [menu, setMenu] = useState([]);
     const [selectedItemData, setSelectedItemData] = useState({ item: null, index: null });
     const [inputData, setInputData] = useState({ firstName: "", lastName: "", phoneNumber: "", email: "", pickupType: "", paymentType: "", saveOrder: false, saveOrderName: "" });
     const [creditDebitModalIsOpen, setCreditDebitModalIsOpen] = useState(false);
-
-    const [selectedBaseItem, setSelectedBaseItem] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const firstNameRef = useRef();
     const lastNameRef = useRef();
@@ -32,19 +30,22 @@ const Checkout = () => {
     const saveOrderNameRef = useRef();
     const navigate = useNavigate();
     
-    useEffect(() => { setOrder(JSON.parse(localStorage.getItem("order"))); }, []);
-
-    const getItems = async () => {
-        await axios.get("https://localhost:7074/api/items")
-        .then(res => {
-            console.log(res.data)
-            setItems(res.data);
-        })
-        .catch(err => {
-            console.log(err);
-        })
+    function getLocalStorageOrder() {
+        let order = localStorage.getItem("order");
+        if (order === undefined || order === null || order.length === 0) return;
+        setOrder(JSON.parse(order));
     }
-    useEffect(() => { getItems(); }, []);
+
+    const getMenu = async () => {
+        await axios.get("https://localhost:7074/api/menu")
+        .then(res => setMenu(res.data))
+        .catch(err => console.log(err));
+    }
+    useEffect(() => { getMenu(); setIsLoading(false); }, []);
+    useEffect(() => { getLocalStorageOrder(); }, []);
+    useEffect(() => { 
+        if (!isLoading) saveToLocalStorage();
+    }, [order]);
     useEffect(() => {
         if (!isEmptyObject(auth)) {
             setInputData({
@@ -100,37 +101,31 @@ const Checkout = () => {
         }
         setInputData(tempInput);
     }
-    // const handleRemoveItemClick = (index) => setOrder(removeOrderItem(order, index));
 
-    const handleEditItemClick = (itemId, index) => setSelectedItemData({ item: items.find(item => item.itemId === itemId), index: index });
-    const handleRemoveItemClick = (index) => {
-        const temp = Object.assign({}, order);
-        let subtotal = 0;
-        temp["orderItems"].splice(index, 1);
-        if (isNaN(subtotal)) subtotal = 0;
-        temp["subtotal"] = subtotal;
-        setOrder(temp);
+    function saveToLocalStorage() {
+        localStorage.setItem("order", JSON.stringify(order));
     }
 
     const handleNavigateToMenu = event => {
-        localStorage.setItem("order", JSON.stringify(order));
+        saveToLocalStorage()
         navigate("/salerno/order");
     }
 
     const handleSubmitOrderClick = async event => {
         event.preventDefault();
-        console.log(inputData.saveOrder);
         if (canSubmitOrder(inputData)) {
-            order.accountId = auth.accountId;
-            order.savedOrderName = inputData.saveOrderName;
-            order.saveOrder = inputData.saveOrder;
-            order.tax = 0;
-            order.total = 0;
-            order.tax = 0;
             await axios({
                 method: "POST",
                 url: "https://localhost:7074/api/orders",
-                data: order,
+                data: {
+                    accountId: auth.accountId,
+                    savedOrderName: inputData.saveOrderName,
+                    saveOrder: inputData.saveOrder,
+                    subtotalTax: getOrderSubtotal(order, menu.map(item => item.items).reduce((a, c) => a.concat(c), [])) * 0.0825,
+                    subtotal: getOrderSubtotal(order, menu.map(item => item.items).reduce((a, c) => a.concat(c), [])),
+                    total: getOrderSubtotal(order, menu.map(item => item.items).reduce((a, c) => a.concat(c), [])) * 1.0825,
+                    orderItems: order
+                },
                 withCredentials: true
             })
             .then(res => {
@@ -326,8 +321,8 @@ const Checkout = () => {
                             <OrderItemSummary
                                 order={order}
                                 setOrder={setOrder}
-                                handleEditItemClick={handleEditItemClick}
-                                handleRemoveItemClick={handleRemoveItemClick}
+                                items={menu.map(item => item.items).reduce((a, c) => a.concat(c), [])}
+                                setSelectedItemData={setSelectedItemData}
                             />
                         </div>
                     </div>
@@ -338,9 +333,9 @@ const Checkout = () => {
                     <span className={CheckoutStyles.total_label}>Subtotal:</span>
                     <span className={CheckoutStyles.total}>{`$${getOrderSubtotal(order).toFixed(2)}`}</span>
                     <span className={CheckoutStyles.total_label}>Tax:</span>
-                    <span className={CheckoutStyles.total}>{`$${(getOrderSubtotal(order) * 0.0285).toFixed(2)}`}</span>
+                    <span className={CheckoutStyles.total}>{`$${(getOrderSubtotal(order) * 0.0825).toFixed(2)}`}</span>
                     <span className={CheckoutStyles.total_label}>Total:</span>
-                    <span className={CheckoutStyles.total}>{`$${(getOrderSubtotal(order) * 1.0285).toFixed(2)}`}</span>
+                    <span className={CheckoutStyles.total}>{`$${(getOrderSubtotal(order) * 1.0825).toFixed(2)}`}</span>
                 </div>
                 <button type="button" className={canSubmitOrder(inputData) ? CheckoutStyles.submit_button : CheckoutStyles.submit_button__disabled} onClick={handleSubmitOrderClick}>Submit Order</button>
             </div>

@@ -60,7 +60,6 @@ namespace Server.Models.ItemModels.Helpers
             {
                 CategoryId = category.CategoryId,
                 Name = category.Name,
-                Description = category.Description
             };
             return categoryHelper;
         }

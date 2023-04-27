@@ -159,7 +159,7 @@ const EditEmployee = () => {
                 </div>
                 <div className='EditEmployee_Footer'>
                     <div className='EditEmployee_Footer_Container'>
-                            <button type='button' className='EditEmployee_Footer_Button_Cancel' onClick={() => navigate('/salerno/staff/timeclock')}>
+                            <button type='button' className='EditEmployee_Footer_Button_Cancel' onClick={() => navigate('/salerno/employees')}>
                                 Cancel
                             </button>
                             <button type='button' className='EditEmployee_Footer_Button_Save'>

@@ -29,8 +29,8 @@ const ItemList = () => {
         .then(res => {
             let items = res.data;
             items.forEach(item => {
-                item.markup = (item['price'] / item['assignedCost']) * 100;
-                item.margin = (item['price'] - item['assignedCost']) / item['price'] * 100;
+                item.markup = (item.assignedCost === 0) ? 0 : (item['price'] / item['assignedCost']) * 100;
+                item.margin = (item.price === 0) ? 0 : (item['price'] - item['assignedCost']) / item['price'] * 100;
             })
             console.log(items)
             setInitialItems(items);

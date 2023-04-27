@@ -7,13 +7,11 @@ namespace Server.Models.ItemModels
     {
         public long CategoryId { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; } = "";
         public List<Item> Items { get; set; } = new();
-        public Category(long categoryId, string name, string description)
+        public Category(long categoryId, string name)
         {
             CategoryId = categoryId;
             Name = name;
-            Description = description;
         }
     }
 }
