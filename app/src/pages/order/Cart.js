@@ -3,21 +3,15 @@ import CartStyles from './css/Cart.module.css';
 import { IoMdClose } from 'react-icons/io';
 import OrderItemSummary from './OrderItemSummary';
 import { useNavigate } from 'react-router-dom';
-import { getOrderSubtotal } from './functions/OrderFunctions';
+import { getOrderSubtotal, saveToLocalStorage } from './functions/OrderFunctions';
 
-const Cart = ({ order, setOrder, handleEditItemClick, handleRemoveItemClick, cartOpen, cartIsOpen }) => {
+const Cart = ({ order, setOrder, items, setSelectedItemData, cartOpen, cartIsOpen }) => {
     const navigate = useNavigate();
-
     const handleCheckoutClick = event => {
-        if (order.orderItems.length > 0) {
-            localStorage.setItem("order", JSON.stringify(order));
+        if (order.length > 0) {
             navigate("/salerno/order/checkout");
         }
     }
-    useEffect(() => {
-        if (cartOpen) localStorage.setItem("order", JSON.stringify(order));
-    }, [order]);
-
     if (!cartOpen) return <></>
     return (
         <div className={CartStyles.cart}>
@@ -34,14 +28,14 @@ const Cart = ({ order, setOrder, handleEditItemClick, handleRemoveItemClick, car
                     onClick={handleCheckoutClick}
                 >
                     <span>Checkout</span>
-                    <span>{`$${getOrderSubtotal(order).toFixed(2)}`}</span>
+                    <span>{`$${getOrderSubtotal(order, items).toFixed(2)}`}</span>
                 </button>
             <div className={CartStyles.items}>
                 <OrderItemSummary
                     order={order}
                     setOrder={setOrder}
-                    handleEditItemClick={handleEditItemClick}
-                    handleRemoveItemClick={handleRemoveItemClick}
+                    items={items}
+                    setSelectedItemData={setSelectedItemData}
                 />
             </div>
         </div>

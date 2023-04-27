@@ -72,7 +72,7 @@ const Orders = () => {
     }
     
     function getOrderItemPrice(orderItem) {
-        let orderItemPrice = orderItem.basePrice;
+        let orderItemPrice = orderItem.price;
         orderItem.addons.forEach(addon => { orderItemPrice += Number(addon.addon.price); });
         orderItem.noOptions.forEach(noOption => { orderItemPrice -= Number(noOption.noOption.price); });
         orderItem.groups.forEach(group => { orderItemPrice += Number(group.group.price); });
@@ -133,8 +133,8 @@ const Orders = () => {
         setAccept(false);
     }
     const currDate = new Date();
-    const test = event => console.log(event.target.value)
     const OpenOrder = () => {
+        console.log(openOrder)
         if (!orderOpen) return <></>
         else if (isEmptyObject(openOrder)) {
             return (
@@ -199,7 +199,7 @@ const Orders = () => {
                                         <span className={OrdersStyles.count}>{orderItem.count}x</span>
                                         <div style={{ flexGrow: "1" }}>
                                             <span className={OrdersStyles.item_details}>
-                                                <span className={OrdersStyles.name}>{orderItem["itemName"]}</span>
+                                                <span className={OrdersStyles.name}>{orderItem["name"]}</span>
                                                 <span className={OrdersStyles.price}>${getOrderItemPrice(orderItem).toFixed(2)}</span>
                                             </span>
                                             <ItemModifiers orderItem={orderItem}/>

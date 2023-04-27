@@ -84,16 +84,5 @@ namespace SalernoServer.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
-        private static CategoryDTO CategoryToCategoryDTO(Category category)
-        {
-            var categoryDTO = new CategoryDTO()
-            {
-                CategoryId = category.CategoryId,
-                Name = category.Name,
-                Description = category.Description,
-                Items = category.Items.Select(item => new CategoryItemDTO(item.ItemId, item.Name, item.Description, item.Price, item.Modifier, item.IsEnabled)).Where(item => item.IsEnabled).ToList()
-            };
-            return categoryDTO;
-        }
     }
 }

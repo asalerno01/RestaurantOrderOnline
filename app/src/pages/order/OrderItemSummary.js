@@ -7,31 +7,41 @@ import CartModifiers from './CartModifiers';
 import ItemImage from '../../components/ItemImage';
 import { getOrderItemPrice, isDrink } from './functions/OrderFunctions';
 
-const OrderItemSummary = ({ order, setOrder, handleEditItemClick, handleRemoveItemClick }) => {
+const OrderItemSummary = ({ order, setOrder, items, setSelectedItemData }) => {
     const handleCountClick = (type, index) => {
-        let temp = Object.assign({}, order);
-        const currentCount = temp.orderItems[index].count;
+        let tempOrder = [...order];
+        const currentCount = tempOrder[index].count;
         if (type === "increment") {
-            temp.orderItems[index].count = currentCount + 1;
+            tempOrder[index].count = currentCount + 1;
         } else if (type === "decrement") {
             if (currentCount === 1) {
-                temp.orderItems = temp.orderItems.filter((orderItem, thisIndex) => thisIndex !== index);
+                tempOrder = tempOrder.filter((orderItem, thisIndex) => thisIndex !== index);
             } else {
-                temp.orderItems[index].count = currentCount - 1;
+                tempOrder[index].count = currentCount - 1;
             }
         }
-        setOrder(temp);
-        localStorage.setItem("order", JSON.stringify(temp));
+        console.log(tempOrder)
+        setOrder(tempOrder);
     }
+    
+    const handleEditItemClick = (itemId, index) => {
+        console.log(items);
+        setSelectedItemData({ item: items.find(item => item.itemId === itemId), index: index });
+    }
+    const handleRemoveItemClick = (index) => {
+        let newOrder = order.toSpliced(index, 1);
+        setOrder(newOrder);
+    }
+    console.log(order)
     return (
         <>
         {
-            order.orderItems.map((orderItem, index) => (
+            order.map((orderItem, index) => (
                 <div key={index}>
                     <div className={OrderItemSummaryStyles.card}>
                         <div className={OrderItemSummaryStyles.item_button} onClick={() => handleEditItemClick(orderItem.itemId, index)}>
                             <div className={isDrink(orderItem.name) ? OrderItemSummaryStyles.image_fit_wrapper : OrderItemSummaryStyles.image_wrapper}>
-                                <ItemImage itemName={orderItem.name}/>
+                                <ItemImage name={orderItem.name}/>
                             </div>
                             <div className={OrderItemSummaryStyles.details}>
                                 <span className={OrderItemSummaryStyles.name}>{orderItem.name}</span>
