@@ -20,7 +20,6 @@ const OrderItemSummary = ({ order, setOrder, items, setSelectedItemData }) => {
                 tempOrder[index].count = currentCount - 1;
             }
         }
-        console.log(tempOrder)
         setOrder(tempOrder);
     }
     
@@ -32,7 +31,6 @@ const OrderItemSummary = ({ order, setOrder, items, setSelectedItemData }) => {
         let newOrder = order.toSpliced(index, 1);
         setOrder(newOrder);
     }
-    console.log(order)
     return (
         <>
         {

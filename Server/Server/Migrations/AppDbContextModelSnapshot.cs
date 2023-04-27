@@ -53,7 +53,7 @@ namespace Server.Migrations
 
                     b.HasKey("EmployeeId");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Addon", b =>
@@ -76,7 +76,7 @@ namespace Server.Migrations
 
                     b.HasIndex("ModifierId");
 
-                    b.ToTable("Addons");
+                    b.ToTable("Addons", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Group", b =>
@@ -100,7 +100,7 @@ namespace Server.Migrations
 
                     b.HasIndex("ModifierId");
 
-                    b.ToTable("Groups");
+                    b.ToTable("Groups", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.GroupOption", b =>
@@ -126,7 +126,7 @@ namespace Server.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("GroupOptions");
+                    b.ToTable("GroupOptions", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Item", b =>
@@ -209,7 +209,7 @@ namespace Server.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Items");
+                    b.ToTable("Items", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Modifier", b =>
@@ -235,7 +235,7 @@ namespace Server.Migrations
                     b.HasIndex("ItemId")
                         .IsUnique();
 
-                    b.ToTable("Modifiers");
+                    b.ToTable("Modifiers", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.NoOption", b =>
@@ -258,7 +258,7 @@ namespace Server.Migrations
 
                     b.HasIndex("ModifierId");
 
-                    b.ToTable("NoOptions");
+                    b.ToTable("NoOptions", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.Order", b =>
@@ -296,7 +296,7 @@ namespace Server.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.OrderItem", b =>
@@ -328,7 +328,7 @@ namespace Server.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.OrderItemAddon", b =>
@@ -343,7 +343,7 @@ namespace Server.Migrations
 
                     b.HasIndex("AddonId");
 
-                    b.ToTable("OrderItemAddons");
+                    b.ToTable("OrderItemAddons", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.OrderItemGroup", b =>
@@ -363,7 +363,7 @@ namespace Server.Migrations
 
                     b.HasIndex("GroupOptionId");
 
-                    b.ToTable("OrderItemGroups");
+                    b.ToTable("OrderItemGroups", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.OrderItemNoOption", b =>
@@ -378,7 +378,7 @@ namespace Server.Migrations
 
                     b.HasIndex("NoOptionId");
 
-                    b.ToTable("OrderItemNoOptions");
+                    b.ToTable("OrderItemNoOptions", (string)null);
                 });
 
             modelBuilder.Entity("Server.Models.Authentication.Account", b =>
@@ -419,7 +419,7 @@ namespace Server.Migrations
 
                     b.HasKey("AccountId");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Accounts", (string)null);
                 });
 
             modelBuilder.Entity("Server.Models.ItemModels.Category", b =>
@@ -434,7 +434,7 @@ namespace Server.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Server.Models.Review", b =>
@@ -460,7 +460,7 @@ namespace Server.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("Server.Models.SavedOrder", b =>
@@ -483,7 +483,7 @@ namespace Server.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("SavedOrders");
+                    b.ToTable("SavedOrders", (string)null);
                 });
 
             modelBuilder.Entity("Server.Models.SavedOrderOrderItem", b =>
@@ -504,7 +504,7 @@ namespace Server.Migrations
 
                     b.HasIndex("SavedOrderId");
 
-                    b.ToTable("SavedOrderOrderItems");
+                    b.ToTable("SavedOrderOrderItems", (string)null);
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Addon", b =>
