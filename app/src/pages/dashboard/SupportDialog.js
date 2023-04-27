@@ -22,7 +22,7 @@ const SupportDialog = ({ supportOpen, setSupportOpen }) => {
                         <div style={{fontSize: '0.9rem', textAlign: 'left', fontWeight: '400', marginBottom: '10px'}}>Find answers on our support site</div>
 
                         <div style={{fontSize: '0.8rem', textAlign: 'left', fontWeight: 'lighter'}}>
-                            Search our detailed collection of articles, guides, and videos covering everything ALDI.
+                            Search our detailed collection of articles, guides, and videos.
                         </div>
                     </div>
                     <div className='SupportDialog_Content_Right'>

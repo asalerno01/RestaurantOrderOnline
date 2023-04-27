@@ -22,7 +22,7 @@ const Checkout = () => {
     const [inputData, setInputData] = useState({ firstName: "", lastName: "", phoneNumber: "", email: "", pickupType: "", paymentType: "", saveOrder: false, saveOrderName: "" });
     const [creditDebitModalIsOpen, setCreditDebitModalIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-
+    const [savedOrderNames, setSavedOrderNames] = useState([]);
     const firstNameRef = useRef();
     const lastNameRef = useRef();
     const phoneNumberRef = useRef();
@@ -41,8 +41,24 @@ const Checkout = () => {
         .then(res => setMenu(res.data))
         .catch(err => console.log(err));
     }
+    const getSavedOrderNames = async () => {
+        if (auth.accountId === undefined) return;
+        await axios({
+            method: "GET",
+            url: `https://localhost:7074/api/orders/savedorders/${auth.accountId}`,
+        })
+        .then(res => {
+            if (res.data.length > 0) {
+                let savedOrderNames = [];
+                res.data.forEach(savedOrder => savedOrderNames.push(savedOrder.name));
+                setSavedOrderNames(savedOrderNames)
+            }
+        })
+        .catch(err => console.log(err));
+    }
     useEffect(() => { getMenu(); setIsLoading(false); }, []);
-    useEffect(() => { getLocalStorageOrder(); }, []);
+    useEffect(() => { getSavedOrderNames(); setIsLoading(false); }, [])
+    useEffect(() => { getLocalStorageOrder(); setIsLoading(false); }, []);
     useEffect(() => { 
         if (!isLoading) saveToLocalStorage();
     }, [order]);
@@ -101,6 +117,14 @@ const Checkout = () => {
         }
         setInputData(tempInput);
     }
+    const handleCancelSavedOrder = event => {
+        event.preventDefault();
+        const tempInput = Object.assign({}, inputData);
+        tempInput.saveOrder = false;
+        saveOrderNameRef.current.style.height = "0";
+        tempInput.saveOrderName = "";
+        setInputData(tempInput);
+    }
 
     function saveToLocalStorage() {
         localStorage.setItem("order", JSON.stringify(order));
@@ -119,6 +143,10 @@ const Checkout = () => {
                 url: "https://localhost:7074/api/orders",
                 data: {
                     accountId: auth.accountId,
+                    firstName: inputData.firstName,
+                    lastName: inputData.lastName,
+                    email: inputData.email,
+                    phoneNumber: inputData.phoneNumber,
                     savedOrderName: inputData.saveOrderName,
                     saveOrder: inputData.saveOrder,
                     subtotalTax: getOrderSubtotal(order, menu.map(item => item.items).reduce((a, c) => a.concat(c), [])) * 0.0825,
@@ -251,7 +279,10 @@ const Checkout = () => {
                                 <span>Save this order for faster ordering again</span>
                             </button>
                             <div className={CheckoutStyles.save_name_input_wrapper} ref={saveOrderNameRef} >
-                                <input type="text" value={inputData.saveOrderName} placeholder="Enter a name for the order" className={CheckoutStyles.input_text__save} id="saveOrderName" onChange={handleInputChange} />
+                                <input type="text" value={inputData.saveOrderName} style={(inputData.saveOrder) ? {display: "block"} : {display: "none"}} placeholder="Enter a name for the order" className={CheckoutStyles.input_text__save} id="saveOrderName" onChange={handleInputChange} />
+                            </div>
+                            <div className={CheckoutStyles.save_order_replace_confirm} style={(savedOrderNames.includes(inputData.saveOrderName) && inputData.saveOrder) ? { display: "block", overflow: "hidden" } : { display: "none", overflow: "hidden" }}>
+                                <span>You already have a saved order named "{inputData.saveOrderName}. Are you sure you want to overwrite the old order?</span><button type="button" onClick={handleCancelSavedOrder}>Cancel</button>
                             </div>
                         </div>
                     </div>

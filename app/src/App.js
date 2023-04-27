@@ -38,6 +38,7 @@ import Checkout from './pages/order/Checkout';
 import Register from './pages/user_pages/Register';
 import RememberLogin from './simple/RememberLogin';
 import Reviews from './pages/review/Reviews';
+import Reports from './pages/order/Backoffice/Reports';
 
 function App() {
     return (
@@ -62,6 +63,8 @@ function App() {
                         <Route path='employees/timeclock' element={<TimeClock />} />
                         <Route path='employees/new' element={<NewEmployee />} />
                         <Route path='employees/:id/edit' element={<EditEmployee />} />
+                        
+                        <Route path='reports' element={<Reports />} />
                     </Route>
                 </Route>
             </Route>

@@ -94,6 +94,31 @@ namespace SalernoServer.Controllers
                     .ToListAsync();
             return Ok(orders.Select(order => new SimpleOrder(order)).ToList());
         }
+        [HttpPost]
+        [Route("date/full")]
+        public async Task<ActionResult<IEnumerable<OrderDTO>>> GetOrdersByDateFull([FromBody] DateHelper dateHelper)
+        {
+            Console.WriteLine(dateHelper.StartDate);
+            var orders = await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Addons)
+                .ThenInclude(oia => oia.Addon)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.NoOptions)
+                .ThenInclude(oino => oino.NoOption)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Groups)
+                .ThenInclude(oig => oig.Group)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Groups)
+                .ThenInclude(oig => oig.GroupOption)
+                .Include(o => o.Account)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Item)
+                .Where(o => o.OrderDate <= dateHelper.EndDate.AddDays(1).AddTicks(-1) && o.OrderDate >= dateHelper.StartDate.AddDays(-1).AddTicks(1))
+                .ToListAsync();
+            return Ok(orders.Select(order => new OrderDTO(order)).ToList());
+        }
 
         // GET: api/items/5
         [HttpGet("{id}")]
@@ -162,6 +187,20 @@ namespace SalernoServer.Controllers
                 Total = order.Total
             };
             var account = await _context.Accounts.FindAsync(order.AccountId);
+            if (account is null)
+            {
+                account = await _context.Accounts.Where(account => (account.Email.Equals(order.Email) && account.PhoneNumber.Equals(order.PhoneNumber))).FirstOrDefaultAsync();
+            }
+            account ??= new()
+            {
+                FirstName = order.FirstName,
+                LastName = order.LastName,
+                Email = order.Email,
+                PhoneNumber = order.PhoneNumber,
+                OrderCount = 1,
+                Password = "",
+                IsVerified = false
+                };
             newOrder.Account = account;
             if (order.OrderItems.IsNullOrEmpty()) return BadRequest("Order must have at least 1 order item.");
             foreach (var orderItem in order.OrderItems)
@@ -218,17 +257,22 @@ namespace SalernoServer.Controllers
             }
             if (order.SaveOrder && order.SavedOrderName is not null && account is not null)
             {
-                SavedOrder savedOrder = new()
+                SavedOrder savedOrder = await _context.SavedOrders.Where(savedOrder => (savedOrder.Name.Equals(order.SavedOrderName) && savedOrder.Account == account)).FirstOrDefaultAsync();
+                SavedOrder newSavedOrder = new()
                 {
                     Name = order.SavedOrderName,
                     Account = account
                 };
-                savedOrder.OrderItems = OrderItemsToSavedOrderOrderItems(savedOrder, newOrder);
-                await _context.SavedOrders.AddAsync(savedOrder);
+                newSavedOrder.OrderItems = OrderItemsToSavedOrderOrderItems(newSavedOrder, newOrder);
+                if (savedOrder is not null)
+                {
+                    newSavedOrder.SavedOrderId = savedOrder.SavedOrderId;
+                    _ = _context.Remove(savedOrder);
+                }
+                await _context.SavedOrders.AddAsync(newSavedOrder);
             }
             await _context.Orders.AddAsync(newOrder);
             await _context.SaveChangesAsync();
-            Console.WriteLine($"Added Order => {newOrder.OrderId}");
 
             return CreatedAtAction(
                 nameof(GetOrder),

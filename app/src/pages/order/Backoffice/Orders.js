@@ -132,7 +132,6 @@ const Orders = () => {
         timeButtonWrapperRef.current.style.width = "0px";
         setAccept(false);
     }
-    const currDate = new Date();
     const OpenOrder = () => {
         console.log(openOrder)
         if (!orderOpen) return <></>
