@@ -36,8 +36,8 @@
     line-height: 20px;
     margin-bottom: 6px;
     font-family: Lato, sans-serif;
-    font-size: 16px;
-    font-weight: 400;
+    font-size: 18px;
+    font-weight: 600;
     user-select: none;
     white-space: nowrap;
     border-radius: 6px;
@@ -80,11 +80,11 @@
     background-color: rgb(35, 36, 41);
 }
 .NavBar_Inner_Header > span {
-    font-size: 15px;
+    font-size: 20px;
     color: rgb(188, 196, 202);
     line-height: 30px;
     cursor: pointer;
-    font-weight: 400;
+    font-weight: 600;
 }
 .NavBar_Inner_Button {
     padding: 8px 10px;
@@ -106,10 +106,13 @@
     align-items: center;
     flex-direction: row;
     border-radius: 6px;
+    font-size: 18px;
+    font-weight: 600;
 }
 .NavBar_Inner_Button > span {
     line-height: 19.2px;
-    font-size: 15px;
+    font-size: 18px;
+    font-weight: 600;
     color: white;
     user-select: none;
 }
