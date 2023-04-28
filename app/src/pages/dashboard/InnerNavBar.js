@@ -39,6 +39,19 @@ const InnerNavBar = ({ innerNavType }) => {
                     </div>
                 </div>
             );
+        case "order":
+            return (
+                <div className='NavBar_Inner_Container'>
+                    <div className='NavBar_Inner_Header'>
+                        <span>Order</span>
+                    </div>
+                    <div className='NavBar_Inner_Buttons_Container'>
+                        <button type='button' className={isCurrentPage("order")} onClick={() => navigate('/salerno/order')}><div>Menu Page</div></button>
+                        <button type='button' className={isCurrentPage("orders")} onClick={() => navigate('/salerno/orders')}><div>Order Summary</div></button>
+                        <button type='button' className={isCurrentPage("checkout")} onClick={() => navigate('/salerno/order/checkout')}><div>Checkout</div></button>
+                    </div>
+                </div>
+            );
         default:
             return (
                 <div>hey</div>
