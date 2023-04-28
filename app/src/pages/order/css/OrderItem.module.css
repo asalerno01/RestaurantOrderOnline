@@ -23,14 +23,6 @@
     flex-direction: column;
     align-items: center;
 }
-.gap {
-    border-top: 1px solid rgb(213, 215, 219);
-    border-bottom: 1px solid rgb(213, 215, 219);
-    background-color: rgb(233, 234, 236);
-    width: calc(100% + 30px);
-    margin: 0 15px 0 -15px;
-    height: 8px;
-}
 .header {
     height: 60px;
     display: flex;
@@ -54,7 +46,6 @@
     font-family: "Lato Heavy", sans-serif;
     margin: 0 0 15px 0;
     text-align: left;
-    width: 100%
 }
 .content {
     flex-grow: 1;

@@ -154,7 +154,7 @@ const NewEmployee = () => {
                 </div>
                 <div className='NewEmployee_Footer'>
                     <div className='NewEmployee_Footer_Container'>
-                            <button type='button' className='NewEmployee_Footer_Button_Cancel' onClick={() => navigate('/salerno/employees')}>
+                            <button type='button' className='NewEmployee_Footer_Button_Cancel' onClick={() => navigate('/salerno/staff/timeclock')}>
                                 Cancel
                             </button>
                             <button type='button' className='NewEmployee_Footer_Button_Save'>

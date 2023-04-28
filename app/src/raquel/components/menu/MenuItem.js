@@ -5,7 +5,7 @@ import ItemImage from '../../../components/ItemImage';
 import SavedOrder from '../../../pages/order/SavedOrder';
 
 const MenuItem = (props) => {
-    function isDrink(name) { return ["Diet Coke", "Sprite", "Coke", "Root Beer", "Dr Pepper", "Mountain Dew", "Pepsi", "Orange Crush", "Dasani Water"].includes(name) };
+    function isDrink(itemName) { return ["Diet Coke", "Sprite", "Coke", "Root Beer", "Dr Pepper", "Mountain Dew", "Pepsi", "Orange Crush", "Dasani Water"].includes(itemName) };
     if (props.item?.savedOrder) return <SavedOrder savedOrder={props.savedOrder} />
     return (
         <div className={MenuItemStyles.menuitem}>
@@ -16,7 +16,7 @@ const MenuItem = (props) => {
                     <span className={MenuItemStyles.price}>{`$${props.price.toFixed(2)}`}</span>
                 </div>
                 <div className={isDrink(props.name) ? MenuItemStyles.image_fit_wrapper : MenuItemStyles.image_wrapper}>
-                    <ItemImage name={props.name}/>
+                    <ItemImage itemName={props.name}/>
                 </div>
             </button>
         </div>

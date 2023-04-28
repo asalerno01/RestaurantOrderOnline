@@ -3,7 +3,7 @@ import { Navigate, Link, useNavigate, useLocation } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import './css/login.css';
 import axios from 'axios';
-import Logo from '../../imgs/logo.png';
+import Logo from '../../imgs/logo.jpg';
 
 const Login = () => {
     const { auth, setAuth, remember, setRemember } = useAuth();

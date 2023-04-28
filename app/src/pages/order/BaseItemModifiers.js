@@ -4,7 +4,7 @@ import { FiAlertTriangle } from 'react-icons/fi';
 import { ImCheckboxChecked, ImCheckboxUnchecked } from 'react-icons/im';
 import ModifierStyles from './css/OrderItemModifier.module.css';
 
-const Addons = ({ name, baseItemAddons, optionsSelected, setOptionsSelected }) => {
+const Addons = ({ itemName, baseItemAddons, optionsSelected, setOptionsSelected }) => {
 
     function formatPrice(price) {
         return (!isNaN(price) && price > 0) ? `+$${price.toFixed(2)}` : "";
@@ -29,7 +29,7 @@ const Addons = ({ name, baseItemAddons, optionsSelected, setOptionsSelected }) =
     return (
         <div className={ModifierStyles.container}>
             <div className={ModifierStyles.header}>
-                <span className={ModifierStyles.title}>Add to {name}</span>
+                <span className={ModifierStyles.title}>Add to {itemName}</span>
                 <span className={ModifierStyles.select_type}>(Optional)</span>
             </div>
             <span className={ModifierStyles.max_select_label}>Select up to {baseItemAddons.length}</span>
@@ -121,7 +121,7 @@ const Groups = ({ baseItemGroups, optionsSelected, setOptionsSelected }) => {
         </div>
     )
 }
-const NoOptions = ({ name, baseItemNoOptions, optionsSelected, setOptionsSelected }) => {
+const NoOptions = ({ itemName, baseItemNoOptions, optionsSelected, setOptionsSelected }) => {
 
     function formatPrice(price) {
         if (!isNaN(price) && price > 0)
@@ -149,7 +149,7 @@ const NoOptions = ({ name, baseItemNoOptions, optionsSelected, setOptionsSelecte
     return (
         <div className={ModifierStyles.container}>
             <div className={ModifierStyles.header}>
-                <span className={ModifierStyles.title}>Remove from {name}</span>
+                <span className={ModifierStyles.title}>Remove from {itemName}</span>
                 <span className={ModifierStyles.select_type}>(Optional)</span>
             </div>
             <span className={ModifierStyles.max_select_label}>Select up to {baseItemNoOptions.length}</span>

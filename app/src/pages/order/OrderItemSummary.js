@@ -7,39 +7,31 @@ import CartModifiers from './CartModifiers';
 import ItemImage from '../../components/ItemImage';
 import { getOrderItemPrice, isDrink } from './functions/OrderFunctions';
 
-const OrderItemSummary = ({ order, setOrder, items, setSelectedItemData }) => {
+const OrderItemSummary = ({ order, setOrder, handleEditItemClick, handleRemoveItemClick }) => {
     const handleCountClick = (type, index) => {
-        let tempOrder = [...order];
-        const currentCount = tempOrder[index].count;
+        let temp = Object.assign({}, order);
+        const currentCount = temp.orderItems[index].count;
         if (type === "increment") {
-            tempOrder[index].count = currentCount + 1;
+            temp.orderItems[index].count = currentCount + 1;
         } else if (type === "decrement") {
             if (currentCount === 1) {
-                tempOrder = tempOrder.filter((orderItem, thisIndex) => thisIndex !== index);
+                temp.orderItems = temp.orderItems.filter((orderItem, thisIndex) => thisIndex !== index);
             } else {
-                tempOrder[index].count = currentCount - 1;
+                temp.orderItems[index].count = currentCount - 1;
             }
         }
-        setOrder(tempOrder);
-    }
-    
-    const handleEditItemClick = (itemId, index) => {
-        console.log(items);
-        setSelectedItemData({ item: items.find(item => item.itemId === itemId), index: index });
-    }
-    const handleRemoveItemClick = (index) => {
-        let newOrder = order.toSpliced(index, 1);
-        setOrder(newOrder);
+        setOrder(temp);
+        localStorage.setItem("order", JSON.stringify(temp));
     }
     return (
         <>
         {
-            order.map((orderItem, index) => (
+            order.orderItems.map((orderItem, index) => (
                 <div key={index}>
                     <div className={OrderItemSummaryStyles.card}>
                         <div className={OrderItemSummaryStyles.item_button} onClick={() => handleEditItemClick(orderItem.itemId, index)}>
                             <div className={isDrink(orderItem.name) ? OrderItemSummaryStyles.image_fit_wrapper : OrderItemSummaryStyles.image_wrapper}>
-                                <ItemImage name={orderItem.name}/>
+                                <ItemImage itemName={orderItem.name}/>
                             </div>
                             <div className={OrderItemSummaryStyles.details}>
                                 <span className={OrderItemSummaryStyles.name}>{orderItem.name}</span>

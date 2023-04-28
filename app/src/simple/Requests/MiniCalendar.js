@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-// import './_minicalendar.css';
+import './minicalendar.css';
 import { firstDayOfMonth, getDaysPerMonth } from './Functions/DateInfo';
 import NavArrow from './Components/NavArrow';
 

@@ -38,13 +38,8 @@ const Checkout = () => {
 
     const getMenu = async () => {
         await axios.get("https://localhost:7074/api/menu")
-
             .then(res => setMenu(res.data))
-            .catch(err => console.log(err))
-
-        .then(res => setMenu(res.data))
-        .catch(err => console.log(err));
-
+            .catch(err => console.log(err));
     }
     const getSavedOrderNames = async () => {
         if (auth.accountId === undefined) return;
@@ -52,7 +47,6 @@ const Checkout = () => {
             method: "GET",
             url: `https://localhost:7074/api/orders/savedorders/${auth.accountId}`,
         })
-
             .then(res => {
                 if (res.data.length > 0) {
                     let savedOrderNames = [];
@@ -60,20 +54,11 @@ const Checkout = () => {
                     setSavedOrderNames(savedOrderNames)
                 }
             })
-            .catch(err => console.log(err))
-        .then(res => {
-            if (res.data.length > 0) {
-                let savedOrderNames = [];
-                res.data.forEach(savedOrder => savedOrderNames.push(savedOrder.name));
-                setSavedOrderNames(savedOrderNames)
-            }
-        })
-        .catch(err => console.log(err));
+            .catch(err => console.log(err));
     }
     useEffect(() => { getMenu(); setIsLoading(false); }, []);
     useEffect(() => { getSavedOrderNames(); setIsLoading(false); }, [])
     useEffect(() => { getLocalStorageOrder(); setIsLoading(false); }, []);
-    useEffect(() => {
     useEffect(() => {
         if (!isLoading) saveToLocalStorage();
     }, [order]);
@@ -386,8 +371,7 @@ const Checkout = () => {
                 <button type="button" className={canSubmitOrder(inputData) ? CheckoutStyles.submit_button : CheckoutStyles.submit_button__disabled} onClick={handleSubmitOrderClick}>Submit Order</button>
             </div>
         </div>
-    )})
+    )
 }
-
 
 export default Checkout;

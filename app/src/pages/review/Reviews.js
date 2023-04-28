@@ -36,7 +36,7 @@ const Reviews = () => {
                                 <span className={ReviewsStyles.vote_wrapper}>Disliked</span>
                             </div>
                             <div className={ReviewsStyles.item_image_wrapper}>
-                                <ItemImage name="Chicken Strips - 5 Piece"/>
+                                <ItemImage itemName="Chicken Strips - 5 Piece"/>
                             </div>
                         </div>
                         <div className={ReviewsStyles.item}>
@@ -46,7 +46,7 @@ const Reviews = () => {
                                 <span className={ReviewsStyles.vote_wrapper}>Liked</span>
                             </div>
                             <div className={ReviewsStyles.item_image_wrapper}>
-                                <ItemImage name="Fresh Cut Fries - Large"/>
+                                <ItemImage itemName="Fresh Cut Fries - Large"/>
                             </div>
                         </div>
                     </div>

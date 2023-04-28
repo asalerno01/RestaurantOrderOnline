@@ -13,7 +13,8 @@ const OrderItem = ({ selectedItemData, setSelectedItemData, order, setOrder, car
     const [count, setCount] = useState(1);
     useEffect(() => {
         if (selectedItemData.index !== null) {
-            const selectedItem = order[selectedItemData.index];
+            const selectedItem = order.orderItems[selectedItemData.index];
+            console.log(selectedItem.noOptions)
             setOptionsSelected({ groups: selectedItem.groups, addons: selectedItem.addons, noOptions: selectedItem.noOptions });
             setCount(selectedItem.count);
         }
@@ -37,21 +38,20 @@ const OrderItem = ({ selectedItemData, setSelectedItemData, order, setOrder, car
         const orderItem = {
             "itemId": selectedItemData.item.itemId,
             "name": selectedItemData.item.name,
-            price: selectedItemData.item.price,
+            "price": getOrderItemPrice(selectedItemData.item.price, 1, optionsSelected.addons, optionsSelected.noOptions, optionsSelected.groups),
             "count": count,
             "addons": optionsSelected.addons,
             "noOptions": optionsSelected.noOptions,
             "groups": optionsSelected.groups
         }
-        console.log(orderItem)
-        const tempOrder = [...order];
+        const temp = Object.assign({}, order);
         if (selectedItemData.index !== null) {
-            tempOrder[selectedItemData.index] = orderItem;
+            temp.orderItems[selectedItemData.index] = orderItem;
         } else {
-            tempOrder.push(orderItem);
+            temp["orderItems"].push(orderItem);
             cartIsOpen(true);
         }
-        setOrder(tempOrder);
+        setOrder(temp);
         setSelectedItemData({ item: null, index: null })
         setOptionsSelected({ groups: [], addons: [], noOptions: [] });
         setCount(1);
@@ -68,7 +68,7 @@ const OrderItem = ({ selectedItemData, setSelectedItemData, order, setOrder, car
             return <button className={OrderItemStyles.add_button} onClick={handleAddToCartClick}>Update item - ${orderItemPrice.toFixed(2)}</button>
         return <button className={OrderItemStyles.add_button} onClick={handleAddToCartClick}>Add to cart - ${orderItemPrice.toFixed(2)}</button>
     }
-    function isDrink(name) { return ["Diet Coke", "Sprite", "Coke", "Root Beer", "Dr Pepper", "Mountain Dew", "Pepsi", "Orange Crush", "Dasani Water"].includes(name); }
+    function isDrink(itemName) { return ["Diet Coke", "Sprite", "Coke", "Root Beer", "Dr Pepper", "Mountain Dew", "Pepsi", "Orange Crush", "Dasani Water"].includes(itemName); }
     
     if (selectedItemData.item === null) return <></>
     else return (
@@ -81,7 +81,7 @@ const OrderItem = ({ selectedItemData, setSelectedItemData, order, setOrder, car
                     <h1 className={OrderItemStyles.content_header}>{selectedItemData.item.name}</h1>
                     <span className={OrderItemStyles.description}>{selectedItemData.item.description}</span>
                     <div className={isDrink(selectedItemData.item.name) ? OrderItemStyles.image_fit_wrapper : OrderItemStyles.image_wrapper}>
-                        <ItemImage name={selectedItemData.item.name}/>
+                        <ItemImage itemName={selectedItemData.item.name}/>
                     </div>
                     <Groups
                         baseItemGroups={selectedItemData.item.modifier.groups}
@@ -89,13 +89,13 @@ const OrderItem = ({ selectedItemData, setSelectedItemData, order, setOrder, car
                         setOptionsSelected={setOptionsSelected}
                     />
                     <Addons 
-                        name={selectedItemData.item.name}
+                        itemName={selectedItemData.item.name}
                         baseItemAddons={selectedItemData.item.modifier.addons}
                         optionsSelected={optionsSelected}
                         setOptionsSelected={setOptionsSelected}
                     />
                     <NoOptions 
-                        name={selectedItemData.item.name}
+                        itemName={selectedItemData.item.name}
                         baseItemNoOptions={selectedItemData.item.modifier.noOptions}
                         optionsSelected={optionsSelected}
                         setOptionsSelected={setOptionsSelected}

@@ -37,12 +37,6 @@ const NavBar = ({ navRef, navOpen }) => {
                         </div>
                         <span>Staff</span>
                     </button>
-                    <button type='button' className={loc === '/salerno/order' ? 'NavBar_Button NavBar_Active' : 'NavBar_Button NavBar_Inactive'} onClick={() => { setInnerNavType(prev => (prev !== "order") ? "order" : ""); setLoc("/salerno/order");}}>
-                        <div className='NavBar_Button_Icon_Wrapper'>
-                            <AiFillSetting size=' 1.25em'  />
-                        </div>
-                        <span>Orders</span>
-                    </button>
                     <button type='button' className={loc === '/salerno/settings' ? 'NavBar_Button NavBar_Active' : 'NavBar_Button NavBar_Inactive'} onClick={() => { setInnerNavType(prev => (prev !== "settings") ? "settings" : ""); setLoc("/salerno/settings");}}>
                         <div className='NavBar_Button_Icon_Wrapper'>
                             <AiFillSetting size=' 1.25em'  />

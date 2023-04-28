@@ -6,7 +6,7 @@ const LoadingSpinner = () => {
 
     return (
         <div className={LoadingSpinnerStyles.LoadingSpinner}>
-            <ClipLoader
+            <ClipLoader 
                 color="rgb(0, 187, 225)"
                 size={50}
             />

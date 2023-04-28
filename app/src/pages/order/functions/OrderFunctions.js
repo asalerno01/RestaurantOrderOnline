@@ -1,5 +1,13 @@
 export function removeOrderItem(order, index) {
-    return order.toSplice(index, 1);
+    const temp = Object.assign({}, order);
+    if (temp.orderItems.length === 1) {
+        temp.orderItems = [];
+        temp.subtotal = 0;
+    } else {
+        temp.orderItems.splice(index, 1);
+        temp.subtotal = temp.subtotal - order.orderItems[index].price;
+    }
+    return temp;
 }
 export function canSubmitOrder(inputObject) {
     return (inputObject.firstName.length > 0
@@ -26,14 +34,16 @@ export function generateUUIDUsingMathRandom() {
         return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
     });
 }
-export function getOrderSubtotal(order, items) {
+export function getOrderSubtotal(order) {
     let subtotal = 0;
-    console.log(order)
-    order.forEach(orderItem => {
-        let { count, addons, noOptions, groups } = orderItem;
-        subtotal += getOrderItemPrice(orderItem.price, count, addons, noOptions, groups);
+    order.orderItems.forEach(orderItem => {
+        subtotal += getOrderItemPrice(orderItem.price,
+                            orderItem.count,
+                            orderItem.addons,
+                            orderItem.noOptions,
+                            orderItem.groups);
     });
-    return subtotal;
+    return Number(subtotal);
 }
 export function getOrderItemPrice(basePrice, count, addons, noOptions, groups) {
     let orderItemPrice = basePrice;
@@ -41,6 +51,15 @@ export function getOrderItemPrice(basePrice, count, addons, noOptions, groups) {
     noOptions.forEach(noOption => { orderItemPrice -= Number(noOption.price); });
     groups.forEach(group => { orderItemPrice += Number(group.price); });
     return Number(orderItemPrice * count);
+}
+export function createEmptyOrder() {
+    return ({
+        "orderId": generateUUIDUsingMathRandom(),
+        "subtotal": 0,
+        "subtotalTax": 0,
+        "total": 0,
+        "orderItems": []
+    });
 }
 export function createEmptyOrderItem() {
     return ({
@@ -74,4 +93,4 @@ export function isEmptyObject(obj) {
     }
     return true;
 }
-export function isDrink(name) { return ["Diet Coke", "Sprite", "Coke", "Root Beer", "Dr Pepper", "Mountain Dew", "Pepsi", "Orange Crush", "Dasani Water"].includes(name) };
+export function isDrink(itemName) { return ["Diet Coke", "Sprite", "Coke", "Root Beer", "Dr Pepper", "Mountain Dew", "Pepsi", "Orange Crush", "Dasani Water"].includes(itemName) };

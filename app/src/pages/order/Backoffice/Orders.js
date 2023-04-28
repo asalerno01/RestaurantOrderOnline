@@ -22,12 +22,8 @@ const Orders = () => {
     const [filterDate, setFilterDate] = useState(getLastSevenDays());
     const [orderOpen, setOrderOpen] = useState(false);
     const openOrderRef = useRef();
-    const timeButtonWrapperRef = useRef();
-    const [accept, setAccept] = useState(false);
-    const [selectedPickupTime, setSelectedPickupTime] = useState(null);
 
     const getOrders = async () => {
-        setIsLoading(true);
         await axios({
             method: "POST",
             url: "https://localhost:7074/api/orders/date",
@@ -39,16 +35,14 @@ const Orders = () => {
         .then(res => {
             console.log(res.data)
             setOrders(res.data);
-            wait(500);
+            setIsLoading(false);
         })
         .catch(err => {
             console.log(err);
         });
     }
     useEffect(() => { getOrders(); }, [filterDate]);
-    const handleUpdateOrderStatus = event => {
-        event.preventDefault();
-    }
+
 
     const CalendarButton = () => {
         return (
@@ -61,18 +55,10 @@ const Orders = () => {
             </>
         )
     }
-    function timeout(delay) {
-        return new Promise( res => setTimeout(res, delay) );
-    }
-    async function wait(delay) {
-        console.log("waiting")
-        await timeout(delay); //for 1 sec delay
-        setIsLoading(false);
-        console.log("done")
-    }
+
     
     function getOrderItemPrice(orderItem) {
-        let orderItemPrice = orderItem.price;
+        let orderItemPrice = orderItem.basePrice;
         orderItem.addons.forEach(addon => { orderItemPrice += Number(addon.addon.price); });
         orderItem.noOptions.forEach(noOption => { orderItemPrice -= Number(noOption.noOption.price); });
         orderItem.groups.forEach(group => { orderItemPrice += Number(group.group.price); });
@@ -121,19 +107,8 @@ const Orders = () => {
         .then(res => setOpenOrder(res.data))
         .catch(err => console.log(err));
     }
-    const handleAcceptClick = event => {
-        event.preventDefault();
-        console.log("clicked")
-        timeButtonWrapperRef.current.style.width = "204px";
-        setAccept(true);
-    }
-    const handleDeclineClick = event => {
-        event.preventDefault();
-        timeButtonWrapperRef.current.style.width = "0px";
-        setAccept(false);
-    }
+
     const OpenOrder = () => {
-        console.log(openOrder)
         if (!orderOpen) return <></>
         else if (isEmptyObject(openOrder)) {
             return (
@@ -157,17 +132,9 @@ const Orders = () => {
                             <h2 className={OrdersStyles.modal_header}>Order #{openOrder.orderId}</h2>
                         </div>
                         <div className={OrdersStyles.gap}></div>
-                        <div className={OrdersStyles.accept_decline_button_wrapper}>
-                            <button type="button" className={(accept === true) ? OrdersStyles.accept__selected : OrdersStyles.accept} onClick={handleAcceptClick}>Accept</button>
-                            <div className={OrdersStyles.time_wrapper} ref={timeButtonWrapperRef}>
-                                <button type="button" className={OrdersStyles.time_button} onClick={() => setSelectedPickupTime(new Date(Date.now() + (30 * 60 * 1000)))}>
-                                    {formatTime(new Date(Date.now() + (30 * 60 * 1000)))}
-                                </button>
-                                <button type="button" className={OrdersStyles.time_button} onClick={() => setSelectedPickupTime(new Date(Date.now() + (30 * 60 * 1000)))}>
-                                    {formatTime(new Date(Date.now() + (60 * 60 * 1000)))}
-                                </button>
-                            </div>
-                            <button type="button" className={OrdersStyles.decline} onClick={handleDeclineClick}>Decline</button>
+                        <div className={OrdersStyles.choice_wrapper}>
+                            <button type="button" className={OrdersStyles.choice_button}>Accept</button>
+                            <button type="button" className={OrdersStyles.choice_button}>Decline</button>
                         </div>
                         <div className={OrdersStyles.gap}></div>
                         <div className={OrdersStyles.pickup}>
@@ -180,9 +147,9 @@ const Orders = () => {
                             <div>
                                 <div className={OrdersStyles.pickup_label}>Picked Up</div>
                                 <div className={OrdersStyles.pickup_value}>
-                                    {(openOrder.pickUpDate === null) ? "In Progress" : openOrder.pickUpDate}
+                                    {(openOrder.pickUpDate === null) ? "Pending" : formatTime(openOrder.pickupDate)}
                                     <span style={{marginLeft: "10px"}}>
-                                        {(openOrder.QuotedTime === null) ? "No Quote" : `Quoted (${openOrder.quotedTime})`}
+                                        {`(Quoted ${formatTime(new Date(openOrder.orderDate).setMinutes(new Date(openOrder.orderDate).getMinutes() + 20))})`}
                                     </span>
                                 </div>
                                 <div className={OrdersStyles.pickup_value}>{new Date(openOrder["orderDate"]).toLocaleDateString()}</div>
@@ -198,7 +165,7 @@ const Orders = () => {
                                         <span className={OrdersStyles.count}>{orderItem.count}x</span>
                                         <div style={{ flexGrow: "1" }}>
                                             <span className={OrdersStyles.item_details}>
-                                                <span className={OrdersStyles.name}>{orderItem["name"]}</span>
+                                                <span className={OrdersStyles.name}>{orderItem["itemName"]}</span>
                                                 <span className={OrdersStyles.price}>${getOrderItemPrice(orderItem).toFixed(2)}</span>
                                             </span>
                                             <ItemModifiers orderItem={orderItem}/>
@@ -226,6 +193,7 @@ const Orders = () => {
         )
     }
 
+    if (isLoading) return <LoadingSpinner />
     return (
         <div className={OrdersStyles.orders}>
                 <div className={OrdersStyles.backdrop} style={(orderOpen) ? {width: "100%"} : {width: "0"}} onClick={() => orderIsOpen(false)}></div>
@@ -279,15 +247,16 @@ const Orders = () => {
                     <table className={OrdersStyles.table}>
                         <tbody>
                         {
-                            (isLoading) ? <tr><td><LoadingSpinner /></td></tr> : orders.map(order => (
-                                <tr key={"orderid-" + order["orderId"]} onClick={() => handleOrderItemClick(order.orderId)}>
-                                    <td>{order["orderId"]}</td>
-                                    <td>{order.status}</td>
-                                    <td>{order.orderDate}</td>
-                                    <td>{order.orderTime}</td>
-                                    <td style={{ textTransform: "capitalize" }}>{`${(order["firstName"])} ${order["lastName"]}`}</td>
-                                </tr>
-                            ))
+                            (isLoading) ? <></> : orders.map(order => (
+                                    <tr key={"orderid-" + order["orderId"]} onClick={() => handleOrderItemClick(order.orderId)}>
+                                        <td>{order["orderId"]}</td>
+                                        <td>{order.status}</td>
+                                        <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+                                        <td>{formatTime(order["orderDate"])}</td>
+                                        <td style={{ textTransform: "capitalize" }}>{`${(order["firstName"])} ${order["lastName"]}`}</td>
+                                    </tr>
+                                )
+                            )
                         }
                         </tbody>
                     </table>

@@ -38,16 +38,11 @@ import Checkout from './pages/order/Checkout';
 import Register from './pages/user_pages/Register';
 import RememberLogin from './simple/RememberLogin';
 import Reviews from './pages/review/Reviews';
-
 import Report from "./pages/report/Report";
-import Home from './pages/home/Home';
-import Reports from './pages/order/Backoffice/Reports';
-
 
 function App() {
     return (
         <Routes>
-            <Route path="salerno/home" element={<Home />} />
             <Route path="salerno/login" element={<Login />} />
             <Route path="salerno/report" element={<Report />} />
             <Route path="salerno/register" element={<Register />} />
@@ -69,8 +64,6 @@ function App() {
                         <Route path='employees/timeclock' element={<TimeClock />} />
                         <Route path='employees/new' element={<NewEmployee />} />
                         <Route path='employees/:id/edit' element={<EditEmployee />} />
-                        
-                        <Route path='reports' element={<Reports />} />
                     </Route>
                 </Route>
             </Route>
