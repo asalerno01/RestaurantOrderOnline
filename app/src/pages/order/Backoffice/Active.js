@@ -12,7 +12,7 @@ const Active = () => {
     const getOrders = async () => {
         await axios({
             method: "GET",
-            url: "https://localhost:7089/api/orders/simple/active"
+            url: "https://localhost:7074/api/orders/simple/active"
         })
         .then(res => {
             console.log(res.data)
@@ -55,7 +55,7 @@ const Active = () => {
     const handleOrderItemClick = async (orderId) => {
         await axios({
             method: "GET",
-            url: `https://localhost:7089/api/orders/${orderId}`
+            url: `https://localhost:7074/api/orders/${orderId}`
         })
         .then(res => setOpenItem(res.data))
         .catch(err => console.log(err));

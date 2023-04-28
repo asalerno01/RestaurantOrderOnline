@@ -9,8 +9,9 @@ function Graph({dataReport}){
 
     const {
         weeklyNetSales,
-        weeklyTransactions,
-        weeklyDates
+        weeklyOrders,
+        weeklyDates,
+        title
     } = dataReport;
 
     const chartData = {
@@ -23,9 +24,9 @@ function Graph({dataReport}){
                 yAxisID: 'y1',
             },
             {
-                label: 'Transaction Count',
+                label: 'Order Count',
                 //get data
-                data: weeklyTransactions,
+                data: weeklyOrders,
                 type: 'line',
                 borderColor: 'rgba(152,16,17, 1)',
                 borderWidth: 2,
@@ -49,7 +50,7 @@ function Graph({dataReport}){
         plugins: {
             title: {
                 display: true,
-                text: 'Title Sales By Period'
+                text: title
             }
         }
     };

@@ -26,7 +26,7 @@ const Orders = () => {
     const getOrders = async () => {
         await axios({
             method: "POST",
-            url: "https://localhost:7089/api/orders/date",
+            url: "https://localhost:7074/api/orders/date",
             data: {
                 startDate: new Date(filterDate[0].Year, filterDate[0].Month - 1, filterDate[0].Day).toISOString(),
                 endDate: new Date(filterDate[1].Year, filterDate[1].Month - 1, filterDate[1].Day).toISOString()
@@ -102,7 +102,7 @@ const Orders = () => {
         setOpenOrder({})
         await axios({
             method: "GET",
-            url: `https://localhost:7089/api/orders/${orderId}`
+            url: `https://localhost:7074/api/orders/${orderId}`
         })
         .then(res => setOpenOrder(res.data))
         .catch(err => console.log(err));

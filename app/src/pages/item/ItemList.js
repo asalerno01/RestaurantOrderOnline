@@ -25,7 +25,7 @@ const ItemList = () => {
     const [isLoaded, setIsLoaded] = useState(false);
 
     const getItems = async () => {
-        await axios.get('https://localhost:7089/api/items')
+        await axios.get('https://localhost:7074/api/items')
         .then(res => {
             let items = res.data;
             items.forEach(item => {

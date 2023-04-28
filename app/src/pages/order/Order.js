@@ -46,7 +46,7 @@ const Order = () => {
 
     const getItems = async () => {
         let categories = [];
-        await axios.get("https://localhost:7089/api/category")
+        await axios.get("https://localhost:7074/api/category")
         .then(res => {
             let items = [];
             categories = res.data;
@@ -66,7 +66,7 @@ const Order = () => {
     const getSavedOrders = async (categories) => {
         await axios({
             method: "GET",
-            url: `https://localhost:7089/api/orders/savedorders/${auth.accountId}`,
+            url: `https://localhost:7074/api/orders/savedorders/${auth.accountId}`,
             withCredentials: true,
             headers: {
                 Authorization: `Bearer ${auth?.accessToken}`

@@ -17,7 +17,7 @@ const CreateReview = ({ setCreateReviewOpen, createReviewOpen }) => {
         event.preventDefault();
         await axios({
             method: "POST",
-            url: "https://localhost:7089/api/review/create",
+            url: "https://localhost:7074/api/review/create",
             data: {
                 "rating": currentStars,
                 "message": message,
