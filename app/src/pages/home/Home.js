@@ -10,7 +10,8 @@ const Home = () => {
         <div>
             <header className={css.header}>
                 <img className={css.logo} src={myImage} alt="My Image" />
-                <h2  className={css.number}> 630-383-8983</h2>
+                <h3  className={css.number}> 630-383-8983</h3>
+                <h3  className={css.address}>197 E Veterans Pkwy - Yorkville, Illinois </h3>
             </header>
 
             <nav className={css.navbar}>
@@ -27,8 +28,8 @@ const Home = () => {
             <section>
                 <img className={css.food} src={coverImg} alt="My Image" />
             </section>
-            <footer>
-                
+            <footer className ={css.footer}>
+                <p> Salerno's Red Hots | Copyright 2011-2023 | All Rights Reserved</p>
             </footer>
         </div>
     )

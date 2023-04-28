@@ -1,13 +1,17 @@
 .navbar{
     background-color: red;
-    padding: 10px;
-
+    padding:10px;
+    border-width: 3px;
+    border-style: solid;
+    border-color: black;
+    border-bottom-width: 0;
+    border-top-width: 0;
 }
 
 .navbar ul {
     list-style: none;
     margin: 0;
-    padding-left: 24rem;
+    padding-left:22rem;
     display: flex;
     align-items: baseline;
 }
@@ -34,7 +38,9 @@
     align-items: center;
     justify-content: space-between;
     background-color: #FEF901;
-
+    border-width: 3px;
+    border-style: solid;
+    border-color: black;
 }
 
 .logo {
@@ -50,10 +56,41 @@
 .food{
     height: 389px;
     width: 1280px;
+    border-width: 3px;
+    border-style: solid;
+    border-color: black;
+    padding: 0;
+    margin: 0;
 }
 
 .number{
     color: blue;
     position: relative;
+    padding: 0;
+    margin: 0;
+    right: -422px;
+    top:-10px;
+}
+.address{
+    color: blue;
+    position: relative;
+    padding: 0;
+    margin: 0;
     right: 25px;
+    top:25px;
+}
+.footer p{
+    color: black;
+    background-color:red;
+    position: relative;
+    padding: 0;
+    margin: 0;
+    top:-4px;
+    border-width: 3px;
+    border-style: solid;
+    border-color: black;
+    border-top-width: 0;
+    font-size:14px;
+    font-weight: bold;
+    height: 22px;
 }
