@@ -95,11 +95,11 @@ const Active = () => {
                             <h2 className={ActiveStyles.details_header}>Order Details</h2>
                             <div>
                             {
-                                openOrder.orderItems.map(orderItem => (
+                                openOrder.map(orderItem => (
                                     <div key={`order-${openOrder["orderId"]}-orderitem-${orderItem["orderItemId"]}`} className={ActiveStyles.item}>
                                         <div className={ActiveStyles.count}>{orderItem.count}x</div>
                                         <div className={ActiveStyles.item_details}>
-                                            <div className={ActiveStyles.name}>{orderItem["itemName"]}</div>
+                                            <div className={ActiveStyles.name}>{orderItem["name"]}</div>
                                             <div className={ActiveStyles.price}>${getOrderItemPrice(orderItem).toFixed(2)}</div>
                                         </div>
                                         <div className={ActiveStyles.addons}>

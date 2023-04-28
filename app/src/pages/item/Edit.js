@@ -7,7 +7,7 @@ import DeleteItemModal from "../../components/DeleteItemModal";
 import axios from 'axios';
 import './css/edit.css';
 
-export default function Edit() {
+const Edit = () => {
     const { itemId } = useParams();
     const location = useLocation();
 
@@ -69,6 +69,7 @@ export default function Edit() {
     const handleSave = async event => {
         if (itemId === undefined) {
             await axios.post("https://localhost:7074/api/items", item)
+            .then(res => { console.log(res); navigate("/salerno/items"); })
             .catch(err => console.log(err));
         }
         else {
@@ -254,3 +255,5 @@ export default function Edit() {
         </div>
     )
 }
+
+export default Edit;

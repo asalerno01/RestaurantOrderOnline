@@ -90,7 +90,8 @@ namespace SalernoServer
                 FirstName = registerModel.FirstName,
                 LastName = registerModel.LastName,
                 Password = registerModel.Password,
-                PhoneNumber = registerModel.PhoneNumber
+                PhoneNumber = registerModel.PhoneNumber,
+                IsVerified = true
             };
             var result = await _context.Accounts.AddAsync(account);
             await _context.SaveChangesAsync();

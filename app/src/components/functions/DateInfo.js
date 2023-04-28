@@ -93,3 +93,33 @@ export function getLastSevenDays() {
         ];
     }
 }
+export function getLastFourteenDays() {
+    const d = date.getDate();
+    if (d > 13) {
+        return [ 
+            {
+                Day: d - 13,
+                Month: date.getMonth() + 1,
+                Year: date.getFullYear()
+            },
+            {
+                Day: d,
+                Month: date.getMonth() + 1,
+                Year: date.getFullYear()
+            }
+        ];
+    } else {
+        return [
+            {
+                Day: days_per_prev_month - (13 - d),
+                Month: (date.getMonth() === 0) ? 12 : date.getMonth(),
+                Year: (date.getMonth() === 0) ? date.getFullYear() - 1 : date.getFullYear()
+            },
+            {
+                Day: d,
+                Month: date.getMonth() + 1,
+                Year: date.getFullYear()
+            }
+        ];
+    }
+}

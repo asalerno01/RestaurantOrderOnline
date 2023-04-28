@@ -4,7 +4,12 @@ namespace SalernoServer.Models
 {
     public class OrderHelper
     {
+        public long OrderId { get; set; } = 0;
         public long? AccountId { get; set; }
+        public string FirstName { get; set; } = "";
+        public string LastName { get; set; } = "";
+        public string PhoneNumber { get; set; } = "";
+        public string Email { get; set; } = "";
         public decimal Subtotal { get; set; } = 0;
         public decimal SubtotalTax { get; set; } = 0;
         public decimal Total { get; set; } = 0;

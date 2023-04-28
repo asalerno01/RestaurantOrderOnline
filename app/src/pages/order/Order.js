@@ -12,98 +12,72 @@ import { createEmptyOrder, isEmptyObject } from './functions/OrderFunctions';
 import SavedOrder from './SavedOrder';
 import useAuth from '../../hooks/useAuth';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import SavedOrderItem from './SavedOrderItem';
 
 const Order = () => {
+    // Should store a key to tie order to auth account
     const { auth } = useAuth();
-
-    const [items, setItems] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [order, setOrder] = useState(createEmptyOrder());
-    const [response, setResponse] = useState(null);
+    const [order, setOrder] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-
+    const [menu, setMenu] = useState([]);
     const [selectedItemData, setSelectedItemData] = useState({ item: null, index: null });
-
+    const cartSliderRef = useRef();
     const [cartOpen, setCartOpen] = useState(false);
-    useEffect(() => {
+    
+    function getLocalStorageOrder() {
         let order = localStorage.getItem("order");
-        if (order !== null && order.length > 0)
-            if (!isEmptyObject(auth))
-                setOrder(JSON.parse(order))
-            else {
-                console.log("removing localstorage order key");
-                localStorage.removeItem("order");
-            }
-    }, []);
-
-    function timeout(delay) {
-        return new Promise( res => setTimeout(res, delay) );
+        if (order === undefined || order === null || order.length === 0) return;
+        setOrder(JSON.parse(order));
     }
-    async function wait(delay) {
-        await timeout(500); //for 1 sec delay
+    
+    function saveToLocalStorage() {
+        localStorage.setItem("order", JSON.stringify(order));
+        // localStorage.setItem("order", JSON.stringify(order.map(orderItem => (
+        //     {
+        //         itemId: orderItem.itemId,
+        //         count: orderItem.count,
+        //         addons: [...orderItem.addons.map(addon => addon?.addonId)],
+        //         noOptions: [...orderItem.noOptions.map(noOption => noOption?.noOptionId)],
+        //         groups: [...orderItem.groups.map(group => ({ groupId: group?.groupId, groupOptionId: group?.groupOptionId }))]
+        //     }
+        // ))));
+    }
+    useEffect(() => {
+        if (!isLoading) saveToLocalStorage();
+    }, [order])
+    
+    const getMenu = async () => {
+        await axios.get("https://localhost:7074/api/menu")
+        .then(response => {
+            setMenu(response.data);
+        })
+        .catch(err => console.log(err));
+        if (auth.accountId !== undefined) {
+            console.log(auth);getSavedOrders();
+        }
         setIsLoading(false);
     }
-
-    const getItems = async () => {
-        let categories = [];
-        await axios.get("https://localhost:7074/api/category")
-        .then(res => {
-            let items = [];
-            categories = res.data;
-            categories.forEach(category => {
-                category.items.forEach(item => {
-                    items.push(item);
-                });
-            });
-            setItems(items);
-            setCategories(categories);
-        })
-        .catch(err => {
-            console.log(err);
-        });
-        if (!isEmptyObject(auth)) getSavedOrders(categories);
-    }
-    const getSavedOrders = async (categories) => {
+    const getSavedOrders = async () => {
+        if (auth.accountId === undefined) return;
         await axios({
-            method: "GET",
-            url: `https://localhost:7074/api/orders/savedorders/${auth.accountId}`,
-            withCredentials: true,
-            headers: {
-                Authorization: `Bearer ${auth?.accessToken}`
-            }
+        method: "GET",
+        url: `https://localhost:7074/api/orders/savedorders/${auth.accountId}`,
         })
         .then(res => {
             if (res.data.length > 0) {
-                res.data.forEach(savedOrder => savedOrder.type = "SavedOrder");
-                categories =  [{ categoryId: 0, name: "Saved Orders", description: "", items: [...res.data] }, ...categories];
-                setCategories(categories)
+                setMenu(prev => {
+                    if (prev[0]?.name === "Saved Orders") return prev;
+                    return[{ name: "Saved Orders", items: [...res.data] }, ...prev];
+                })
             }
         })
-        .catch(err => {
-            console.log(err);
-        });
+        .catch(err => console.log(err));
     }
-    useEffect(() => {
-        getItems();
-        wait();
-    }, []);
-    useEffect(() => {
-        getItems();
-    }, [auth]);
-
-    const handleEditItemClick = (itemId, index) => setSelectedItemData({ item: items.find(item => item.itemId === itemId), index: index });
-    const handleOpenItem = (itemId) => setSelectedItemData({ item: items.find(i => i["itemId"] === itemId), index: null });
-    const handleRemoveItemClick = (index) => {
-        const temp = Object.assign({}, order);
-        let subtotal = 0;
-        temp["orderItems"].splice(index, 1);
-        if (isNaN(subtotal)) subtotal = 0;
-        temp["subtotal"] = subtotal;
-        setOrder(temp);
-    }
+    useEffect(() => { getLocalStorageOrder(); }, []);
+    useEffect(() => { getMenu(); }, [auth]);
 
     function getScroll() {
-        for (let i = categories.length - 1; i > -1; i--) {
+        for (let i = menu.length - 1; i > -1; i--) {
             if ((document.getElementById(i).getBoundingClientRect().top - 106) < 0) {
                 setCurrentScroll(i);
                 break;
@@ -112,25 +86,37 @@ const Order = () => {
     }
     const [currentScroll, setCurrentScroll] = useState(0);
     const handleScrollClick = event => document.getElementById(event.target.value).scrollIntoView({ block: "start", behavior: "smooth" });
+    const handleOpenItem = (itemId) => setSelectedItemData({ item: menu.map(item => item.items).reduce((a, c) => a.concat(c), []).find(i => i.itemId === itemId), index: null });
 
     function cartIsOpen(type) {
         if (type) {
             setCartOpen(true);
             cartSliderRef.current.style.width = "1100px";
         } else {
-            cartSliderRef.current.style.width = "0";
             setCartOpen(false);
+            cartSliderRef.current.style.width = "0";
         }
     }
-    const cartSliderRef = useRef();
-
-    const Items = () => {
+    const [savedOrderName, setSavedOrderName] = useState("");
+    const Test = () => {
+        if (selectedItemData === { item: null, index: null }) return <></>
+        if (Array.isArray(selectedItemData)) return <SavedOrderItem selectedItemData={selectedItemData} setSelectedItemData={setSelectedItemData} setOrder={setOrder} cartIsOpen={cartIsOpen} savedOrderName={savedOrderName} setSavedOrderName={setSavedOrderName} />
+        else return <OrderItem 
+            selectedItemData={selectedItemData}
+            setSelectedItemData={setSelectedItemData}
+            order={order}
+            setOrder={setOrder}
+            cartIsOpen={cartIsOpen}
+            saveToLocalStorage={saveToLocalStorage}
+        />
+    }
+    const MenuItems = () => {
         if (isLoading) return <LoadingSpinner />
         return (
             <div className={OrderStyles.categories}>
             {
-                categories.map((category, index) => (
-                    <div className={OrderStyles.category} id={index} key={`${category.name}-${category.categoryId}`}>
+                menu.map((category, index) => (
+                    <div className={OrderStyles.category} id={index} key={`category-${category.name}-${index}`}>
                         <StickyBox style={{zIndex: "1", backgroundColor: "rgb(255, 255, 255)"}} offsetTop={-16}>
                             <h1 className={OrderStyles.category_header}>{category.name}</h1>
                             <div className={OrderStyles.border}></div>
@@ -138,17 +124,17 @@ const Order = () => {
                         <div className={OrderStyles.items}>
                         {
                             category.items.map((item, index) => {
-                                if (item?.type === "SavedOrder")
+                                if (category.name === "Saved Orders")
                                     return (
                                         <SavedOrder
+                                            key={`SavedOrderKey-${index}`}
                                             savedOrder={item}
-                                            order={order}
-                                            setOrder={setOrder}
-                                            cartIsOpen={cartIsOpen}
-                                            key={`SavedOrderKey=${index}`}
+                                            setSelectedItemData={setSelectedItemData}
+                                            items={menu.map(item => item.items).reduce((a, c) => a.concat(c), [])}
+                                            setSavedOrderName={setSavedOrderName}
                                         />
                                     )
-                                else
+                                else 
                                     return (
                                         <MenuItem
                                             key={`MenuItemKey-${item.itemId}`}
@@ -158,7 +144,7 @@ const Order = () => {
                                             description={item.description}
                                             handleOpenItem={handleOpenItem}
                                         />
-                                    )
+                                )
                             })
                         }
                         </div>
@@ -168,13 +154,8 @@ const Order = () => {
             </div>
         )
     }
-    function getCartCount() {
-        let count = 0;
-        order.orderItems.forEach(orderItem => {
-            count += orderItem.count;
-        });
-        return count;
-    }
+    const cartCount = () => { return (0 + order.length); }
+
     return (
         <div className={OrderStyles.order} onScroll={() => getScroll()}>
             <div className={CartStyles.backdrop} style={(cartOpen) ? {width: "100%"} : {width: "0"}} onClick={() => cartIsOpen(false)}></div>
@@ -183,21 +164,15 @@ const Order = () => {
                     <Cart
                         order={order}
                         setOrder={setOrder}
-                        handleEditItemClick={handleEditItemClick}
-                        handleRemoveItemClick={handleRemoveItemClick}
+                        items={menu.map(item => item.items).reduce((a, c) => a.concat(c), [])}
+                        setSelectedItemData={setSelectedItemData}
                         cartOpen={cartOpen}
                         cartIsOpen={cartIsOpen}
+                        saveToLocalStorage={saveToLocalStorage}
                     />
                 </div>
             </div>
-            <OrderItem 
-                selectedItemData={selectedItemData}
-                setSelectedItemData={setSelectedItemData}
-                order={order}
-                setOrder={setOrder}
-                cartIsOpen={cartIsOpen}
-            />
-            { (response === "Success!") ? <h3 style={{color: "green"}}>{response}</h3> : (response !== null) ? <h3 style={{color: "red"}}>{response}</h3> : <></> }
+            <Test />
             <div className={OrderStyles.header}>
                 <div className={OrderStyles.banner_wrapper}>
                     <img src={Banner}/>
@@ -208,8 +183,9 @@ const Order = () => {
             </div>
             <StickyBox style={{zIndex: "2"}} offsetTop={55}>
                 <div className={OrderStyles.cart_button_wrapper}>
-                    <button type="button" className={OrderStyles.cart_button} onClick={() => cartIsOpen(true)}><ImCart size={"24px"}/>
-                        <span>{`Cart (${getCartCount()})`}</span>
+                    <button type="button" className={OrderStyles.cart_button} onClick={() => cartIsOpen(true)}>
+                        <ImCart size={"24px"}/>
+                        <span>{`Cart (${cartCount()})`}</span>
                     </button>
                 </div>
             </StickyBox>
@@ -220,7 +196,7 @@ const Order = () => {
                         <div className={OrderStyles.border}></div>
                         <div className={OrderStyles.category_buttons}>
                         {
-                            categories.map((category, index) => {
+                            menu.map((category, index) => {
                                 if (index === currentScroll)
                                     return <button type="button" key={`scroll-index-${index}`} className={OrderStyles.category_button__selected} value={index} onClick={handleScrollClick}><span className={OrderStyles.button_content}>{category.name}<span className={OrderStyles.button_border}></span></span></button>
                                 return <button type="button" key={`scroll-index-${index}`} className={OrderStyles.category_button} value={index} onClick={handleScrollClick}><span className={OrderStyles.button_content}>{category.name}<span className={OrderStyles.button_border}></span></span></button>
@@ -229,7 +205,7 @@ const Order = () => {
                         </div>
                     </StickyBox>
                 </div>
-                <Items />
+                <MenuItems />
             </main>
         </div>
     );

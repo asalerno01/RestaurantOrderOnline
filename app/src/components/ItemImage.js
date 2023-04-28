@@ -26,8 +26,8 @@ import DrPepperImage from "../imgs/items/soda/dr-pepper.jpeg";
 import DietMountainDewImage from "../imgs/items/soda/diet-mountain-dew.webp";
 import DasaniImage from "../imgs/items/soda/dasani.jpeg";
 
-const ItemImage = ({ itemName }) => {
-    function getImage(name) {
+const ItemImage = ({ name }) => {
+    function getImage() {
         switch(name) {
             case "Cheese Dog":
                 return CheeseDogImage;
@@ -83,10 +83,8 @@ const ItemImage = ({ itemName }) => {
                 return PlaceholderImage;
         }
     }
-    const image = getImage(itemName);
-    // if (image === null) return <></>;
     return (
-        <img src={image} alt={`${itemName} Image`} />
+        <img src={getImage()} alt={name} />
     )
 }
 

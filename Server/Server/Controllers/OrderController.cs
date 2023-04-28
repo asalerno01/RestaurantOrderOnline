@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using NuGet.Protocol;
 using SalernoServer.Models;
-using SalernoServer.Models.ItemModels;
 using Server.Models;
 using Server.Models.Authentication;
 using Server.Models.ItemModels.Helpers;
-using static NuGet.Packaging.PackagingConstants;
 
 namespace SalernoServer.Controllers
 {
@@ -35,29 +24,24 @@ namespace SalernoServer.Controllers
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
             var orders = await _context.Orders
-                    .Include(o => o.OrderItems)
-                    .ThenInclude(oi => oi.Addons)
-                    .ThenInclude(oia => oia.Addon)
-                    .Include(o => o.OrderItems)
-                    .ThenInclude(oi => oi.NoOptions)
-                    .ThenInclude(oino => oino.NoOption)
-                    .Include(o => o.OrderItems)
-                    .ThenInclude(oi => oi.Groups)
-                    .ThenInclude(oig => oig.Group)
-                    .Include(o => o.OrderItems)
-                    .ThenInclude(oi => oi.Groups)
-                    .ThenInclude(oig => oig.GroupOption)
-                    .Include(o => o.Account)
-                    .Include(o => o.OrderItems)
-                    .ThenInclude(oi => oi.Item)
-                    .ToListAsync();
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Addons)
+                .ThenInclude(oia => oia.Addon)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.NoOptions)
+                .ThenInclude(oino => oino.NoOption)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Groups)
+                .ThenInclude(oig => oig.Group)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Groups)
+                .ThenInclude(oig => oig.GroupOption)
+                .Include(o => o.Account)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Item)
+                .ToListAsync();
 
-            List<OrderDTO> ordersDTO = new();
-            foreach (var order in orders)
-            {
-                ordersDTO.Add(OrderToOrderDTO(order));
-            }
-            return Ok(ordersDTO);
+            return Ok(orders.Select(order => new OrderDTO(order)).ToList());
         }
         [HttpGet]
         [Route("simple/active")]
@@ -66,6 +50,7 @@ namespace SalernoServer.Controllers
             var orders = await _context.Orders
                     .Include(o => o.Account)
                     .Where(order => order.Status.Equals("Pending") || order.Status.Equals("Accepted"))
+                    .OrderByDescending(order => order.OrderId)
                     .ToListAsync();
             return Ok(orders.Select(order => new SimpleOrder(order)).ToList());
         }
@@ -77,6 +62,22 @@ namespace SalernoServer.Controllers
                     .Include(o => o.Account)
                     .ToListAsync();
             return Ok(orders.Select(order => new SimpleOrder(order)).ToList());
+        }
+        public class OrderUpdateHelper
+        {
+            public long OrderId { get; set; }
+            public string Status { get; set; }
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutOrder(long id, [FromBody] OrderUpdateHelper order)
+        {
+            if (id != order.OrderId) return BadRequest();
+            var foundOrder = await _context.Orders.FindAsync(id);
+            if (foundOrder is null) return BadRequest();
+            foundOrder.Status = order.Status;
+            _context.Update(foundOrder);
+            await _context.SaveChangesAsync();
+            return Ok();
         }
         public class DateHelper
         {
@@ -94,12 +95,36 @@ namespace SalernoServer.Controllers
                     .ToListAsync();
             return Ok(orders.Select(order => new SimpleOrder(order)).ToList());
         }
+        [HttpPost]
+        [Route("date/full")]
+        public async Task<ActionResult<IEnumerable<OrderDTO>>> GetOrdersByDateFull([FromBody] DateHelper dateHelper)
+        {
+            Console.WriteLine(dateHelper.StartDate);
+            var orders = await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Addons)
+                .ThenInclude(oia => oia.Addon)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.NoOptions)
+                .ThenInclude(oino => oino.NoOption)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Groups)
+                .ThenInclude(oig => oig.Group)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Groups)
+                .ThenInclude(oig => oig.GroupOption)
+                .Include(o => o.Account)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Item)
+                .Where(o => o.OrderDate <= dateHelper.EndDate.AddDays(1).AddTicks(-1) && o.OrderDate >= dateHelper.StartDate.AddDays(-1).AddTicks(1))
+                .ToListAsync();
+            return Ok(orders.Select(order => new OrderDTO(order)).ToList());
+        }
 
         // GET: api/items/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(long id)
         {
-            Console.WriteLine("=========" + id);
             var order = await _context.Orders
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Item)
@@ -117,88 +142,41 @@ namespace SalernoServer.Controllers
 
             if (order is null) return NotFound();
 
-            return Ok(OrderToOrderDTO(order));
+            return Ok(new OrderDTO(order));
         }
         [HttpGet]
         [Route("savedorders/{id}")]
         public async Task<ActionResult<List<SavedOrderDTO>>> GetSavedOrders(long id)
         {
             var account = await _context.Accounts.FindAsync(id);
-            if (account is null) return NoContent();
+            if (account is null) return NotFound();
             var savedOrders = await _context.SavedOrders
-                    .Include(savedOrder => savedOrder.OrderItems)
-                    .ThenInclude(orderItem => orderItem.OrderItem)
-                    .ThenInclude(orderItem => orderItem.Addons)
-                    .ThenInclude(addons => addons.Addon)
-                    .Include(savedOrder => savedOrder.OrderItems)
-                    .ThenInclude(orderItem => orderItem.OrderItem)
-                    .ThenInclude(orderItem => orderItem.NoOptions)
-                    .ThenInclude(noOption => noOption.NoOption)
-                    .Include(savedOrder => savedOrder.OrderItems)
-                    .ThenInclude(orderItem => orderItem.OrderItem)
-                    .ThenInclude(orderItem => orderItem.Groups)
-                    .ThenInclude(group => group.Group)
-                    .Include(savedOrder => savedOrder.OrderItems)
-                    .ThenInclude(orderItem => orderItem.OrderItem)
-                    .ThenInclude(orderItem => orderItem.Groups)
-                    .ThenInclude(group => group.GroupOption)
-                    .Include(savedOrder => savedOrder.OrderItems)
-                    .ThenInclude(orderItem => orderItem.OrderItem)
-                    .Include(savedOrder => savedOrder.OrderItems)
-                    .ThenInclude(savedOrderItem => savedOrderItem.OrderItem)
-                    .ThenInclude(orderItem => orderItem.Item)
-                    .Where(so => so.Account == account)
-                    .ToListAsync();
-
-            //Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(savedOrders));
-            List<SavedOrderDTO> savedOrderDTOList = new();
-            foreach(SavedOrder savedOrder in savedOrders)
-            {
-                List<SavedOrderOrderItemDTO> orderItems = new();
-                foreach(SavedOrderOrderItem savedOrderItem in savedOrder.OrderItems)
-                {
-                    orderItems.Add(new()
-                    {
-                        ItemId = savedOrderItem.OrderItem.ItemId,
-                        ItemName = savedOrderItem.OrderItem.Item.Name,
-                        Price = savedOrderItem.OrderItem.Item.Price,
-                        Count = savedOrderItem.OrderItem.Count,
-                        Addons = savedOrderItem.OrderItem.Addons,
-                        NoOptions = savedOrderItem.OrderItem.NoOptions,
-                        Groups = savedOrderItem.OrderItem.Groups
-                    });
-                }
-                savedOrderDTOList.Add(new()
-                {
-                    SavedOrderName = savedOrder.Name,
-                    OrderItems = orderItems
-                });
-
-            }
-            return Ok(savedOrderDTOList);
-
+                .Include(savedOrder => savedOrder.OrderItems)
+                .ThenInclude(orderItem => orderItem.OrderItem)
+                .ThenInclude(orderItem => orderItem.Addons)
+                .ThenInclude(addons => addons.Addon)
+                .Include(savedOrder => savedOrder.OrderItems)
+                .ThenInclude(orderItem => orderItem.OrderItem)
+                .ThenInclude(orderItem => orderItem.NoOptions)
+                .ThenInclude(noOption => noOption.NoOption)
+                .Include(savedOrder => savedOrder.OrderItems)
+                .ThenInclude(orderItem => orderItem.OrderItem)
+                .ThenInclude(orderItem => orderItem.Groups)
+                .ThenInclude(group => group.Group)
+                .Include(savedOrder => savedOrder.OrderItems)
+                .ThenInclude(orderItem => orderItem.OrderItem)
+                .ThenInclude(orderItem => orderItem.Groups)
+                .ThenInclude(group => group.GroupOption)
+                .Include(savedOrder => savedOrder.OrderItems)
+                .ThenInclude(orderItem => orderItem.OrderItem)
+                .Include(savedOrder => savedOrder.OrderItems)
+                .ThenInclude(savedOrderItem => savedOrderItem.OrderItem)
+                .ThenInclude(orderItem => orderItem.Item)
+                .Where(so => so.Account == account)
+                .ToListAsync();
+            
+            return Ok(savedOrders.Select(savedOrder => new SavedOrderDTO(savedOrder)).ToList());
         }
-        private static List<SavedOrderOrderItemDTO> OrderItemsToSavedOrderOrderItemsDTO(List<SavedOrderOrderItem> savedOrderOrderItems)
-        {
-            List<SavedOrderOrderItemDTO> savedOrderItemsDTO = new();
-            foreach (var savedOrderOrderItem in savedOrderOrderItems)
-            {
-                foreach (var orderItem in savedOrderOrderItems)
-                {
-                    savedOrderItemsDTO.Add(new()
-                    {
-                        ItemId = orderItem.OrderItem.ItemId,
-                        ItemName = orderItem.OrderItem.Item.Name,
-                        Count = orderItem.OrderItem.Count,
-                        Addons = orderItem.OrderItem.Addons,
-                        NoOptions = orderItem.OrderItem.NoOptions,
-                        Groups = orderItem.OrderItem.Groups
-                    });
-                };
-            }
-            return savedOrderItemsDTO;
-        }
-
         [HttpPost]
         public async Task<ActionResult<Order>> CreateOrder([FromBody] OrderHelper order)
         {
@@ -210,7 +188,20 @@ namespace SalernoServer.Controllers
                 Total = order.Total
             };
             var account = await _context.Accounts.FindAsync(order.AccountId);
-            if (account is null) Console.WriteLine("Creating order for null customer account.");
+            if (account is null)
+            {
+                account = await _context.Accounts.Where(account => (account.Email.Equals(order.Email) && account.PhoneNumber.Equals(order.PhoneNumber))).FirstOrDefaultAsync();
+            }
+            account ??= new()
+            {
+                FirstName = order.FirstName,
+                LastName = order.LastName,
+                Email = order.Email,
+                PhoneNumber = order.PhoneNumber,
+                OrderCount = 1,
+                Password = "",
+                IsVerified = false
+                };
             newOrder.Account = account;
             if (order.OrderItems.IsNullOrEmpty()) return BadRequest("Order must have at least 1 order item.");
             foreach (var orderItem in order.OrderItems)
@@ -221,7 +212,9 @@ namespace SalernoServer.Controllers
                 {
                     Order = newOrder,
                     Item = foundItem,
-                    Count = orderItem.Count
+                    Count = orderItem.Count,
+                    Price = foundItem.Price,
+                    Name = foundItem.Name
                 };
                 foreach (var groupOption in orderItem.GroupOptions)
                 {
@@ -237,7 +230,6 @@ namespace SalernoServer.Controllers
                         Group = foundGroup,
                         GroupOption = foundGroupOption
                     };
-                    PrintGroup(newOrderItemGroup);
                     newOrderItem.Groups.Add(newOrderItemGroup);
                 }
                 foreach (var addon in orderItem.Addons)
@@ -249,7 +241,6 @@ namespace SalernoServer.Controllers
                         OrderItem = newOrderItem,
                         Addon = foundAddon
                     };
-                    PrintAddon(newOrderItemAddon);
                     newOrderItem.Addons.Add(newOrderItemAddon);
                 }
                 foreach (var noOption in orderItem.NoOptions)
@@ -261,24 +252,28 @@ namespace SalernoServer.Controllers
                         OrderItem = newOrderItem,
                         NoOption = foundNoOption
                     };
-                    PrintNoOption(newOrderItemNoOption);
                     newOrderItem.NoOptions.Add(newOrderItemNoOption);
                 }
                 newOrder.OrderItems.Add(newOrderItem);
             }
             if (order.SaveOrder && order.SavedOrderName is not null && account is not null)
             {
-                SavedOrder savedOrder = new()
+                SavedOrder savedOrder = await _context.SavedOrders.Where(savedOrder => (savedOrder.Name.Equals(order.SavedOrderName) && savedOrder.Account == account)).FirstOrDefaultAsync();
+                SavedOrder newSavedOrder = new()
                 {
                     Name = order.SavedOrderName,
                     Account = account
                 };
-                savedOrder.OrderItems = OrderItemsToSavedOrderOrderItems(savedOrder, newOrder);
-                await _context.SavedOrders.AddAsync(savedOrder);
+                newSavedOrder.OrderItems = OrderItemsToSavedOrderOrderItems(newSavedOrder, newOrder);
+                if (savedOrder is not null)
+                {
+                    newSavedOrder.SavedOrderId = savedOrder.SavedOrderId;
+                    _ = _context.Remove(savedOrder);
+                }
+                await _context.SavedOrders.AddAsync(newSavedOrder);
             }
             await _context.Orders.AddAsync(newOrder);
             await _context.SaveChangesAsync();
-            Console.WriteLine($"Added Order => {newOrder.OrderId}");
 
             return CreatedAtAction(
                 nameof(GetOrder),
@@ -313,74 +308,6 @@ namespace SalernoServer.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private static OrderDTO OrderToOrderDTO(Order order)
-        {
-            OrderDTO orderDTO = new()
-            {
-                OrderId = order.OrderId,
-                Subtotal = order.Subtotal,
-                SubtotalTax = order.SubtotalTax,
-                Total = order.Total,
-                Status = order.Status,
-                OrderDate = order.OrderDate,
-                PickupDate = order.PickupDate,
-                OrderItems = OrderItemsToOrderItemDTOs(order.OrderItems),
-                Account = (order.Account is null) ? null : new OrderAccountDTO()
-                {
-                    AccountId = order.Account.AccountId,
-                    Email = order.Account.Email,
-                    FirstName = order.Account.FirstName,
-                    LastName = order.Account.LastName,
-                    PhoneNumber = order.Account.PhoneNumber
-                }
-            };
-            return orderDTO;
-        }
-        private static List<OrderItemDTO> OrderItemsToOrderItemDTOs(List<OrderItem> orderItems)
-        {
-            List<OrderItemDTO> newOrderItems = new();
-            foreach (var item in orderItems)
-            {
-                newOrderItems.Add(new()
-                {
-                    OrderItemId = item.OrderItemId,
-                    OrderId = item.Order.OrderId,
-                    ItemId = item.Item.ItemId,
-                    ItemName = item.Item.Name,
-                    BasePrice = item.Item.Price,
-                    Count = item.Count,
-                    Groups = item.Groups,
-                    Addons = item.Addons,
-                    NoOptions = item.NoOptions
-                });
-            }
-            return newOrderItems;
-        }
-        private static void PrintAddon(OrderItemAddon addon)
-        {
-            Console.WriteLine($"ID=>{addon.Addon.AddonId}, Name=>{addon.Addon.Name}, Price=>{addon.Addon.Price}");
-        }
-        private static void PrintNoOption(OrderItemNoOption noOption)
-        {
-            Console.WriteLine($"ID=>{noOption.NoOption.NoOptionId}, Name=>{noOption.NoOption.Name}, Price=>{noOption.NoOption.Price}");
-        }
-        private static void PrintGroup(OrderItemGroup group)
-        {
-            Console.WriteLine($"ID=>{group.Group.GroupId}, Name=>{group.Group.Name}, GroupOptionId=>{group.GroupOption.GroupOptionId}, GroupOptionName=>{group.GroupOption.Name}, Price=>{group.GroupOption.Price}");
-        }
-        private static OrderAccountDTO AccountToOrderAccountDTO(Account account)
-        {
-            if (account is null) return null;
-            return new OrderAccountDTO
-            {
-                AccountId = account.AccountId,
-                Email = account.Email,
-                FirstName = account.FirstName,
-                LastName = account.LastName,
-                PhoneNumber = account.PhoneNumber
-            };
         }
     }
 }

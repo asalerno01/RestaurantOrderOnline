@@ -29,8 +29,8 @@ const ItemList = () => {
         .then(res => {
             let items = res.data;
             items.forEach(item => {
-                item.markup = (item['price'] / item['assignedCost']) * 100;
-                item.margin = (item['price'] - item['assignedCost']) / item['price'] * 100;
+                item.markup = (item.assignedCost === 0) ? 0 : (item['price'] / item['assignedCost']) * 100;
+                item.margin = (item.price === 0) ? 0 : (item['price'] - item['assignedCost']) / item['price'] * 100;
             })
             console.log(items)
             setInitialItems(items);
@@ -318,12 +318,12 @@ const ItemList = () => {
                         if (isItemFiltered(item))
                             return (
                                 <div key={item['itemId']} className='ItemList_Table_Content_Row'>
-                                    <div className='ItemList_Table_Content_Body_Cell' style={showHideValue.includes('Price') ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
+                                    <div className='ItemList_Table_Content_Body_Cell' style={showHideValue.includes('Price') ? {display: 'block', width: `calc(100% / ${showHideValue.length + 1}`} : {display: 'none'}}>
                                         <div className='ItemList_Table_Body_Data_Container'>
                                             <span className='ItemList_ItemDetails'>{item['price'].toFixed(2)}</span>
                                         </div>
                                     </div>
-                                    <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Cost')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
+                                    <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Cost')) ? {display: 'block', width: `calc(100% / ${showHideValue.length + 1}`} : {display: 'none'}}>
                                         <div className='ItemList_Table_Body_Data_Container'>
                                             <span className='ItemList_ItemDetails'>{item['cost'].toFixed(2)}</span>
                                         </div>
@@ -333,22 +333,27 @@ const ItemList = () => {
                                             <a href={`/salerno/items/${item['itemId']}/edit`} className='ItemList_ItemName_Button'>{item['name']}</a>
                                         </div>
                                     </div>
-                                    <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Margin')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
+                                    <div className='ItemList_Table_Content_Body_Cell' style={{display: 'block', width: `calc(100% / ${showHideValue.length + 1}`}}>
+                                        <div className='ItemList_Table_Body_Data_Container'>
+                                            <span className='ItemList_ItemDetails'>{(item.isEnabled) ? "Active" : "Inactive"}</span>
+                                        </div>
+                                    </div>
+                                    <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Margin')) ? {display: 'block', width: `calc(100% / ${showHideValue.length + 1}`} : {display: 'none'}}>
                                         <div className='ItemList_Table_Body_Data_Container'>
                                             <span className='ItemList_ItemDetails'>{item.margin.toFixed(2)}%</span>
                                         </div>
                                     </div>
-                                    <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Markup')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
+                                    <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Markup')) ? {display: 'block', width: `calc(100% / ${showHideValue.length + 1}`} : {display: 'none'}}>
                                         <div className='ItemList_Table_Body_Data_Container'>
                                             <span className='ItemList_ItemDetails'>{item.markup.toFixed(2)}%</span>
                                         </div>
                                     </div>
-                                    <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Quantity')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
+                                    <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Quantity')) ? {display: 'block', width: `calc(100% / ${showHideValue.length + 1}`} : {display: 'none'}}>
                                         <div className='ItemList_Table_Body_Data_Container'>
                                             <span className='ItemList_ItemDetails'>{item['quantity']}</span>
                                         </div>
                                     </div>
-                                    <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Total Value')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
+                                    <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Total Value')) ? {display: 'block', width: `calc(100% / ${showHideValue.length + 1}`} : {display: 'none'}}>
                                         <div className='ItemList_Table_Body_Data_Container'>
                                             <span className='ItemList_ItemDetails'></span>
                                         </div>
@@ -410,7 +415,7 @@ const ItemList = () => {
                     
                     <div className='ItemList_Table_Container_Scroll'>
                             <div className='ItemList_Table'>
-                                <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Price')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
+                                <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Price')) ? {display: 'block', width: `calc(100% / ${showHideValue.length + 1}`} : {display: 'none'}}>
                                     <div className='ItemList_Table_Header_Wrapper'>
                                         <div className='ItemList_Table_Header_Grid'>
                                             <div className='ItemList_Table_Header_Title_Not_Item'>
@@ -454,7 +459,7 @@ const ItemList = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className={(showHideValue.includes('Cost')) ? 'ItemList_Table_Header_Col' : 'ItemList_Table_Header_Col hidden'} style={(showHideValue.includes('Cost')) ? {width: `calc(100% / ${showHideValue.length}`} : {}}>
+                                <div className={(showHideValue.includes('Cost')) ? 'ItemList_Table_Header_Col' : 'ItemList_Table_Header_Col hidden'} style={(showHideValue.includes('Cost')) ? {width: `calc(100% / ${showHideValue.length + 1}`} : {}}>
                                     <div className='ItemList_Table_Header_Wrapper'>
                                         <div className='ItemList_Table_Header_Grid'>
                                             <div className='ItemList_Table_Header_Title_Not_Item'><span>Cost</span></div>
@@ -528,7 +533,14 @@ const ItemList = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Margin')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
+                                <div className='ItemList_Table_Header_Col' style={{display: 'block', width: `calc(100% / ${showHideValue.length + 1}`}}>
+                                    <div className='ItemList_Table_Header_Wrapper'>
+                                        <div className='ItemList_Table_Header_Grid'>
+                                            <div className='ItemList_Table_Header_Title_Not_Item'><span>Active</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Margin')) ? {display: 'block', width: `calc(100% / ${showHideValue.length + 1}`} : {display: 'none'}}>
                                     <div className='ItemList_Table_Header_Wrapper'>
                                         <div className='ItemList_Table_Header_Grid'>
                                             <div className='ItemList_Table_Header_Title_Not_Item'><span>Margin</span></div>
@@ -570,7 +582,7 @@ const ItemList = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Markup')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
+                                <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Markup')) ? {display: 'block', width: `calc(100% / ${showHideValue.length + 1}`} : {display: 'none'}}>
                                     <div className='ItemList_Table_Header_Wrapper'>
                                         <div className='ItemList_Table_Header_Grid'>
                                             <div className='ItemList_Table_Header_Title_Not_Item'><span>Markup</span></div>
@@ -612,7 +624,7 @@ const ItemList = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Quantity')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
+                                <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Quantity')) ? {display: 'block', width: `calc(100% / ${showHideValue.length + 1}`} : {display: 'none'}}>
                                     <div className='ItemList_Table_Header_Wrapper'>
                                         <div className='ItemList_Table_Header_Grid'>
                                             <div className='ItemList_Table_Header_Title_Not_Item'><span>Quantity</span></div>
@@ -654,7 +666,7 @@ const ItemList = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Total Value')) ? {display: 'block', width: `calc(100% / ${showHideValue.length}`} : {display: 'none'}}>
+                                <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Total Value')) ? {display: 'block', width: `calc(100% / ${showHideValue.length + 1}`} : {display: 'none'}}>
                                     <div className='ItemList_Table_Header_Wrapper'>
                                         <div className='ItemList_Table_Header_Grid'>
                                             <div className='ItemList_Table_Header_Title_Not_Item'><span>Total Value</span></div>
