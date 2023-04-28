@@ -47,7 +47,7 @@ const Register = () => {
             console.log("bad password");
             return;
         }
-        axios.post("https://localhost:7074/api/auth/register", {
+        axios.post("https://localhost:7089/api/auth/register", {
             firstName: firstName,
             lastName: lastName,
             email: email,

@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Public from './components/Public';
 import Login from './simple/Login.simple';
-import Dashboard from './components/Dashboard';
+import Dashboard from './components/Graph';
 import Welcome from './features/auth/Welcome';
 import RequireAuth from './simple/RequireAuth';
 import RememberLogin from './simple/RememberLogin';
@@ -113,7 +113,7 @@ function App() {
     //             <Route index element={<Public />} />
     //             <Route path='login' element={<Login />} />
 
-    //             <Route path="dashboard" element={<Dashboard />}>
+    //             <Route path="dashboard" element={<Graph />}>
     //                 <Route index element={<Welcome />} />
 
     //                 <Route path="users">

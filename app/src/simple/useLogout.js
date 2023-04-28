@@ -7,7 +7,7 @@ const useLogout = () => {
         console.log(auth);
         await axios({
             method: "post",
-            url: "http://localhost:7074/api/auth/logout",
+            url: "http://localhost:7089/api/auth/logout",
             withCredentials: true,
             data: {
                 : auth.accessToken

@@ -35,7 +35,7 @@ const Checkout = () => {
     useEffect(() => { setOrder(JSON.parse(localStorage.getItem("order"))); }, []);
 
     const getItems = async () => {
-        await axios.get("https://localhost:7074/api/items")
+        await axios.get("https://localhost:7089/api/items")
         .then(res => {
             console.log(res.data)
             setItems(res.data);
@@ -129,7 +129,7 @@ const Checkout = () => {
             order.tax = 0;
             await axios({
                 method: "POST",
-                url: "https://localhost:7074/api/orders",
+                url: "https://localhost:7089/api/orders",
                 data: order,
                 withCredentials: true
             })

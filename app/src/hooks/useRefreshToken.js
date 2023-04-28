@@ -7,7 +7,7 @@ const useRefreshToken = () => {
     const refresh = async () => {
         const response = await axios({
             method: 'GET',
-            url: 'https://localhost:7074/api/auth/refresh',
+            url: 'https://localhost:7089/api/auth/refresh',
             withCredentials: true
         });
         setAuth(prev => {

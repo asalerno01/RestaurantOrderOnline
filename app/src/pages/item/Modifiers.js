@@ -32,7 +32,7 @@ const Modifiers = () => {
     const getModifiers = async () => {
         await axios({
             method: "get",
-            url: `https://localhost:7074/api/items/${itemId}`,
+            url: `https://localhost:7089/api/items/${itemId}`,
             withCredentials: false
         })
         .then(res => {
@@ -61,7 +61,7 @@ const Modifiers = () => {
         })
     }
     const getItems = async () => {
-        await axios.get('https://localhost:7074/api/items')
+        await axios.get('https://localhost:7089/api/items')
         .then(res => {
             let item = res.data.find(i => i.itemId === itemId);
             setModifiers(item.modifier);
@@ -279,7 +279,7 @@ const Modifiers = () => {
         });
         console.log(data)
 
-        await axios.post("https://localhost:7074/api/modifier", data)
+        await axios.post("https://localhost:7089/api/modifier", data)
             .then(res => {
                 console.log(res);
                 navigate("/salerno/items");

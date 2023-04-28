@@ -36,7 +36,7 @@ const Login = () => {
         console.log("submitting...");
         await axios({
             method: "POST",
-            url: "https://localhost:7074/api/auth/login",
+            url: "https://localhost:7089/api/auth/login",
             data: { 
                 email: email,
                 password: password

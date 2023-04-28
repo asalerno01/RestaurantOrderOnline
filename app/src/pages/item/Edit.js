@@ -41,7 +41,7 @@ export default function Edit() {
     const navigate = useNavigate();
 
     const getItem = async () => {
-        await axios.get(`https://localhost:7074/api/items/${itemId}`)
+        await axios.get(`https://localhost:7089/api/items/${itemId}`)
         .then(res => {
             console.log(res.data);
             setItem(res.data);
@@ -51,7 +51,7 @@ export default function Edit() {
         });
     }
     const getCategories = async () => {
-        await axios.get(`https://localhost:7074/api/category/simple`)
+        await axios.get(`https://localhost:7089/api/category/simple`)
         .then(res => {
             if (location.pathname === "/salerno/items/new")
                 item.categoryId = res.data[0].categoryId;
@@ -68,12 +68,12 @@ export default function Edit() {
 
     const handleSave = async event => {
         if (itemId === undefined) {
-            await axios.post("https://localhost:7074/api/items", item)
+            await axios.post("https://localhost:7089/api/items", item)
             .catch(err => console.log(err));
         }
         else {
             console.log("putting")
-            await axios.put(`https://localhost:7074/api/items/${item.itemId}`, item)
+            await axios.put(`https://localhost:7089/api/items/${item.itemId}`, item)
             .then(res => {
                 console.log(res);
                 navigate("/salerno/items");

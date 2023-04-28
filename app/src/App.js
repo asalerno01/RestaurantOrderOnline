@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 // import Layout from './components/Layout';
 // import Public from './components/Public';
 // import Login from './simple/Login.simple';
-// // import Dashboard from './components/Dashboard';
+// // import Graph from './components/Graph';
 // import Welcome from './features/auth/Welcome';
 // import RequireAuth from './simple/RequireAuth';
 // import RememberLogin from './simple/RememberLogin';
@@ -38,11 +38,13 @@ import Checkout from './pages/order/Checkout';
 import Register from './pages/user_pages/Register';
 import RememberLogin from './simple/RememberLogin';
 import Reviews from './pages/review/Reviews';
+import Report from "./pages/report/Report";
 
 function App() {
     return (
         <Routes>
             <Route path="salerno/login" element={<Login />} />
+            <Route path="salerno/report" element={<Report />} />
             <Route path="salerno/register" element={<Register />} />
             <Route path="salerno/reviews" element={<Reviews />}/>
             <Route element={<RememberLogin />}>
@@ -81,7 +83,7 @@ export default App;
                 <Route element={<RememberLogin />}>
                     <Route element={<Status />}>
                         <Route element={<RequireAuth allowedEmployeeType={["Employee", "Manager"]}/>}>
-                            <Route path="dashboard" element={<Dashboard />}>
+                            <Route path="dashboard" element={<Graph />}>
                                 <Route index element={<Welcome />} />
                                 <Route path="newmanager" element={<NewManager />}/>
                                 <Route element={<RequestContainer />}>

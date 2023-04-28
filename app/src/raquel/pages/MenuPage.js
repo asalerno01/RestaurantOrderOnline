@@ -9,7 +9,7 @@ const MenuPage = () => {
     const [loadedMenuItems, setLoadedMenuItems] = useState([])
 
     const getItems = async () => {
-        await axios.get("https://localhost:7074/api/items")
+        await axios.get("https://localhost:7089/api/items")
         .then(res => {
             console.log(res);
             setLoadedMenuItems(res.data);
