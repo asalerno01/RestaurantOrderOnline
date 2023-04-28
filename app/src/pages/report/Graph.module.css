@@ -1,0 +1,14 @@
+.dashboard{
+    width: 90%;
+    background-color: white;
+    border-radius: 20px;
+
+}
+.bar{
+
+}
+
+.dashboard .chart{
+    width: 90%;
+    margin: auto;
+}

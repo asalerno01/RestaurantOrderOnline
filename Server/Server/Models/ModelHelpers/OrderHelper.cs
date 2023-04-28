@@ -14,7 +14,7 @@ namespace SalernoServer.Models
         public decimal SubtotalTax { get; set; } = 0;
         public decimal Total { get; set; } = 0;
         public string Status { get; set; } = "Pending";
-        public DateTime OrderDate { get; set; } = DateTime.Now;
+        public DateTime OrderDate { get; set; }
         public DateTime? PickupDate { get; set; } = null;
         public string? SavedOrderName { get; set; } = null;
         public bool SaveOrder { get; set; } = false;

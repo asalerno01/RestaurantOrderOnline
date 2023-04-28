@@ -10,6 +10,12 @@ using Microsoft.AspNetCore.Identity;
 using SalernoServer.JwtHelpers;
 using static System.Net.WebRequestMethods;
 
+var configuration = new ConfigurationBuilder()
+     .AddJsonFile($"appsettings.json");
+
+var config = configuration.Build();
+var connectionString = config.GetConnectionString("databaseSchool");
+
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(args);
@@ -19,7 +25,6 @@ var builder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 //builder.Services.AddDbContext<ItemContext>(
 //    options => options.UseMySqlServer(@"Server=localhost;Port=3306;Database=Salerno;User ID=root;Password="));
-var connectionString = "server=45.55.136.114;user=S2023_Salerno;password=h0td0g123!;database=S2023_Salerno;Convert Zero Datetime=True";
 var serverVersion = ServerVersion.AutoDetect(connectionString);
 
 builder.Services.AddDbContext<AppDbContext>(

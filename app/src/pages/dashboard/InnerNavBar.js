@@ -12,6 +12,17 @@ const InnerNavBar = ({ innerNavType }) => {
         return "NavBar_Inner_Button";
     }
     switch (innerNavType) {
+        case "report":
+            return (
+                <div className='NavBar_Inner_Container'>
+                    <div className='NavBar_Inner_Header'>
+                        <span>Reports</span>
+                    </div>
+                    <div className='NavBar_Inner_Buttons_Container'>
+                        <button type="button" className={isCurrentPage("report")} onClick={() => navigate('/salerno/report')}><div>Reports</div></button>
+                    </div>
+                </div>
+            );
         case "items":
             return (
                 <div className='NavBar_Inner_Container'>

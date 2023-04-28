@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../../imgs/logo.jpg';
 import RegisterStyles from './css/Register.module.css';
 
 const Register = () => {
-
+    const navigate = useNavigate();
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -54,9 +54,7 @@ const Register = () => {
             phoneNumber: phoneNumber,
             password: password
         })
-        .then(res => {
-            console.log(res);
-        })
+        .then(res => navigate('/salerno/login'))
         .catch(err => {
             console.log(err);
         });
