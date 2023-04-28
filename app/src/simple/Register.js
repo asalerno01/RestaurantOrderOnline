@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from './axios';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 const Register = () => {
     const location = useLocation();
-
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [employee_id, setEmployee_ID] = useState("");
     const [password, setPassword] = useState("");
@@ -36,6 +36,7 @@ const Register = () => {
             },
             withCredentials: true
         })
+        .then(res => navigate('/salerno/login'))
         .catch(err => {
             if (!err?.response) {
                 setErrMsg('No Server Response');

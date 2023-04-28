@@ -40,10 +40,12 @@ import RememberLogin from './simple/RememberLogin';
 import Reviews from './pages/review/Reviews';
 import Home from './pages/home/Home';
 import Reports from './pages/order/Backoffice/Reports';
+import Report from './pages/report/Report';
 
 function App() {
     return (
         <Routes>
+            <Route path="/" element={<Login />}/>
             <Route path="salerno/home" element={<Home />} />
             <Route path="salerno/login" element={<Login />} />
             <Route path="salerno/register" element={<Register />} />
@@ -67,6 +69,7 @@ function App() {
                         <Route path='employees/:id/edit' element={<EditEmployee />} />
                         
                         <Route path='reports' element={<Reports />} />
+                        <Route path='report' element={<Report />} />
                     </Route>
                 </Route>
             </Route>

@@ -280,6 +280,111 @@ namespace SalernoServer.Controllers
                 new { id = newOrder.OrderId },
                 newOrder);
         }
+        [HttpPost]
+        [Route("many")]
+        public async Task<ActionResult<IEnumerable<Order>>> CreateOrders([FromBody] List<OrderHelper> orders)
+        {
+            foreach (var order in orders)
+            {
+                if (order is null) return BadRequest("Invalid order");
+                var newOrder = new Order
+                {
+                    Subtotal = order.Subtotal,
+                    SubtotalTax = order.SubtotalTax,
+                    Total = order.Total,
+                    OrderDate = order.OrderDate
+                };
+                var account = await _context.Accounts.FindAsync(order.AccountId);
+                if (account is null)
+                {
+                    account = await _context.Accounts.Where(account => (account.Email.Equals(order.Email) && account.PhoneNumber.Equals(order.PhoneNumber))).FirstOrDefaultAsync();
+                }
+                account ??= new()
+                {
+                    FirstName = order.FirstName,
+                    LastName = order.LastName,
+                    Email = order.Email,
+                    PhoneNumber = order.PhoneNumber,
+                    OrderCount = 1,
+                    Password = "",
+                    IsVerified = false
+                };
+                newOrder.Account = account;
+                if (order.OrderItems.IsNullOrEmpty()) return BadRequest("Order must have at least 1 order item.");
+                foreach (var orderItem in order.OrderItems)
+                {
+                    var foundItem = await _context.Items.FindAsync(orderItem.ItemId);
+                    if (foundItem is null) return BadRequest($"Cannot find item with ID => {orderItem.ItemId}");
+                    var newOrderItem = new OrderItem
+                    {
+                        Order = newOrder,
+                        Item = foundItem,
+                        Count = orderItem.Count,
+                        Price = foundItem.Price,
+                        Name = foundItem.Name
+                    };
+                    foreach (var groupOption in orderItem.GroupOptions)
+                    {
+                        var foundGroup = await _context.Groups.FindAsync(groupOption.GroupId);
+                        if (foundGroup is null) return BadRequest($"GroupID {groupOption.GroupId} is not a group.");
+                        var foundGroupOption = await _context.GroupOptions.FindAsync(groupOption.GroupOptionId);
+                        if (foundGroupOption is null) return BadRequest($"GroupOptionID {groupOption.GroupOptionId} is not a group option.");
+                        if (!foundGroup.GroupOptions.Any(go => go.GroupOptionId == foundGroupOption.GroupOptionId)) return BadRequest($"GroupID {foundGroup.GroupId} does not contain a group option with ID {foundGroupOption.GroupOptionId}");
+
+                        var newOrderItemGroup = new OrderItemGroup
+                        {
+                            OrderItem = newOrderItem,
+                            Group = foundGroup,
+                            GroupOption = foundGroupOption
+                        };
+                        newOrderItem.Groups.Add(newOrderItemGroup);
+                    }
+                    foreach (var addon in orderItem.Addons)
+                    {
+                        var foundAddon = await _context.Addons.FindAsync(addon.AddonId);
+                        if (foundAddon is null) return BadRequest($"Cannot find addon with ID => {addon.AddonId}");
+                        var newOrderItemAddon = new OrderItemAddon
+                        {
+                            OrderItem = newOrderItem,
+                            Addon = foundAddon
+                        };
+                        newOrderItem.Addons.Add(newOrderItemAddon);
+                    }
+                    foreach (var noOption in orderItem.NoOptions)
+                    {
+                        var foundNoOption = await _context.NoOptions.FindAsync(noOption.NoOptionId);
+                        if (foundNoOption is null) return BadRequest($"Cannot find NoOption with ID => {noOption.NoOptionId}");
+                        var newOrderItemNoOption = new OrderItemNoOption
+                        {
+                            OrderItem = newOrderItem,
+                            NoOption = foundNoOption
+                        };
+                        newOrderItem.NoOptions.Add(newOrderItemNoOption);
+                    }
+                    newOrder.OrderItems.Add(newOrderItem);
+                }
+                if (order.SaveOrder && order.SavedOrderName is not null && account is not null)
+                {
+                    SavedOrder savedOrder = await _context.SavedOrders.Where(savedOrder => (savedOrder.Name.Equals(order.SavedOrderName) && savedOrder.Account == account)).FirstOrDefaultAsync();
+                    SavedOrder newSavedOrder = new()
+                    {
+                        Name = order.SavedOrderName,
+                        Account = account
+                    };
+                    newSavedOrder.OrderItems = OrderItemsToSavedOrderOrderItems(newSavedOrder, newOrder);
+                    if (savedOrder is not null)
+                    {
+                        newSavedOrder.SavedOrderId = savedOrder.SavedOrderId;
+                        _ = _context.Remove(savedOrder);
+                    }
+                    await _context.SavedOrders.AddAsync(newSavedOrder);
+                }
+                await _context.Orders.AddAsync(newOrder);
+            }
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
         private static List<SavedOrderOrderItem> OrderItemsToSavedOrderOrderItems(SavedOrder savedOrder, Order order)
         {
             List<SavedOrderOrderItem> savedOrderOrderItems = new();

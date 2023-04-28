@@ -19,7 +19,7 @@ const NavBar = ({ navRef, navOpen }) => {
                     <div>Salerno's</div>
                 </div>
                 <div className='NavBar_Button_Wrapper'>
-                    <button type='button' className={(location.pathname === '/salerno/reports' || innerNavType === "reports") ? 'NavBar_Button NavBar_Active' : 'NavBar_Button NavBar_Inactive'}>
+                    <button type='button' className={(loc === '/salerno/report' || loc === '/salerno/reports' || innerNavType === "report") ? 'NavBar_Button NavBar_Active' : 'NavBar_Button NavBar_Inactive'} onClick={() => { setInnerNavType(prev => (prev !== "report") ? "report" : ""); setLoc("/salerno/report");}}>
                         <div className='NavBar_Button_Icon_Wrapper'>
                             <AiOutlineBarChart size=' 1.25em'  />
                         </div>

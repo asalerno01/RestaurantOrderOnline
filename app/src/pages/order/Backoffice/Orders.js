@@ -133,6 +133,8 @@ const Orders = () => {
         setAccept(false);
     }
     const OpenOrder = () => {
+        let pickupDate = new Date(openOrder.orderDate);
+        pickupDate.setMinutes()
         console.log(openOrder)
         if (!orderOpen) return <></>
         else if (isEmptyObject(openOrder)) {
@@ -174,18 +176,19 @@ const Orders = () => {
                             <h2 className={OrdersStyles.pickup_header}>Pick-Up Details</h2>
                             <div>
                                 <div className={OrdersStyles.pickup_label}>Customer</div>
-                                <div className={OrdersStyles.pickup_value}>{(openOrder.account === null) ? "New Customer" : `${openOrder.account.firstName} ${openOrder.account.lastName}`}</div>
+                                <div className={OrdersStyles.pickup_value}>{`${openOrder.account.firstName} ${openOrder.account.lastName}`}<span style={{marginLeft: "10px"}}>{(openOrder.account.isVerified) ? "" : "(New Customer)"}</span></div>
                             </div>
                             <div className={OrdersStyles.border}></div>
                             <div>
                                 <div className={OrdersStyles.pickup_label}>Picked Up</div>
                                 <div className={OrdersStyles.pickup_value}>
-                                    {(openOrder.pickUpDate === null) ? "In Progress" : openOrder.pickUpDate}
+                                    {/* {(openOrder.pickUpDate === null) ? "In Progress" : openOrder.pickUpDate}
                                     <span style={{marginLeft: "10px"}}>
                                         {(openOrder.QuotedTime === null) ? "No Quote" : `Quoted (${openOrder.quotedTime})`}
-                                    </span>
+                                    </span> */}
+                                    <span>{openOrder.orderDate}</span><span style={{marginLeft: "10px"}}>{openOrder.orderTime}</span>
                                 </div>
-                                <div className={OrdersStyles.pickup_value}>{new Date(openOrder["orderDate"]).toLocaleDateString()}</div>
+                                {/* <div className={OrdersStyles.pickup_value}>{new Date(openOrder["orderDate"]).toLocaleDateString()}</div> */}
                             </div>
                         </div>
                         <div className={OrdersStyles.gap}></div>
