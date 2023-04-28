@@ -50,6 +50,7 @@ namespace SalernoServer.Controllers
             var orders = await _context.Orders
                     .Include(o => o.Account)
                     .Where(order => order.Status.Equals("Pending") || order.Status.Equals("Accepted"))
+                    .OrderByDescending(order => order.OrderId)
                     .ToListAsync();
             return Ok(orders.Select(order => new SimpleOrder(order)).ToList());
         }

@@ -14,7 +14,6 @@ const Reports = () => {
     const [netSales, setNetSales] = useState(0);
     const [tax, setTax] = useState(0);
     const [orderItemTotals, setOrderItemTotals] = useState({});
-    const [uniqueOrderItemIds, setUniqueOrderItemIds] = useState({});
     const [items, setItems] = useState([]);
     const [customerTotal, setCustomerTotal] = useState(0);
     const [cogs, setCogs] = useState(0);
@@ -36,6 +35,7 @@ const Reports = () => {
             console.log(err);
         });
     }
+
     const getItems = async () => {
         await axios({
             method: "GET",
