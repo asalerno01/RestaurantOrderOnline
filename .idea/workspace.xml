@@ -1,11 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="972ea376-9d26-4683-a7b6-dba7db3d45c3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/imgs/food.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/imgs/food.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/pages/home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/home/Home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/pages/home/Home.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/home/Home.module.css" afterDir="false" />
+    <list default="true" id="03ff9df7-b5fa-40a0-b497-e8a917e744df" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Extras/mod.mwb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/.vs/Server/FileContentIndex/0174f629-b64e-481c-b4ae-924304652c2b.vsidx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/.vs/Server/FileContentIndex/5a79b208-87f7-4f0d-ae92-345f21dfee14.vsidx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/.vs/Server/FileContentIndex/ede19cd3-5ccb-4429-9d84-fb3aa61d9607.vsidx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/.vs/Server/FileContentIndex/f30d0e5b-d125-4b33-b686-af53b6824ae1.vsidx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/Server/Controllers/MenuController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/Server/Migrations/20230424232817_order-changes.Designer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/Server/Migrations/20230424232817_order-changes.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/Server/Migrations/20230424234313_order-account-null-changes.Designer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/Server/Migrations/20230424234313_order-account-null-changes.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/Server/Migrations/20230425155958_lots-of-database-changes.Designer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/Server/Migrations/20230425155958_lots-of-database-changes.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/Server/Models/Authentication/AccountDTO.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/imgs/food.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/pages/home/Home.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/pages/home/Home.module.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/pages/order/Backoffice/Reports.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/pages/order/Backoffice/css/Reports.module.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/pages/order/SavedOrderItem.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/.vs/ProjectEvaluation/server.metadata.v5.2" beforeDir="false" afterPath="$PROJECT_DIR$/Server/.vs/ProjectEvaluation/server.metadata.v5.2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/.vs/ProjectEvaluation/server.projects.v5.2" beforeDir="false" afterPath="$PROJECT_DIR$/Server/.vs/ProjectEvaluation/server.projects.v5.2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/.vs/Server/DesignTimeBuild/.dtbcache.v2" beforeDir="false" afterPath="$PROJECT_DIR$/Server/.vs/Server/DesignTimeBuild/.dtbcache.v2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/.vs/Server/FileContentIndex/13f879f1-e263-441e-934a-d9ea4da1f1a4.vsidx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/.vs/Server/FileContentIndex/42e9d18b-384c-4418-9e96-c47bfab73c90.vsidx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/.vs/Server/FileContentIndex/5040f408-6c0e-4c2f-81da-977138781a3f.vsidx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/.vs/Server/FileContentIndex/dc9c993a-2252-4ffa-a9c4-e051dfaa57ff.vsidx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/.vs/Server/v17/.futdcache.v2" beforeDir="false" afterPath="$PROJECT_DIR$/Server/.vs/Server/v17/.futdcache.v2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/.vs/Server/v17/.suo" beforeDir="false" afterPath="$PROJECT_DIR$/Server/.vs/Server/v17/.suo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Controllers/AuthController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Controllers/AuthController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Controllers/CategoryController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Controllers/CategoryController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Controllers/OrderController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Controllers/OrderController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Migrations/20230418160714_initial-create.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Migrations/20230418160714_initial-create.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Migrations/AppDbContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Migrations/AppDbContextModelSnapshot.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Models/Authentication/Account.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Models/Authentication/Account.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Models/ItemModels/Category.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Models/ItemModels/Category.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Models/ItemModels/Helpers/CategoryDTO.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Models/ItemModels/Helpers/CategoryDTO.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Models/ItemModels/Helpers/CategoryHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Models/ItemModels/Helpers/CategoryHelper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Models/ItemModels/Helpers/CategoryItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Models/ItemModels/Helpers/CategoryItem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Models/ItemModels/Helpers/ItemDTO.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Models/ItemModels/Helpers/ItemDTO.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Models/ItemModels/Helpers/SimpleOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Models/ItemModels/Helpers/SimpleOrder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Models/ModelHelpers/OrderHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Models/ModelHelpers/OrderHelper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Models/Order.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Models/Order.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Models/OrderDTO.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Models/OrderDTO.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Models/OrderItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Models/OrderItem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Models/OrderItemDTO.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Models/OrderItemDTO.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Models/SavedOrderDTO.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Models/SavedOrderDTO.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Models/SavedOrderOrderItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Models/SavedOrderOrderItem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Models/SavedOrderOrderItemDTO.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Models/SavedOrderOrderItemDTO.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/bin/Debug/net6.0/Server.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/bin/Debug/net6.0/Server.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/bin/Debug/net6.0/Server.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/bin/Debug/net6.0/Server.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/obj/Debug/net6.0/Server.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/obj/Debug/net6.0/Server.csproj.CoreCompileInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/obj/Debug/net6.0/Server.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/obj/Debug/net6.0/Server.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/obj/Debug/net6.0/Server.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/obj/Debug/net6.0/Server.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/obj/Debug/net6.0/ref/Server.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/obj/Debug/net6.0/ref/Server.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/obj/Debug/net6.0/refint/Server.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/obj/Debug/net6.0/refint/Server.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/components/ItemImage.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/components/ItemImage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/components/LoadingSpinner.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/components/LoadingSpinner.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/components/css/minicalendar.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/components/css/minicalendar.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/components/functions/DateInfo.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/components/functions/DateInfo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/dashboard/InnerNavBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/dashboard/InnerNavBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/dashboard/NavBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/dashboard/NavBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/dashboard/SupportDialog.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/dashboard/SupportDialog.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/dashboard/css/navbar.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/dashboard/css/navbar.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/item/Edit.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/item/Edit.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/item/ItemList.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/item/ItemList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/item/css/edit.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/item/css/edit.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/item/css/itemlist.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/item/css/itemlist.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/order/Backoffice/Active.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/order/Backoffice/Active.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/order/Backoffice/Orders.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/order/Backoffice/Orders.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/order/Backoffice/css/Orders.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/order/Backoffice/css/Orders.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/order/BaseItemModifiers.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/order/BaseItemModifiers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/order/Cart.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/order/Cart.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/order/Checkout.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/order/Checkout.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/order/Order.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/order/Order.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/order/OrderItem.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/order/OrderItem.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/order/OrderItemSummary.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/order/OrderItemSummary.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/order/SavedOrder.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/order/SavedOrder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/order/css/OrderItem.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/order/css/OrderItem.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/order/functions/OrderFunctions.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/order/functions/OrderFunctions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/review/Reviews.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/review/Reviews.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/staff/EditEmployee.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/staff/EditEmployee.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/staff/NewEmployee.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/staff/NewEmployee.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/user_pages/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/user_pages/Login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/raquel/components/menu/MenuItem.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/raquel/components/menu/MenuItem.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/simple/Requests/MiniCalendar.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/simple/Requests/MiniCalendar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/simple/Requests/minicalendar.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/simple/Requests/_minicalendar.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,60 +100,50 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="CSS File" />
         <option value="JavaScript File" />
+        <option value="CSS File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="MarkdownSettingsMigration">
-    <option name="stateVersion" value="1" />
-  </component>
-  <component name="ProjectId" id="2OR2l6QZ9N2716PjEq39YKvRFJ0" />
+  <component name="ProjectId" id="2Oy7f5eBZJ423LBK1vYWRFZvBDX" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Kelse/OneDrive/Documents/GitHub/RestaurantOrderOnline/app/src/pages/home&quot;,
-    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
-  }
-}</component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/pages/report" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Kelse\OneDrive\Documents\GitHub\RestaurantOrderOnline\app\src\pages\home" />
+      <recent name="$PROJECT_DIR$/app/src/pages/report" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Kelse\OneDrive\Documents\GitHub\RestaurantOrderOnline\app\src\imgs" />
-      <recent name="C:\Users\Kelse\OneDrive\Documents\GitHub\RestaurantOrderOnline\app\src\pages\home" />
-      <recent name="C:\Users\Kelse\OneDrive\Documents\GitHub\RestaurantOrderOnline\app\src\pages\home\css" />
+      <recent name="$PROJECT_DIR$/app/src/pages/report" />
+      <recent name="$PROJECT_DIR$/app/src/pages" />
+      <recent name="$PROJECT_DIR$/app/src" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="972ea376-9d26-4683-a7b6-dba7db3d45c3" name="Changes" comment="" />
-      <created>1681509233067</created>
+      <changelist id="03ff9df7-b5fa-40a0-b497-e8a917e744df" name="Changes" comment="" />
+      <created>1682521073070</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1681509233067</updated>
-      <workItem from="1681509255615" duration="851000" />
-      <workItem from="1681742330490" duration="2865000" />
-      <workItem from="1682292344551" duration="2373000" />
-      <workItem from="1682383623011" duration="2744000" />
-      <workItem from="1682389028950" duration="5920000" />
-      <workItem from="1682480347585" duration="9720000" />
-      <workItem from="1682649568170" duration="3199000" />
+      <updated>1682521073070</updated>
+      <workItem from="1682521085739" duration="36000" />
+      <workItem from="1682522150157" duration="18582000" />
     </task>
     <servers />
   </component>
@@ -78,6 +153,17 @@
       <list>
         <option value="$PROJECT_DIR$/app/src/old/components/Donut.js" />
       </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
     </option>
   </component>
 </project>
