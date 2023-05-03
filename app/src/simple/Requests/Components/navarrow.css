@@ -1,8 +1,0 @@
-.Arrow > .NavArrow {
-    vertical-align: middle;
-    color: #dddfe1;
-    cursor: pointer;
-}
-.Arrow > .NavArrow:hover {
-    color: #525e71;
-}

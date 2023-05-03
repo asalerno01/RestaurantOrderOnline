@@ -1,8 +1,8 @@
 import React from 'react';
 import MenuItemStyles from './MenuItem.module.css';
 
-import ItemImage from '../../../components/ItemImage';
-import SavedOrder from '../../../pages/order/SavedOrder';
+import ItemImage from '../../../../components/ItemImage';
+import SavedOrder from '../../SavedOrder';
 
 const MenuItem = (props) => {
     function isDrink(name) { return ["Diet Coke", "Sprite", "Coke", "Root Beer", "Dr Pepper", "Mountain Dew", "Pepsi", "Orange Crush", "Dasani Water"].includes(name) };

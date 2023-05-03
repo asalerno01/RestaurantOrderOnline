@@ -6,6 +6,7 @@ import ButtonTabs from "../../components/ButtonTabs";
 import DeleteItemModal from "../../components/DeleteItemModal";
 import axios from 'axios';
 import './css/edit.css';
+import EditStyles from './css/Edit.module.css';
 
 const Edit = () => {
     const { itemId } = useParams();
@@ -97,48 +98,48 @@ const Edit = () => {
     if ((itemId === undefined || itemId === "undefined") && location.pathname !== "/salerno/items/new") return navigate("/salerno/items");
 
     return (
-        <div className='EditItem'>
-            <div className='PageLayout_Header'>
-                <div className='PageLayout_Header_Title'>Edit Item</div>
-                <div className='PageLayout_Header_Button_Container'>
+        <main className={EditStyles.edit}>
+            <div className={EditStyles.header}>
+                <span className={EditStyles.title}>Edit Item</span>
+                <div className={EditStyles.header_buttons}>
                     <FilterButton />
                 </div>
             </div>
             <DeleteItemModal setDialogOpen={setDialogOpen} itemId={itemId} dialogOpen={dialogOpen} />
-            <div className='EditItem_Container'>
+            <section className={EditStyles.container}>
                 <ButtonTabs itemId={itemId} />
-                <div className='EditItem_Grid'>
-                    <div className='EditItem_Grid_Item'>
-                        <div className='EditItem_Content_Header'>
-                            <h3 className='EditItem_Item_Details_Header'>Item Details</h3>
+                <div className={EditStyles.grid}>
+                    <div>
+                        <div className={EditStyles.content_header}>
+                            <h3>Item Details</h3>
                         </div>
-                        <div className='edit-content-test edit-dark-border'>
+                        <div className={EditStyles.inputs_container}>
                             <div>
-                                <label htmlFor='name-input'>Name<div className='EditItem_Required_Field_Indicator'></div></label>
-                                <input className='EditItem_Input' type='text' value={item['name']} attributeType="name" onChange={handleInputChange} id='name-input'/>
+                                <label htmlFor='name-input' className={EditStyles.required_label}>Name</label>
+                                <input className={EditStyles.input} type='text' value={item['name']} attributeType="name" onChange={handleInputChange} id='name-input'/>
                             </div>
                             <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "flex-start"}}>
-                                <label htmlFor='Register_Status_Open'>Menu Status <QuestionIcon style={{verticalAlign: "middle", position: "relative", top: "-5px"}}/></label>
-                                <div className='EditItem_ActiveRegister_Wrapper'>
-                                    <input className='EditItem_Register_Checkbox' type='checkbox' checked={item.isEnabled} onChange={handleInputChange} attributeType="isEnabled" id='Register_Status_Open'/>
-                                    <label htmlFor='Register_Status_Open' className='EditItem_Register_Checkbox_Label'>Active</label>
+                                <label htmlFor='status'>Item Status <QuestionIcon className={EditStyles.question_icon}/></label>
+                                <div className={EditStyles.status_wrapper}>
+                                    <input type='checkbox' checked={item.isEnabled} onChange={handleInputChange} attributeType="isEnabled" id='status'/>
+                                    <label htmlFor='status' className={EditStyles.register_label}>Active</label>
                                 </div>
                             </div>
                             <div>
                                 <label htmlFor='department-input'>Department <QuestionIcon /></label>
-                                <select className='EditItem_Input' value={item["department"]} attributeType="department" onChange={handleInputChange}  id='department-input'>
+                                <select className={EditStyles.input} value={item["department"]} attributeType="department" onChange={handleInputChange}  id='department-input'>
                                     <option value={item.department}>{item['department']}</option>
                                     <option value='2'>2</option>
                                     <option value='3'>3</option>
                                 </select>
                             </div>
                             <div>
-                                <div style={{textAlign: 'left'}}>SKU <QuestionIcon /></div>
+                                <label>SKU<QuestionIcon /></label>
                                 <div style={{textAlign: 'left', fontSize: '14px', fontWeight: '300', height: '39px', padding: '6px 0'}}>{item['sku']}</div>
                             </div>
                             <div>
                                 <label htmlFor='category-input'>Category <QuestionIcon /></label>
-                                <select className='EditItem_Input' value={item.categoryId} attributeType="categoryId" onChange={handleInputChange} id='category-input'>
+                                <select className={EditStyles.input} value={item.categoryId} attributeType="categoryId" onChange={handleInputChange} id='category-input'>
                                 {
                                     categories.map(category => (
                                         <option key={`category-${category.categoryId}`} value={category.categoryId}>{category.name}</option>
@@ -148,45 +149,43 @@ const Edit = () => {
                             </div>
                             <div>
                                 <label htmlFor='upc-input'>UPC <QuestionIcon /></label>
-                                <input type='text' className='EditItem_Input' value={item['upc']} attributeType="upc" onChange={handleInputChange} id='upc-input'/>
+                                <input type='text' className={EditStyles.input} value={item['upc']} attributeType="upc" onChange={handleInputChange} id='upc-input'/>
                             </div>
-                            <div className="edit-content-description">
+                            <div>
                                 <label htmlFor='description-input'>Description</label>
                                 <textarea id="description-input" value={item.description} attributeType="description" onChange={handleInputChange} placeholder="Describe the item for customers..."/>
                             </div>
                         </div>
                     </div>
-                    <div className='EditItem_Grid_Item'>
-                        <div className='EditItem_Content_Header'>
-                            <h3 className='EditItem_Item_Details_Header'>Pricing</h3>
-                        </div>
-                        <div className='edit-content-test edit-dark-border'>
+                    <div>
+                        <h3>Pricing</h3>
+                        <div className={EditStyles.inputs_container}>
                             <div>
-                                <label htmlFor='sale-price-input'>Sales Price <div className='EditItem_Required_Field_Indicator'></div></label>
-                                <input type='text' className='EditItem_Input' value={item.price} attributeType="price" onChange={handleInputChange} id='sale-price-input'/>
+                                <label htmlFor='sale-price-input' className={EditStyles.required_label}>Sales Price <div className='EditItem_Required_Field_Indicator'></div></label>
+                                <input type='text' className={EditStyles.input} value={item.price} attributeType="price" onChange={handleInputChange} id='sale-price-input'/>
                             </div>
                             <div>
                                 <label htmlFor='price-type-input'>Price Type</label>
-                                <select className='EditItem_Input' defaultValue="fixed" id='price-type-input'>
+                                <select className={EditStyles.input} defaultValue="fixed" id='price-type-input'>
                                     <option value='fixed'>Fixed</option>
                                     <option value='at-the-register'>At the Register</option>
                                     <option value='unit-price'>Unit Price (lb, oz, etc.)</option>
                                 </select>
-                                <div className='EditItem_PriceType_Explanation'>
+                                <span className={EditStyles.description}>
                                     <b>Fixed</b> prices are set from this screen and can't be 
                                     changed at the Register, only adjusted through discounts.
-                                </div>
+                                </span>
                             </div>
                             <div>
                                 <label htmlFor='discounts-input'>Discounts <QuestionIcon /></label>
-                                <select className='EditItem_Input' value={true} attributeType="discountable" onChange={handleInputChange} id='discounts-input'>
+                                <select className={EditStyles.input} value={true} attributeType="discountable" onChange={handleInputChange} id='discounts-input'>
                                     <option value={true}>Discountable</option>
                                     <option value={false}>Non-discountable</option>
                                 </select>
                             </div>
                             <div>
                                 <label htmlFor='cost-per-item-input'>Cost per Item <QuestionIcon /></label>
-                                <div className='EditItem_Cost_Container'>
+                                <div className={EditStyles.cost_wrapper}>
                                     <span>{item["cost"].toFixed(2)}</span>
                                     <span style={{lineHeight: '21px'}}>
                                         <button type='button' className='EditItem_Override_Cost_Button'>Override</button>
@@ -195,49 +194,42 @@ const Edit = () => {
                             </div>
                             <div>
                                 <label htmlFor='taxable-input'>Taxable</label>
-                                <select className='EditItem_Input' attributeType="taxable" onChange={handleInputChange} id='taxable-input'>
+                                <select className={EditStyles.input} attributeType="taxable" onChange={handleInputChange} id='taxable-input'>
                                     <option value={true}>Yes</option>
                                     <option value={false}>No</option>
                                 </select>
                             </div>
                             <div>
                                 <label htmlFor='select-tax-input'>Select Tax <QuestionIcon /></label>
-                                <select className='EditItem_Input' attributeType="taskGroupRate" onChange={handleInputChange} id='select-tax-input'>
+                                <select className={EditStyles.input} attributeType="taskGroupRate" onChange={handleInputChange} id='select-tax-input'>
                                     <option value='test'>Add Dynamic Options</option>
                                 </select>
                             </div>
                         </div>
                     </div>
-                    <div className='EditItem_Grid_Item'>
-                        <div className='EditItem_Content_Header EditItem_Track_Header'>
-                            <h3 className='EditItem_Item_Details_Header'>Track Quantity on Hand</h3>
-                        </div>
-                    </div>
-                    <div className='EditItem_Grid_Item'>
-                        <div className='EditItem_Content_Header edit-dark-border'>
-                            <h3 className='EditItem_Item_Details_Header'>Advanced</h3>
-                        </div>
-                        <div className='edit-content-test edit-dark-border'>
+                    <div>
+                            <h3>Advanced</h3>
+                        <div className={EditStyles.inputs_container}>
                             <div>
                                 <label htmlFor='supplier-input'>Supplier <QuestionIcon /></label>
-                                <select className='EditItem_Input' value={item["supplier"]} attributeType="supplier" onChange={handleInputChange} id='supplier-input'>
+                                <select className={EditStyles.input} value={item["supplier"]} attributeType="supplier" onChange={handleInputChange} id='supplier-input'>
                                     <option value={item["supplier"]}>{item['supplier']}</option>
                                 </select>
                             </div>
                             <div>
                                 <label htmlFor='supplier-item-id-input'>Supplier's Item ID <QuestionIcon /></label>
-                                <input type='text' className='EditItem_Input' id='supplier-item-id-input'/>
+                                <input type='text' className={EditStyles.input} id='supplier-item-id-input'/>
                             </div>
                             <div>
                                 <label htmlFor='ticket-printer-group-input'>Ticket Printer Group <QuestionIcon /></label>
-                                <select className='EditItem_Input' id='ticket-printer-group-input'>
+                                <select className={EditStyles.input} id='ticket-printer-group-input'>
                                     <option value='none'>None</option>    
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className='EditItem_Submit_Footer'>
+                <footer>
                     <div className='EditItem_Submit_Footer_Container'>
                             <button type='button' className='EditItem_Submit_Footer_Button_Delete' onClick={() => setDialogOpen(true)}>
                                 Delete
@@ -250,9 +242,9 @@ const Edit = () => {
                                 Save and close
                             </button>
                     </div>
-                </div>
-            </div>
-        </div>
+                </footer>
+            </section>
+        </main>
     )
 }
 

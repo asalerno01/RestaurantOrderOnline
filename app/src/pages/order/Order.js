@@ -3,7 +3,7 @@ import axios from 'axios';
 import OrderItem from './OrderItem';
 import OrderStyles from './css/Order.module.css';
 import CartStyles from './css/Cart.module.css';
-import MenuItem from '../../raquel/components/menu/MenuItem';
+import MenuItem from './menu/menu/MenuItem';
 import Cart from './Cart';
 import Banner from '../../imgs/banner.webp';
 import StickyBox from 'react-sticky-box';
