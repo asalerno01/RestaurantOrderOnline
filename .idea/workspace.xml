@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="972ea376-9d26-4683-a7b6-dba7db3d45c3" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/imgs/food.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/imgs/food.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/home/Home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/pages/home/Home.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/pages/home/Home.module.css" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2OR2l6QZ9N2716PjEq39YKvRFJ0" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Kelse/OneDrive/Documents/GitHub/RestaurantOrderOnline/app/src/pages/home&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Kelse\OneDrive\Documents\GitHub\RestaurantOrderOnline\app\src\pages\home" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Kelse\OneDrive\Documents\GitHub\RestaurantOrderOnline\app\src\imgs" />
+      <recent name="C:\Users\Kelse\OneDrive\Documents\GitHub\RestaurantOrderOnline\app\src\pages\home" />
+      <recent name="C:\Users\Kelse\OneDrive\Documents\GitHub\RestaurantOrderOnline\app\src\pages\home\css" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="972ea376-9d26-4683-a7b6-dba7db3d45c3" name="Changes" comment="" />
+      <created>1681509233067</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1681509233067</updated>
+      <workItem from="1681509255615" duration="851000" />
+      <workItem from="1681742330490" duration="2865000" />
+      <workItem from="1682292344551" duration="2373000" />
+      <workItem from="1682383623011" duration="2744000" />
+      <workItem from="1682389028950" duration="5920000" />
+      <workItem from="1682480347585" duration="9720000" />
+      <workItem from="1682649568170" duration="3199000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+    <option name="exactExcludedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/app/src/old/components/Donut.js" />
+      </list>
+    </option>
+  </component>
+</project>
