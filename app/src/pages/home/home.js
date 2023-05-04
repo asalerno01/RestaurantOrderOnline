@@ -1,47 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import css from './Home.module.css';
-import { Link } from "react-router-dom";
-import Logo from '../../imgs/logo.jpg';
+import {Link} from "react-router-dom";
+import myImage from '../../imgs/logo.png';
 import coverImg from '../../imgs/food.png';
-import Button_Overlay from '../../imgs/button_style.webp';
 
 const Home = () => {
+
     return (
         <div>
             <header className={css.header}>
-                    <img className={css.logo} src={Logo} alt="Salerno's Red Hots Logo" />
-                <div className={css.header_details}>
-                    <h3  className={css.number}>630-383-8983</h3>
-                    <h3  className={css.address}>197 E Veterans Pkwy - Yorkville, Illinois </h3>
-                </div>
+                <img className={css.logo} src={myImage} alt="My Image" />
+                <h3  className={css.number}> 630-383-8983</h3>
+                <h3  className={css.address}>197 E Veterans Pkwy - Yorkville, Illinois </h3>
             </header>
 
             <nav className={css.navbar}>
-                <div>
-                    <div className={css.nav_button_wrapper}>
-                            <div className={css.nav_button_image_wrapper}>
-                                <img src={Button_Overlay} alt="button image overlay" className={css.button_image}/>
-                            </div>
-                        <button type="button" className={css.nav_button}>Order Now</button>
-                    </div>
-                </div>
-                <div>
-                    <div className={css.nav_button_wrapper}>
-                            <div className={css.nav_button_image_wrapper}>
-                                <img src={Button_Overlay} alt="button image overlay" className={css.button_image}/>
-                            </div>
-                        <button type="button" className={css.nav_button}>Order Now</button>
-                    </div>
-                </div>
-                <button type="button" className={css.nav_button} style={{ marginLeft: "auto" }}>Register</button>
-                <div>
-                    <div className={css.nav_button_wrapper}>
-                            <div className={css.nav_button_image_wrapper}>
-                                <img src={Button_Overlay} alt="button image overlay" className={css.button_image}/>
-                            </div>
-                        <button type="button" className={css.nav_button}>Login</button>
-                    </div>
-                </div>
+                <ul>
+                    <li>
+                        <Link to={'/salerno/home'}>Home</Link>
+                    </li>
+                    <li>
+                        <Link to={'/salerno/order'}>Online Ordering</Link>
+                    </li>
+
+                </ul>
             </nav>
             <section>
                 <img className={css.food} src={coverImg} alt="My Image" />
