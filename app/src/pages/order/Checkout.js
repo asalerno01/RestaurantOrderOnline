@@ -88,8 +88,7 @@ const Checkout = () => {
                 tempInput.lastName = value;
                 break;
             case "phoneNumber":
-                if (!isNaN(value))
-                    tempInput.phoneNumber = value;
+                if (!isNaN(value) && value.length < 11) tempInput.phoneNumber = value;
                 break;
             case "email":
                 tempInput.email = value;
@@ -103,9 +102,11 @@ const Checkout = () => {
             case "saveOrder":
                 tempInput.saveOrder = !tempInput.saveOrder;
                 if (tempInput.saveOrder) {
+                    console.log("1")
                     saveOrderNameRef.current.style.height = "39px";
                     saveOrderNameRef.current.style.width = "100%";
                 } else {
+                    console.log("2")
                     saveOrderNameRef.current.style.height = "0";
                 }
                 break;
@@ -165,6 +166,7 @@ const Checkout = () => {
                 console.log(err);
             });
         } else {
+            console.log(auth?.accessToken)
             if (inputData.firstName.length === 0) {
                 firstNameRef.current.style.borderColor = "rgb(255, 0, 0)";
                 firstNameRef.current.style.boxShadow = "0 0 8px 0 rgb(255 0 0 / 60%)"
@@ -181,7 +183,7 @@ const Checkout = () => {
                 emailRef.current.style.borderColor = "rgb(255, 0, 0)";
                 emailRef.current.style.boxShadow = "0 0 8px 0 rgb(255 0 0 / 60%)"
             }
-            if (inputData.saveOrder && inputData.saveOrderName.length === 0) {
+            if (auth?.accessToken !== undefined && inputData.saveOrder && inputData.saveOrderName.length === 0) {
                 saveOrderNameRef.current.lastChild.style.borderColor = "rgb(255, 0, 0)";
                 saveOrderNameRef.current.lastChild.style.boxShadow = "0 0 8px 0 rgb(255 0 0 / 60%)"
             }
@@ -219,17 +221,67 @@ const Checkout = () => {
         }
     }, [inputData.email]);
     useEffect(() => {
+        if (auth?.accessToken === undefined) return;
         if (saveOrderNameRef.current.lastChild.style.borderColor = "rgb(255, 0, 0)") {
             saveOrderNameRef.current.lastChild.style.borderColor = "rgb(221, 223, 225)";
             saveOrderNameRef.current.lastChild.style.boxShadow = "none"
         }
     }, [inputData.saveOrderName, inputData.saveOrder]);
 
+    function formatPhoneNumber(phoneNumberString) {
+        const cleaned = ('' + phoneNumberString).replace(/\D/g, '');
+        const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
+        if (match) {
+          const formattedNumber = '(' + match[1];
+          if (match[2]) {
+            formattedNumber += ') ' + match[2];
+          }
+          if (match[3]) {
+            formattedNumber += '-' + match[3];
+          }
+          return formattedNumber;
+        }
+        return null;
+      }
+
     const PaymentSetIcon = ({ paymentType }) => {
         if (inputData.paymentType === paymentType)
             return <BsFillCheckCircleFill size="22px" style={{color: "green"}}/>
         return <RxCaretRight size="35px" style={{color: "rgb(71, 71, 71)"}} />
     } 
+    const SaveOrder = () => {
+        return (
+            <>
+                <div className={CheckoutStyles.detail_item}>
+                    <div className={CheckoutStyles.save_container}>
+                        <button type="button" className={CheckoutStyles.save_button} id="saveOrder" onClick={handleInputChange}>
+                            <Checkbox />
+                            <span>Save this order for faster ordering again</span>
+                        </button>
+                        <div className={CheckoutStyles.save_name_input_wrapper} ref={saveOrderNameRef} >
+                            <input
+                                type="text"
+                                value={inputData.saveOrderName}
+                                style={(inputData.saveOrder) ? {display: "block"} : {display: "none"}}
+                                placeholder="Enter a name for the order"
+                                className={CheckoutStyles.input_text__save}
+                                id="saveOrderName"
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div
+                            className={CheckoutStyles.save_order_replace_confirm}
+                            style={(savedOrderNames.includes(inputData.saveOrderName) && inputData.saveOrder) ? { display: "block", overflow: "hidden" } : { display: "none", overflow: "hidden" }}
+                        >
+                            <span>You already have a saved order named "{inputData.saveOrderName}. Are you sure you want to overwrite the old order?</span>
+                            <button type="button" onClick={handleCancelSavedOrder}>Cancel</button>
+                        </div>
+                    </div>
+                </div>
+                <div className={CheckoutStyles.border}></div>
+            </>
+        )
+    }
     return (
         <div className={CheckoutStyles.checkout}>
             <OrderItem 
@@ -272,40 +324,86 @@ const Checkout = () => {
                         </div>
                     </div>
                     <div className={CheckoutStyles.border}></div>
-                    <div className={CheckoutStyles.detail_item}>
-                        <div className={CheckoutStyles.save_container}>
-                            <button type="button" className={CheckoutStyles.save_button} id="saveOrder" onClick={handleInputChange}>
-                                <Checkbox />
-                                <span>Save this order for faster ordering again</span>
-                            </button>
-                            <div className={CheckoutStyles.save_name_input_wrapper} ref={saveOrderNameRef} >
-                                <input type="text" value={inputData.saveOrderName} style={(inputData.saveOrder) ? {display: "block"} : {display: "none"}} placeholder="Enter a name for the order" className={CheckoutStyles.input_text__save} id="saveOrderName" onChange={handleInputChange} />
+                    <div>
+                        <div className={CheckoutStyles.detail_item}>
+                                <div className={CheckoutStyles.save_container}>
+                                    <button type="button" className={CheckoutStyles.save_button} id="saveOrder" onClick={handleInputChange}>
+                                        <Checkbox />
+                                        <span>Save this order for faster ordering again</span>
+                                    </button>
+                                    <div className={CheckoutStyles.save_name_input_wrapper} ref={saveOrderNameRef} >
+                                        <input
+                                            type="text"
+                                            value={inputData.saveOrderName}
+                                            style={(inputData.saveOrder) ? {display: "block"} : {display: "none"}}
+                                            placeholder="Enter a name for the order"
+                                            className={CheckoutStyles.input_text__save}
+                                            id="saveOrderName"
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div
+                                        className={CheckoutStyles.save_order_replace_confirm}
+                                        style={(savedOrderNames.includes(inputData.saveOrderName) && inputData.saveOrder) ? { display: "block", overflow: "hidden" } : { display: "none", overflow: "hidden" }}
+                                    >
+                                        <span>You already have a saved order named "{inputData.saveOrderName}. Are you sure you want to overwrite the old order?</span>
+                                        <button type="button" onClick={handleCancelSavedOrder}>Cancel</button>
+                                    </div>
+                                </div>
                             </div>
-                            <div className={CheckoutStyles.save_order_replace_confirm} style={(savedOrderNames.includes(inputData.saveOrderName) && inputData.saveOrder) ? { display: "block", overflow: "hidden" } : { display: "none", overflow: "hidden" }}>
-                                <span>You already have a saved order named "{inputData.saveOrderName}. Are you sure you want to overwrite the old order?</span><button type="button" onClick={handleCancelSavedOrder}>Cancel</button>
-                            </div>
-                        </div>
+                            <div className={CheckoutStyles.border}></div>
                     </div>
-                    <div className={CheckoutStyles.border}></div>
                     <div className={CheckoutStyles.detail_item}>
                         <h3 className={CheckoutStyles.header}>Contact and Payment</h3>
                         <div className={CheckoutStyles.right}>
                             <div className={CheckoutStyles.input_container}>
                                 <div className={CheckoutStyles.input_item}>
                                     <label htmlFor="firstName" className={CheckoutStyles.label}>First Name</label>
-                                    <input type="text" value={inputData.firstName} disabled={!isEmptyObject(auth)} ref={firstNameRef} className={CheckoutStyles.input_text} id="firstName" onChange={handleInputChange} />
+                                    <input
+                                        type="text"
+                                        value={inputData.firstName}
+                                        disabled={!isEmptyObject(auth)}
+                                        ref={firstNameRef}
+                                        className={CheckoutStyles.input_text}
+                                        id="firstName"
+                                        onChange={handleInputChange}
+                                    />
                                 </div>
                                 <div className={CheckoutStyles.input_item}>
                                     <label htmlFor="lastName" className={CheckoutStyles.label}>Last Name</label>
-                                    <input type="text" value={inputData.lastName} disabled={!isEmptyObject(auth)} ref={lastNameRef} className={CheckoutStyles.input_text} id="lastName" onChange={handleInputChange} />
+                                    <input
+                                        type="text"
+                                        value={inputData.lastName}
+                                        disabled={!isEmptyObject(auth)}
+                                        ref={lastNameRef}
+                                        className={CheckoutStyles.input_text}
+                                        id="lastName"
+                                        onChange={handleInputChange}
+                                    />
                                 </div>
                                 <div className={CheckoutStyles.input_item}>
                                     <label htmlFor="phoneNumber" className={CheckoutStyles.label}>Phone Number</label>
-                                    <input type="tel" value={inputData.phoneNumber} disabled={!isEmptyObject(auth)} ref={phoneNumberRef} className={CheckoutStyles.input_text} id="phoneNumber" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" onChange={handleInputChange} />
+                                    <input
+                                        type="text"
+                                        value={inputData.phoneNumber}
+                                        disabled={!isEmptyObject(auth)}
+                                        ref={phoneNumberRef}
+                                        className={CheckoutStyles.input_text}
+                                        id="phoneNumber"
+                                        onChange={handleInputChange}
+                                    />
                                 </div>
                                 <div className={CheckoutStyles.input_item}>
                                     <label htmlFor="email" className={CheckoutStyles.label}>Email</label>
-                                    <input type="email" value={inputData.email} disabled={!isEmptyObject(auth)} ref={emailRef} className={CheckoutStyles.input_text} id="email" onChange={handleInputChange} />
+                                    <input
+                                        type="text"
+                                        value={inputData.email}
+                                        disabled={!isEmptyObject(auth)}
+                                        ref={emailRef}
+                                        className={CheckoutStyles.input_text}
+                                        id="email"
+                                        onChange={handleInputChange}
+                                    />
                                 </div>
                             </div>
                             <div className={CheckoutStyles.payment_container}>
@@ -320,7 +418,9 @@ const Checkout = () => {
                                 </button>
                                 <div className={CheckoutStyles.border}></div>
                                 <button className={CheckoutStyles.payment_type_button} value="Paypal" id="paymentType" onClick={handleInputChange}>
-                                    <span className={CheckoutStyles.paypal_logo}><IoLogoPaypal size={"20px"} style={{color: "rgb(255, 255, 255)"}}/></span>
+                                    <span className={CheckoutStyles.paypal_logo}>
+                                        <IoLogoPaypal size={"20px"} style={{color: "rgb(255, 255, 255)"}}/>
+                                    </span>
                                     <span className={CheckoutStyles.payment_label}>Paypal</span>
                                     <span style={{width: "35px"}}>
                                         <PaymentSetIcon paymentType="Paypal"/>

@@ -110,9 +110,7 @@ const Edit = () => {
                 <ButtonTabs itemId={itemId} />
                 <div className={EditStyles.grid}>
                     <div>
-                        <div className={EditStyles.content_header}>
                             <h3>Item Details</h3>
-                        </div>
                         <div className={EditStyles.inputs_container}>
                             <div>
                                 <label htmlFor='name-input' className={EditStyles.required_label}>Name</label>

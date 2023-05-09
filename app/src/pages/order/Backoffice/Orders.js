@@ -228,6 +228,26 @@ const Orders = () => {
                     </div>
         )
     }
+    const OrdersList = () => {
+        if (isLoading) return <LoadingSpinner />
+        return (
+            <table className={OrdersStyles.table}>
+                <tbody>
+                {
+                    orders.map(order => (
+                        <tr key={"orderid-" + order["orderId"]} onClick={() => handleOrderItemClick(order.orderId)}>
+                            <td>{order["orderId"]}</td>
+                            <td>{order.status}</td>
+                            <td>{order.orderDate}</td>
+                            <td>{order.orderTime}</td>
+                            <td style={{ textTransform: "capitalize" }}>{`${(order["firstName"])} ${order["lastName"]}`}</td>
+                        </tr>
+                    ))
+                }
+                </tbody>
+            </table>
+        )
+    }
 
     return (
         <div className={OrdersStyles.orders}>
@@ -279,21 +299,7 @@ const Orders = () => {
                             </thead>
                         </table>
                     </StickyBox>
-                    <table className={OrdersStyles.table}>
-                        <tbody>
-                        {
-                            (isLoading) ? <tr><td><LoadingSpinner /></td></tr> : orders.map(order => (
-                                <tr key={"orderid-" + order["orderId"]} onClick={() => handleOrderItemClick(order.orderId)}>
-                                    <td>{order["orderId"]}</td>
-                                    <td>{order.status}</td>
-                                    <td>{order.orderDate}</td>
-                                    <td>{order.orderTime}</td>
-                                    <td style={{ textTransform: "capitalize" }}>{`${(order["firstName"])} ${order["lastName"]}`}</td>
-                                </tr>
-                            ))
-                        }
-                        </tbody>
-                    </table>
+                    <OrdersList />
                 </div>
         </div>
     )

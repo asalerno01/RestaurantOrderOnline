@@ -103,11 +103,25 @@ const OrderItem = ({ selectedItemData, setSelectedItemData, order, setOrder, car
                 </div>
                 <div className={OrderItemStyles.footer} style={{ padding: "15px 25px 15px 25px" }}>
                     <div className={OrderItemSummaryStyles.count_wrapper} style={{ width: "auto", marginRight: "20px", height: "36px" }}>
-                        <button type="button" className={OrderItemSummaryStyles.count_button} style={{borderRadius: "25px 0 0 25px", height: "36px", width: "36px" }} onClick={() => handleCountClick("increment")}><FiPlus size={"20px"} style={{borderRadius: "25% 0 0 25%"}}/></button>
+                        <button
+                            type="button"
+                            className={OrderItemSummaryStyles.count_button}
+                            style={{borderRadius: "25px 0 0 25px", height: "36px", width: "36px" }}
+                            onClick={() => handleCountClick("increment")}
+                        >
+                            <FiPlus size={"20px"} style={{borderRadius: "25% 0 0 25%"}}/>
+                        </button>
                         <span className={OrderItemSummaryStyles.count_label} style={{ width: "20px", margin: "0 7px 0 5px" }}>{`${count}x`}</span>
-                        <button type="button" className={(count === 1) ? OrderItemSummaryStyles.count_button__disabled : OrderItemSummaryStyles.count_button} style={{borderRadius: "0 25px 25px 0", height: "36px", width: "36px" }} onClick={() => handleCountClick("decrement")}><FiMinus size={"20px"}/></button>
+                        <button
+                            type="button"
+                            className={(count === 1) ? OrderItemSummaryStyles.count_button__disabled : OrderItemSummaryStyles.count_button}
+                            style={{borderRadius: "0 25px 25px 0", height: "36px", width: "36px" }}
+                            onClick={() => handleCountClick("decrement")}
+                        >
+                            <FiMinus size={"20px"}/>
+                        </button>
                     </div>
-                        <OrderItemButton />
+                    <OrderItemButton />
                 </div>
             </div>
         </div>

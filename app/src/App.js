@@ -19,7 +19,6 @@ import Reviews from './pages/review/Reviews';
 import Home from './pages/home/Home';
 import Reports from './pages/order/Backoffice/Reports';
 import Report from './pages/report/Report';
-import Home from './pages/home/home';
 
 function App() {
     return (

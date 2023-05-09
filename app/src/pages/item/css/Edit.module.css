@@ -36,6 +36,9 @@
     margin-bottom: 14px;
     grid-area: content;
 }
+.grid > div {
+    border: 1px solid rgb(213, 215, 219);
+}
 .inputs_container label:not(.status_label) {
     font-family: Lato, sans-serif;
     position: relative;
@@ -87,9 +90,8 @@
     padding: 10px 14px;
     margin: 0;
     background-color: white;
-    border-color: rgb(213, 215, 219);
-    border-style: solid;
-    border-width: 1px 1px 1px 6px;
+    border-bottom: 1px solid rgb(213, 215, 219);
+    border-left: 6px solid rgb(213, 215, 219);
 }
 .container {
     overflow-y: scroll;
@@ -249,11 +251,9 @@ footer {
 }
 .inputs_container {
     font-size: 0.9rem;
-    border-width: 0 1px 1px 1px;
     padding: 20px;
     display: flex;
     flex-wrap: wrap;
-    border: rgb(213, 215, 219) 1px solid;
 }
 .edit-content-test > div:not(.edit-content-description) {
     flex-basis: 50%;

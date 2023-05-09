@@ -128,10 +128,10 @@
     caret-color: #009fd4;
     color: #525e71;
     font-family: Lato,sans-serif;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 300;
-    padding: 4px 10px;
-    height: 20px;
+    padding: 0 10px;
+    outline: none;
 }
 .ItemList_Table_PageOptions {
     display: flex;
@@ -219,9 +219,8 @@
 
 
 
-.ItemList_Test {
+.ItemList_Scrollable_List {
     height: 100%;
-    overflow-x: scroll;
     display: flex;
     flex-direction: column;
     overflow-y: clip;
@@ -232,12 +231,10 @@
     width: 100%;
 }
 .xtest {
-    height: calc(100% - 40px);
+    height: calc(100% - 100px);
     position: relative;
     flex-grow: 1;
-    display: flex;
-    flex-direction: row;
-    overflow-y: overlay;
+    overflow-y: scroll;
 }
 .ItemList_Table_Content {
     min-width: 100%;
@@ -295,17 +292,22 @@
 .hidden {
     display: none;
 }
+.ItemList_Table_Content_Container > .ItemList_Table_Content_Row:last-child > div {
+    border-bottom: none;
+}
 .ItemList_Table_Header_Grid {
     display: grid;
     grid-template: 
     "top sort-icon" fit-content(20px)
     "bottom bottom" minmax(0, min-content)/1fr 20px;
-    height: 100%;
     width: 100%;
 }
 .ItemList_Table_Header_Wrapper {
     height: 100%;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .ItemList_Table_Header_Title_Item {
     overflow: hidden;

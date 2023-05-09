@@ -4,7 +4,7 @@ import { IconContext } from 'react-icons/lib';
 import { useNavigate } from 'react-router-dom';
 import './css/addnewitem.css';
 
-const AddNewItemDialog = ({ setAddNewItemOpen, addNewItemOpen, addBasicItemOpen, setAddBasicItemOpen, dialogOpen, setDialogOpen }) => {
+const AddNewItemDialog = ({ setAddNewItemOpen, addBasicItemOpen, setAddBasicItemOpen, setDialogOpen }) => {
     const navigate = useNavigate();
 
     const handleBasicItemClick = () => {
@@ -92,7 +92,7 @@ const AddNewItemDialog = ({ setAddNewItemOpen, addNewItemOpen, addBasicItemOpen,
         )
     }
     return (
-        <div className='AddNewItem_Dialog' style={ dialogOpen ? {display: 'block'} : {display: 'none'} } onClick={handleBasicItemClick}>
+        <div className='AddNewItem_Dialog' onClick={handleBasicItemClick}>
             <div className='AddNewItem_Dialog_Backdrop'></div>
                 {
                     (addBasicItemOpen ? <AddBasicItem /> : <ChooseType />)

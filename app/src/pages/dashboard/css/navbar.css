@@ -8,9 +8,12 @@
     flex-direction: row;
     overflow: hidden;
 }
+.NavBar a {
+    text-decoration: none;
+}
 .NavBar * {
     overflow: hidden;
-    font-family: Lato, sans-serif;
+    font-family: "Lato", sans-serif;
 }
 .NavBar_Container {
     width: 64px;

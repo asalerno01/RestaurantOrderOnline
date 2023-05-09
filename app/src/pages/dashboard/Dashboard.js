@@ -14,7 +14,6 @@ const Dashboard = () => {
 
     return (
         <div className='Dashboard'>
-            <Loaded />
             <NavBar navOpen={navOpen} />
             <LoginModal loginModalOpen={loginModalOpen} setLoginModalOpen={setLoginModalOpen} />
             <div className='Dashboard_Content'>

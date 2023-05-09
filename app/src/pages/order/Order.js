@@ -98,22 +98,33 @@ const Order = () => {
         }
     }
     const [savedOrderName, setSavedOrderName] = useState("");
-    const Test = () => {
+    const OpenItemModal = () => {
         if (selectedItemData === { item: null, index: null }) return <></>
-        if (Array.isArray(selectedItemData)) return <SavedOrderItem selectedItemData={selectedItemData} setSelectedItemData={setSelectedItemData} setOrder={setOrder} cartIsOpen={cartIsOpen} savedOrderName={savedOrderName} setSavedOrderName={setSavedOrderName} />
-        else return <OrderItem 
-            selectedItemData={selectedItemData}
-            setSelectedItemData={setSelectedItemData}
-            order={order}
-            setOrder={setOrder}
-            cartIsOpen={cartIsOpen}
-            saveToLocalStorage={saveToLocalStorage}
-        />
+        else if (Array.isArray(selectedItemData))
+            return (
+                <SavedOrderItem
+                    selectedItemData={selectedItemData}
+                    setSelectedItemData={setSelectedItemData}
+                    setOrder={setOrder} cartIsOpen={cartIsOpen}
+                    savedOrderName={savedOrderName}
+                    setSavedOrderName={setSavedOrderName}
+                />
+            )
+        else return (
+            <OrderItem 
+                selectedItemData={selectedItemData}
+                setSelectedItemData={setSelectedItemData}
+                order={order}
+                setOrder={setOrder}
+                cartIsOpen={cartIsOpen}
+                saveToLocalStorage={saveToLocalStorage}
+            />
+        )
     }
     const MenuItems = () => {
         if (isLoading) return <LoadingSpinner />
         return (
-            <div className={OrderStyles.categories}>
+            <div className={OrderStyles.menu_items}>
             {
                 menu.map((category, index) => (
                     <div className={OrderStyles.category} id={index} key={`category-${category.name}-${index}`}>
@@ -172,7 +183,7 @@ const Order = () => {
                     />
                 </div>
             </div>
-            <Test />
+            <OpenItemModal />
             <div className={OrderStyles.header}>
                 <div className={OrderStyles.banner_wrapper}>
                     <img src={Banner}/>
