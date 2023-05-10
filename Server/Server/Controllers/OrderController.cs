@@ -18,10 +18,37 @@ namespace SalernoServer.Controllers
         {
             _context = context;
         }
-
+        //public class ADTO
+        //{
+        //    public long AccountId { get; set; }
+        //    public string FirstName { get; set; }
+        //    public string LastName { get; set; }
+        //    public string Email { get; set; }
+        //    public string PhoneNumber { get; set; }
+        //}
+        //public class ODTO
+        //{
+        //    public long OrderId { get; set; }
+        //    public ADTO Account { get; set; }
+        //    public decimal Subtotal { get; set; }
+        //    public decimal SubtotalTax { get; set; }
+        //    public decimal Total { get; set; }
+        //    public string Status { get; set; }
+        //    public List<OIDTO> OrderItems { get; set; } = new();
+        //}
+        //public class OIDTO
+        //{
+        //    public string ItemId { get; set; }
+        //    public string Name { get; set; }
+        //    public decimal Price { get; set; }
+        //    public int Count { get; set; }
+        //    public List<OrderItemAddon> Addons { get; set; }
+        //    public List<OrderItemNoOption> NoOptions { get; set; }
+        //    public List<OrderItemGroup> Groups { get; set; }
+        //}
         // GET: api/orders
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        public async Task<ActionResult<IEnumerable<OrderDTO>>> GetOrders()
         {
             var orders = await _context.Orders
                 .Include(o => o.OrderItems)
@@ -39,10 +66,44 @@ namespace SalernoServer.Controllers
                 .Include(o => o.Account)
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Item)
+                .AsSplitQuery()
                 .ToListAsync();
 
             return Ok(orders.Select(order => new OrderDTO(order)).ToList());
         }
+        //[HttpGet]
+        //[Route("test")]
+        //public Task<ActionResult<IEnumerable<ODTO>>> GetOrdersTest()
+        //{
+        //    var x = _context.Orders.Select(o => new ODTO
+        //    {
+        //        OrderId = o.OrderId,
+        //        Account = new ADTO
+        //        {
+        //            AccountId = o.Account.AccountId,
+        //            FirstName = o.Account.FirstName,
+        //            LastName = o.Account.LastName,
+        //            PhoneNumber = o.Account.PhoneNumber,
+        //            Email = o.Account.Email
+        //        },
+        //        Subtotal = o.Subtotal,
+        //        SubtotalTax = o.SubtotalTax,
+        //        Total = o.Total,
+        //        Status = o.Status,
+        //        OrderItems = o.OrderItems.Select(oi => new OIDTO
+        //        {
+        //            ItemId = oi.Item.ItemId,
+        //            Name = oi.Item.Name,
+        //            Price = oi.Price,
+        //            Count = oi.Count,
+        //            Addons = oi.Addons,
+        //            NoOptions = oi.NoOptions,
+        //            Groups = oi.Groups
+        //        }).ToList()
+        //    }).ToList();
+
+        //    return Ok(x);
+        //}
         [HttpGet]
         [Route("simple/active")]
         public async Task<ActionResult<IEnumerable<SimpleOrder>>> GetSimpleOrdersActive()
@@ -99,7 +160,6 @@ namespace SalernoServer.Controllers
         [Route("date/full")]
         public async Task<ActionResult<IEnumerable<OrderDTO>>> GetOrdersByDateFull([FromBody] DateHelper dateHelper)
         {
-            Console.WriteLine(dateHelper.StartDate);
             var orders = await _context.Orders
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Addons)

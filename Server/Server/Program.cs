@@ -14,7 +14,7 @@ var configuration = new ConfigurationBuilder()
      .AddJsonFile($"appsettings.json");
 
 var config = configuration.Build();
-var connectionString = config.GetConnectionString("databaseSchool");
+var connectionString = config.GetConnectionString("localdb");
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 

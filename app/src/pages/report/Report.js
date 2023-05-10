@@ -94,46 +94,7 @@ const Report = () => {
     endDate.setMonth(filterDate[1].Month - 1);
     endDate.setDate(filterDate[1].Day);
     useEffect(() => { setDaySpan(Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24))); }, [filterDate]);
-    // useEffect(() => {
-    //     setIsLoading(true);
-        
-    //     fetch('https://localhost:7089/api/items')
-    //         .then((response) => {
-    //             return response.json();
-    //         })
-    //         .then((data) => {
-    //             const menuItems = [];
-
-    //             for (const key in data) {
-    //                 const menuItem = {
-    //                     id: key,
-    //                     ...data[key]
-    //                 };
-    //                 menuItems.push(menuItem);
-    //             }
-    //             setMenuItems(menuItems)
-    //             console.log("menuItems:", menuItems);
-
-    //         })
-    //         .then(() => fetch('https://localhost:7089/api/orders'))
-    //                 .then((response) => {
-    //                     return response.json();
-    //                 })
-    //                 .then((data) => {
-    //                     const orders = [];
-
-    //                     for (const key in data) {
-    //                         const order = {
-    //                             id: key,
-    //                             ...data[key]
-    //                         };
-    //                         orders.push(order);
-    //                     }
-    //                     setIsLoading(false)
-    //                     setOrders(orders)
-    //                     console.log("orders:", orders);
-    //                 });
-    //     }, []);
+    // useEffect(() =
 
     if (isLoading) {
         return (
@@ -193,19 +154,6 @@ const Report = () => {
         const date = new Date(dateString);
         return date.getDay();
     }
-    //     const weeklyNetSales = new Array(7).fill(0);
-    // const weeklyTransactions = new Array(7).fill(0);
-    // const weeklyDates = new Array(7).fill('');
-
-        // orders.forEach((order) => {
-        //     const weekDay = dayOfWeek(order.orderDate);
-        //     weeklyNetSales[weekDay] += order.subtotal;
-        //     weeklyOrders[weekDay] ++;
-        //     weeklyDates[weekDay] = new Date(order.orderDate).toLocaleDateString('en-US', {
-        //         month: '2-digit',
-        //         day: '2-digit'
-        //     });
-        // });
 
     let orderDays = [];
     let tempStartDate = new Date(startDate);

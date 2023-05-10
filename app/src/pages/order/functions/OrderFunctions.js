@@ -28,7 +28,6 @@ export function generateUUIDUsingMathRandom() {
 }
 export function getOrderSubtotal(order, items) {
     let subtotal = 0;
-    console.log(order)
     order.forEach(orderItem => {
         let { count, addons, noOptions, groups } = orderItem;
         subtotal += getOrderItemPrice(orderItem.price, count, addons, noOptions, groups);

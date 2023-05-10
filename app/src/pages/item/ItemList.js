@@ -7,6 +7,7 @@ import { AiOutlineVerticalLeft, AiOutlineLeft, AiOutlineRight, AiOutlineVertical
 import SortButton from '../../components/SortButton';
 import axios from 'axios';
 import './css/itemlist.css';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 const ItemList = () => {
     const [addNewItemOpen, setAddNewItemOpen] = useState(false);
@@ -22,7 +23,7 @@ const ItemList = () => {
 
     const [itemsPerPage, setItemsPerPage] = useState({ 'Per Page': 50, 'Current Page': 1 });
 
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const getItems = async () => {
         await axios.get('https://localhost:7074/api/items')
@@ -35,7 +36,7 @@ const ItemList = () => {
             console.log(items)
             setInitialItems(items);
             setItems(items);
-            setIsLoaded(true);
+            setIsLoading(false);
         })
         .catch(function (err) {
             console.log(err.message);
@@ -307,10 +308,7 @@ const ItemList = () => {
     }
 
     const DataRows = () => {
-        if (!isLoaded)
-            return (
-                <div>hi</div>
-            )
+        if (isLoading) return <div style={{width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}><LoadingSpinner /></div>
         return (
             <div className='ItemList_Table_Content_Container'>
                 {   
@@ -366,7 +364,6 @@ const ItemList = () => {
         )
     }
 
-    if (items === null) return <div>Loading...</div>
     return (
         <div className='ItemList'>
             <div className='PageLayout_Header'>
@@ -378,8 +375,14 @@ const ItemList = () => {
                     <FilterButton handleClick={handleFilterSlideInClick} />
                 </div>
             </div>
-            <AddNewItemDialog setAddNewItemOpen={setAddNewItemOpen} addNewItemOpen={addNewItemOpen} addBasicItemOpen={addBasicItemOpen} setAddBasicItemOpen={setAddBasicItemOpen} setDialogOpen={setDialogOpen} dialogOpen={dialogOpen} />
-
+            { dialogOpen && <AddNewItemDialog
+                                setAddNewItemOpen={setAddNewItemOpen}
+                                addNewItemOpen={addNewItemOpen}
+                                addBasicItemOpen={addBasicItemOpen}
+                                setAddBasicItemOpen={setAddBasicItemOpen}
+                                setDialogOpen={setDialogOpen}
+                            />
+            }
                 <div className='ItemList_Container'>
                     <FilterItemList isFilterOpen={isFilterOpen} 
                         showHideValue={showHideValue} handleShowHideClick={handleShowHideClick} 
@@ -392,7 +395,7 @@ const ItemList = () => {
                         setPriceValue={setPriceValue} setCostValue={setCostValue} setItemValue={setItemValue}
                         setMarginValue={setMarginValue} setMarkupValue={setMarkupValue} setQuantityValue={setQuantityValue}
                         />
-                        <div className='ItemList_Test'>
+                        <div className='ItemList_Scrollable_List'>
                             <div className='ItemList_Header_Container'>
                                 <div className='ItemList_Header_Control_Buttons'>
                                     <button type='button' className='ItemList_Header_Button ItemList_Header_Button_BulkAction_Dropdown'>
@@ -690,8 +693,7 @@ const ItemList = () => {
                                 </div>
                             </div>
                             <div className='xtest'>
-                                    
-                                    <DataRows />
+                                <DataRows />
                             </div>
                         </div>
                     </div>

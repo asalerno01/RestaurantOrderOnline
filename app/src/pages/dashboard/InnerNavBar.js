@@ -19,7 +19,7 @@ const InnerNavBar = ({ innerNavType }) => {
                         <span>Reports</span>
                     </div>
                     <div className='NavBar_Inner_Buttons_Container'>
-                        <button type="button" className={isCurrentPage("report")} onClick={() => navigate('/salerno/report')}><div>Reports</div></button>
+                        <a href="/salerno/report" className={isCurrentPage("report")}><div>Reports</div></a>
                     </div>
                 </div>
             );
@@ -30,10 +30,10 @@ const InnerNavBar = ({ innerNavType }) => {
                         <span>Items</span>
                     </div>
                     <div className='NavBar_Inner_Buttons_Container'>
-                        <button type="button" className={isCurrentPage("items")} onClick={() => navigate('/salerno/items')}><div>Item List</div></button>
-                        <button type='button' className={isCurrentPage("itemshortcuts")}><div>Item Shortcuts</div></button>
-                        <button type='button' className={isCurrentPage("updateinventory")}><div>Update Inventory</div></button>
-                        <button type='button' className={isCurrentPage("bulkmanage")}><div>Bulk Manage Items</div></button>
+                        <a href="/salerno/items" className={isCurrentPage("items")} onClick={() => navigate('/salerno/items')}><div>Item List</div></a>
+                        <a href="#" className={isCurrentPage("itemshortcuts")}><div>Item Shortcuts</div></a>
+                        <a href="#" className={isCurrentPage("updateinventory")}><div>Update Inventory</div></a>
+                        <a href="#" className={isCurrentPage("bulkmanage")}><div>Bulk Manage Items</div></a>
                     </div>
                 </div>
             );
@@ -44,9 +44,9 @@ const InnerNavBar = ({ innerNavType }) => {
                         <span>Staff</span>
                     </div>
                     <div className='NavBar_Inner_Buttons_Container'>
-                        <button type='button' className={isCurrentPage("employees")} onClick={() => navigate('/salerno/employees')}><div>Staff List</div></button>
-                        <button type='button' className={isCurrentPage("timeclock")} onClick={() => navigate('/salerno/employees/timeclock')}><div>Time Clock</div></button>
-                        <button type='button' className='NavBar_Inner_Button'><div>Labor Tracking</div></button>
+                        <a href="/salerno/employees" className={isCurrentPage("employees")} onClick={() => navigate('/salerno/employees')}><div>Staff List</div></a>
+                        <a href="/salerno/employees/timeclock" className={isCurrentPage("timeclock")} onClick={() => navigate('/salerno/employees/timeclock')}><div>Time Clock</div></a>
+                        <a href="#" className='NavBar_Inner_Button'><div>Labor Tracking</div></a>
                     </div>
                 </div>
             );
@@ -57,16 +57,14 @@ const InnerNavBar = ({ innerNavType }) => {
                         <span>Order</span>
                     </div>
                     <div className='NavBar_Inner_Buttons_Container'>
-                        <button type='button' className={isCurrentPage("order")} onClick={() => navigate('/salerno/order')}><div>Menu Page</div></button>
-                        <button type='button' className={isCurrentPage("orders")} onClick={() => navigate('/salerno/orders')}><div>Order Summary</div></button>
-                        <button type='button' className={isCurrentPage("checkout")} onClick={() => navigate('/salerno/order/checkout')}><div>Checkout</div></button>
+                        <a href="/salerno/order" className={isCurrentPage("order")} onClick={() => navigate('/salerno/order')}><div>Menu Page</div></a>
+                        <a href="/salerno/orders" className={isCurrentPage("orders")} onClick={() => navigate('/salerno/orders')}><div>Order Summary</div></a>
+                        <a href="/salerno/checkout" className={isCurrentPage("checkout")} onClick={() => navigate('/salerno/order/checkout')}><div>Checkout</div></a>
                     </div>
                 </div>
             );
         default:
-            return (
-                <div>hey</div>
-            )
+            return <></>
 
     }
 }

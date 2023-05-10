@@ -1,25 +1,4 @@
 import { Routes, Route } from 'react-router-dom';
-// import Layout from './components/Layout';
-// import Public from './components/Public';
-// import Login from './simple/Login.simple';
-// // import Dashboard from './components/Dashboard';
-// import Welcome from './features/auth/Welcome';
-// import RequireAuth from './simple/RequireAuth';
-// import RememberLogin from './simple/RememberLogin';
-// import Register from './simple/Register';
-// import Unauthorized from './simple/Unauthorized';
-// import Status from './simple/Status';
-// import SessionExpired from './simple/SessionExpired';
-// import PendingRequests from './simple/Requests/PendingRequests';
-// import ClosedRequests from './simple/Requests/ClosedRequests';
-// import CreateRequestWithCalendar from './simple/Requests/CreateRequestWithCalendar';
-// import RequestManager from './simple/Requests/RequestManager';
-// import RequestContainer from './simple/Requests/RequestContainer';
-// import NewManager from './simple/Requests/NewManager';
-
-/*
-    Heres the main RestaurantOrderOnline components
-*/
 import PageLayout from './container/PageLayout';
 import ItemList from './pages/item/ItemList';
 import Dashboard from './pages/dashboard/Dashboard';
@@ -33,10 +12,9 @@ import Login from './pages/user_pages/Login';
 import Order from './pages/order/Order';
 import OrderItem from './pages/order/OrderItem';
 import Orders from './pages/order/Backoffice/Orders';
-import MenuPage from './raquel/pages/MenuPage';
 import Checkout from './pages/order/Checkout';
 import Register from './pages/user_pages/Register';
-import RememberLogin from './simple/RememberLogin';
+import RememberLogin from './components/RememberLogin';
 import Reviews from './pages/review/Reviews';
 import Home from './pages/home/Home';
 import Reports from './pages/order/Backoffice/Reports';
@@ -57,12 +35,12 @@ function App() {
                         <Route path='orders' element={<Orders />} />
                         <Route path='order/item' element={<OrderItem />} />
                         <Route path='order/checkout' element={<Checkout />} />
-                        <Route path='menu' element={<MenuPage />} />
                         <Route path='items' element={<ItemList />} />
                         <Route path='items/:itemId/edit' element={<Edit />} />
                         <Route path='items/new' element={<Edit />} />
                         <Route path='items/:itemId/modifiers' element={<Modifiers />} />
 
+                        <Route path='home' element={<Home />} />
                         <Route path='employees' element={<EmployeeList />} />
                         <Route path='employees/timeclock' element={<TimeClock />} />
                         <Route path='employees/new' element={<NewEmployee />} />

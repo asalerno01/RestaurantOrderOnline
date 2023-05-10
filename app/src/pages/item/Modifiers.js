@@ -10,6 +10,7 @@ import ButtonTabs from "../../components/ButtonTabs";
 import { useNavigate, useParams } from "react-router-dom";
 import FilterButton from "../../components/FilterButton";
 import './css/modifiers.css';
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const Modifiers = () => {
     
@@ -19,6 +20,10 @@ const Modifiers = () => {
     const [basePrice, setBasePrice] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [item, setItem] = useState({});
+    const [copyDropdownItem, setCopyDropdownItem] = useState("Copy/Import from another item");
+    const [copyDropdownIsOpen, setCopyDropdownIsOpen] = useState(false);
+    const [copySearchValue, setCopySearchValue] = useState("");
+
     const [modifiers, setModifiers] = useState({
         "name": "",
         "itemId": itemId,
@@ -27,7 +32,6 @@ const Modifiers = () => {
         "addons": [],
         "noOptions": []
     });
-    const [copySearchValue, setCopySearchValue] = useState("");
     
     const getModifiers = async () => {
         await axios({
@@ -303,11 +307,9 @@ const Modifiers = () => {
         return x;
     }
     const handleCopyModifiers = (id) => {
-        console.log(id)
-        console.log(modifiers)
         const newModifiers = items.find(item => item["itemId"] === id);
         let r = newModifiers["modifier"]
-        let x = {
+        setModifiers({
             "modifierId": 0,
             "name": modifiers["name"],
             "itemId": itemId,
@@ -315,13 +317,14 @@ const Modifiers = () => {
             "groups": r["groups"],
             "addons": r["addons"],
             "noOptions": r["noOptions"]
-        }
-        setModifiers(x);
-        setCopyDropdown({ "type": "Groups", "value": newModifiers["name"]})
+        });
+        setCopyDropdownIsOpen(false);
+        setCopyDropdownItem(newModifiers.name);
+        setCopySearchValue("");
     }
-    console.log(isLoading)
+    
     if (itemId === undefined || itemId === "undefined") return navigate("/salerno/items");
-    if (isLoading) return <></>
+    if (isLoading) return <LoadingSpinner />
     return (
         <div className='Modifiers'>
             <div className='PageLayout_Header'>
@@ -356,23 +359,41 @@ const Modifiers = () => {
                                     </span>
                                 <div className="Modifiers_Copy_Dropdown_Container">
                                     <button 
-                                        className={`Modifiers_Groups_Copy_Import_Select_Dropdown_Selected ${(copyDropdown["type"] === "Groups") ? "Modifiers_Groups_Copy_Import_Select_Dropdown_Selected_Is_Open" : ""}`}
-                                        onClick={() => (copyDropdown["type"] === "Groups") ? setCopyDropdown({ "type": "", "value": "Copy/Import from another item"}) : setCopyDropdown({ "type": "Groups", "value": "" })}>
-                                        {(copyDropdown["type"] === "Groups") ? copyDropdown["value"] : "Copy/Import from another item"}
+                                        className={`Modifiers_Groups_Copy_Import_Select_Dropdown_Selected ${copyDropdownIsOpen ? "Modifiers_Groups_Copy_Import_Select_Dropdown_Selected_Is_Open" : ""}`}
+                                        onClick={() => setCopyDropdownIsOpen(prev => !prev)}
+                                    >
+                                        {copyDropdownItem}
                                         <IconContext.Provider value={{ style: { verticalAlign: 'middle', height: '100%', float: 'right', color: 'rgb(139, 139, 139)' }, size: '1.25em' }}>
-                                            { (copyDropdown["type"] === "Groups") ? <TiArrowSortedUp className='Modifiers_Groups_Copy_Import_Arrow' /> : <TiArrowSortedDown className='Modifiers_Groups_Copy_Import_Arrow' /> }
+                                            { (copyDropdownIsOpen) ? <TiArrowSortedUp className='Modifiers_Groups_Copy_Import_Arrow' /> : <TiArrowSortedDown className='Modifiers_Groups_Copy_Import_Arrow' /> }
                                         </IconContext.Provider>
                                     </button>
-                                    <div className={`Modifiers_Groups_Copy_Import_Dropdown_Container`} style={(copyDropdown["type"] === "Groups") ? {display: "block"} : {display: "none"}} onClick={e => e.stopPropagation()}>
-                                        <div className={(copyDropdown["type"] === "Groups") ? 'Modifiers_Groups_Copy_Import_Select_Dropdown' : "Modifiers_Groups_Copy_Import_Select_Dropdown"}>
+                                    <div
+                                        className="Modifiers_Groups_Copy_Import_Dropdown_Container"
+                                        onClick={e => e.stopPropagation()}
+                                        style={{display: (copyDropdownIsOpen) ? "block" : "none" }}
+                                    >
+                                        <div className={'Modifiers_Groups_Copy_Import_Select_Dropdown'}>
                                             <div className='Modifiers_Groups_Copy_Import_Select_Dropdown_Search_Wrapper'>
-                                                <input type='text' className='Modifiers_Groups_Copy_Import_Select_Dropdown_Search' value={copySearchValue} onChange={handleCopySearchChange} autoComplete="off" />
+                                                <input
+                                                    type='text'
+                                                    className='Modifiers_Groups_Copy_Import_Select_Dropdown_Search'
+                                                    value={copySearchValue}
+                                                    onChange={handleCopySearchChange}
+                                                    autoComplete="off"
+                                                />
                                             </div>
                                             <div className='Modifiers_Groups_Copy_Import_Select_Dropdown_Scroll_Container'>
                                                 <ul className='Modifiers_Groups_Copy_Import_Select_Dropdown_List'>
                                                     {
                                                         getItemsWithModifiers().map(item => (
-                                                            <li key={item["itemId"]} className='Modifiers_Groups_Copy_Import_Select_Dropdown_List_Item' value={item["itemId"]} onClick={() => handleCopyModifiers(item["itemId"])}>{item["name"]}</li>
+                                                            <li
+                                                                key={item["itemId"]}
+                                                                className='Modifiers_Groups_Copy_Import_Select_Dropdown_List_Item'
+                                                                value={item["itemId"]}
+                                                                onClick={() => handleCopyModifiers(item.itemId)}
+                                                            >
+                                                                {item.name}
+                                                            </li>
                                                         ))
                                                     }
                                                 </ul>
