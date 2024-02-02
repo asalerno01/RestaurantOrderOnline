@@ -1,11 +1,12 @@
 ﻿using SalernoServer.Models.Authentication;
-using SalernoServer.Models;
 using System.Text.Json.Serialization;
+using Server.Models.OrderModels;
+using Server.Old;
 
 namespace Server.Models.Authentication
 {
-    public class Account
-    {
+    public class Account : BaseModel
+	{
         public long AccountId { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }

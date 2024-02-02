@@ -1,10 +1,12 @@
-﻿using Server.Models.ItemModels;
+﻿using Microsoft.EntityFrameworkCore;
+using Server.Models;
+using Server.Models.ItemModels;
 using Server.Models.ItemModels.Helpers;
 using System.Text.Json.Serialization;
 
 namespace SalernoServer.Models.ItemModels
 {
-    public class Item
+    public class Item : BaseModel
     {
         public string ItemId { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }
@@ -13,12 +15,15 @@ namespace SalernoServer.Models.ItemModels
         public Category Category { get; set; }
         public string UPC { get; set; }
         public string SKU { get; set; }
-        public decimal Price { get; set; }
+		[Precision(18, 2)]
+		public decimal Price { get; set; }
         public bool Discountable { get; set; } = false;
         public bool Taxable { get; set; } = false;
         public bool TrackingInventory { get; set; } = false;
-        public decimal Cost { get; set; }
-        public decimal AssignedCost { get; set; }
+		[Precision(18, 2)]
+		public decimal Cost { get; set; }
+		[Precision(18, 2)]
+		public decimal AssignedCost { get; set; }
         public int Quantity { get; set; }
         public int ReorderTrigger { get; set; }
         public int RecommendedOrder { get; set; }

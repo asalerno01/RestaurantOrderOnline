@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Server.Models.ItemModels
 {
-    public class Category
+    public class Category : BaseModel
     {
         public long CategoryId { get; set; }
         public string Name { get; set; }

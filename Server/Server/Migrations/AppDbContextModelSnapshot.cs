@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SalernoServer.Models;
 
@@ -16,8 +17,10 @@ namespace Server.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.3")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("ProductVersion", "6.0.26")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("SalernoServer.Models.Authentication.Employee", b =>
                 {
@@ -25,35 +28,46 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("EmployeeId"), 1L, 1);
+
                     b.Property<bool>("BackOfficeAccess")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EmployeeRole")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RegisterCode")
                         .HasColumnType("int");
 
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
                     b.HasKey("EmployeeId");
 
-                    b.ToTable("Employees", (string)null);
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Addon", b =>
@@ -62,21 +76,33 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("AddonId"), 1L, 1);
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<long>("ModifierId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.HasKey("AddonId");
 
                     b.HasIndex("ModifierId");
 
-                    b.ToTable("Addons", (string)null);
+                    b.ToTable("Addons");
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Group", b =>
@@ -85,22 +111,33 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("GroupId"), 1L, 1);
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("ModifierId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.HasKey("GroupId");
 
                     b.HasIndex("ModifierId");
 
-                    b.ToTable("Groups", (string)null);
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.GroupOption", b =>
@@ -109,70 +146,91 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("GroupOptionId"), 1L, 1);
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<long>("GroupId")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsDefault")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.HasKey("GroupOptionId");
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("GroupOptions", (string)null);
+                    b.ToTable("GroupOptions");
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Item", b =>
                 {
                     b.Property<string>("ItemId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("AssignedCost")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("CategoryId")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Department")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Discountable")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsEnabled")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("LastSoldDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("LiabilityItem")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<string>("LiabilityRedemptionTender")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -185,31 +243,34 @@ namespace Server.Migrations
 
                     b.Property<string>("SKU")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Supplier")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TaxGroupOrRate")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Taxable")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("TrackingInventory")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<string>("UPC")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.HasKey("ItemId");
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Items", (string)null);
+                    b.ToTable("Items");
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Modifier", b =>
@@ -218,24 +279,35 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ModifierId"), 1L, 1);
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ItemId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.HasKey("ModifierId");
 
                     b.HasIndex("ItemId")
                         .IsUnique();
 
-                    b.ToTable("Modifiers", (string)null);
+                    b.ToTable("Modifiers");
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.NoOption", b =>
@@ -244,141 +316,33 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("NoOptionId"), 1L, 1);
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<long>("ModifierId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.HasKey("NoOptionId");
 
                     b.HasIndex("ModifierId");
 
-                    b.ToTable("NoOptions", (string)null);
-                });
-
-            modelBuilder.Entity("SalernoServer.Models.Order", b =>
-                {
-                    b.Property<long>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("AccountId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("PickupDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("QuotedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<decimal>("Subtotal")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("SubtotalTax")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.HasKey("OrderId");
-
-                    b.HasIndex("AccountId");
-
-                    b.ToTable("Orders", (string)null);
-                });
-
-            modelBuilder.Entity("SalernoServer.Models.OrderItem", b =>
-                {
-                    b.Property<long>("OrderItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ItemId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<long>("OrderId")
-                        .HasColumnType("bigint");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.HasKey("OrderItemId");
-
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderItems", (string)null);
-                });
-
-            modelBuilder.Entity("SalernoServer.Models.OrderItemAddon", b =>
-                {
-                    b.Property<long>("OrderItemId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("AddonId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("OrderItemId", "AddonId");
-
-                    b.HasIndex("AddonId");
-
-                    b.ToTable("OrderItemAddons", (string)null);
-                });
-
-            modelBuilder.Entity("SalernoServer.Models.OrderItemGroup", b =>
-                {
-                    b.Property<long>("OrderItemId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("GroupId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("GroupOptionId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("OrderItemId", "GroupId", "GroupOptionId");
-
-                    b.HasIndex("GroupId");
-
-                    b.HasIndex("GroupOptionId");
-
-                    b.ToTable("OrderItemGroups", (string)null);
-                });
-
-            modelBuilder.Entity("SalernoServer.Models.OrderItemNoOption", b =>
-                {
-                    b.Property<long>("OrderItemId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("NoOptionId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("OrderItemId", "NoOptionId");
-
-                    b.HasIndex("NoOptionId");
-
-                    b.ToTable("OrderItemNoOptions", (string)null);
+                    b.ToTable("NoOptions");
                 });
 
             modelBuilder.Entity("Server.Models.Authentication.Account", b =>
@@ -387,39 +351,50 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("AccountId"), 1L, 1);
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsVerified")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("OrderCount")
                         .HasColumnType("int");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RefreshToken")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.HasKey("AccountId");
 
-                    b.ToTable("Accounts", (string)null);
+                    b.ToTable("Accounts");
                 });
 
             modelBuilder.Entity("Server.Models.ItemModels.Category", b =>
@@ -428,30 +403,632 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("CategoryId"), 1L, 1);
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Server.Models.Review", b =>
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.AddonSnapshot", b =>
+                {
+                    b.Property<long>("AddonSnapshotId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("AddonSnapshotId"), 1L, 1);
+
+                    b.Property<long>("AddonId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long>("ModifierSnapshotId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("AddonSnapshotId");
+
+                    b.HasIndex("AddonId");
+
+                    b.HasIndex("ModifierSnapshotId");
+
+                    b.ToTable("AddonSnapshots");
+                });
+
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.CategorySnapshot", b =>
+                {
+                    b.Property<long>("CategorySnapshotId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("CategorySnapshotId"), 1L, 1);
+
+                    b.Property<long>("CategoryId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("CategorySnapshotId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("CategorySnapshots");
+                });
+
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.GroupOptionSnapshot", b =>
+                {
+                    b.Property<long>("GroupOptionSnapshotId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("GroupOptionSnapshotId"), 1L, 1);
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long>("GroupOptionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("GroupSnapshotId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("GroupOptionSnapshotId");
+
+                    b.HasIndex("GroupOptionId");
+
+                    b.HasIndex("GroupSnapshotId");
+
+                    b.ToTable("GroupOptionSnapshots");
+                });
+
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.GroupSnapshot", b =>
+                {
+                    b.Property<long>("GroupSnapshotId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("GroupSnapshotId"), 1L, 1);
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long?>("GroupId")
+                        .IsRequired()
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ModifierSnapshotId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("GroupSnapshotId");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("ModifierSnapshotId");
+
+                    b.ToTable("GroupSnapshots");
+                });
+
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.ItemSnapshot", b =>
+                {
+                    b.Property<long>("ItemSnapshotId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ItemSnapshotId"), 1L, 1);
+
+                    b.Property<decimal>("AssignedCost")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long>("CategorySnapshotId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("Cost")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Discountable")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ItemId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("LastSoldDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("LiabilityItem")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LiabilityRedemptionTender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RecommendedOrder")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReorderTrigger")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SKU")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Supplier")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TaxGroupOrRate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Taxable")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("TrackingInventory")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UPC")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("ItemSnapshotId");
+
+                    b.HasIndex("CategorySnapshotId");
+
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("ItemSnapshots");
+                });
+
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.ModifierSnapshot", b =>
+                {
+                    b.Property<long>("ModifierSnapshotId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ModifierSnapshotId"), 1L, 1);
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ItemId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("ItemSnapshotId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ModifierId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("ModifierSnapshotId");
+
+                    b.HasIndex("ItemSnapshotId")
+                        .IsUnique();
+
+                    b.HasIndex("ModifierId");
+
+                    b.ToTable("ModifierSnapshots");
+                });
+
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.NoOptionSnapshot", b =>
+                {
+                    b.Property<long>("NoOptionSnapshotId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("NoOptionSnapshotId"), 1L, 1);
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long>("ModifierSnapshotId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("NoOptionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("NoOptionSnapshotId");
+
+                    b.HasIndex("ModifierSnapshotId");
+
+                    b.HasIndex("NoOptionId");
+
+                    b.ToTable("NoOptionSnapshots");
+                });
+
+            modelBuilder.Entity("Server.Models.OrderModels.Order", b =>
+                {
+                    b.Property<long>("OrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("OrderId"), 1L, 1);
+
+                    b.Property<long>("AccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("PickupDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("QuotedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Subtotal")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("SubtotalTax")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("OrderId");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Server.Models.OrderModels.OrderItem", b =>
+                {
+                    b.Property<long>("OrderItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("OrderItemId"), 1L, 1);
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long>("ItemSnapshotId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("OrderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("OrderItemId");
+
+                    b.HasIndex("ItemSnapshotId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("Server.Models.OrderModels.OrderItemAddon", b =>
+                {
+                    b.Property<long>("OrderItemAddonId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("OrderItemAddonId"), 1L, 1);
+
+                    b.Property<long>("AddonSnapshotId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long?>("OrderItemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("OrderItemAddonId");
+
+                    b.HasIndex("AddonSnapshotId");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.ToTable("OrderItemAddons");
+                });
+
+            modelBuilder.Entity("Server.Models.OrderModels.OrderItemGroup", b =>
+                {
+                    b.Property<long>("OrderItemGroupId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("OrderItemGroupId"), 1L, 1);
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long>("GroupOptionSnapshotId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("OrderItemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("OrderItemGroupId");
+
+                    b.HasIndex("GroupOptionSnapshotId");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.ToTable("OrderItemGroups");
+                });
+
+            modelBuilder.Entity("Server.Models.OrderModels.OrderItemNoOption", b =>
+                {
+                    b.Property<long>("OrderItemNoOptionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("OrderItemNoOptionId"), 1L, 1);
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long>("NoOptionSnapshotId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("OrderItemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("OrderItemNoOptionId");
+
+                    b.HasIndex("NoOptionSnapshotId");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.ToTable("OrderItemNoOptions");
+                });
+
+            modelBuilder.Entity("Server.Models.OrderModels.SavedOrder", b =>
+                {
+                    b.Property<long>("SavedOrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("SavedOrderId"), 1L, 1);
+
+                    b.Property<long>("AccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTime>("LastOrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("SavedOrderId");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("SavedOrders");
+                });
+
+            modelBuilder.Entity("Server.Models.OrderModels.SavedOrderOrderItem", b =>
+                {
+                    b.Property<long>("SavedOrderOrderItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("SavedOrderOrderItemId"), 1L, 1);
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long?>("OrderItemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("SavedOrderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("SavedOrderOrderItemId");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.HasIndex("SavedOrderId");
+
+                    b.ToTable("SavedOrderOrderItems");
+                });
+
+            modelBuilder.Entity("Server.Old.Review", b =>
                 {
                     b.Property<long>("ReviewId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ReviewId"), 1L, 1);
+
                     b.Property<long>("AccountId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Rating")
                         .HasColumnType("int");
@@ -460,51 +1037,7 @@ namespace Server.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Reviews", (string)null);
-                });
-
-            modelBuilder.Entity("Server.Models.SavedOrder", b =>
-                {
-                    b.Property<long>("SavedOrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("AccountId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("LastOrderDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("SavedOrderId");
-
-                    b.HasIndex("AccountId");
-
-                    b.ToTable("SavedOrders", (string)null);
-                });
-
-            modelBuilder.Entity("Server.Models.SavedOrderOrderItem", b =>
-                {
-                    b.Property<long>("SavedOrderOrderItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("OrderItemId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("SavedOrderId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("SavedOrderOrderItemId");
-
-                    b.HasIndex("OrderItemId");
-
-                    b.HasIndex("SavedOrderId");
-
-                    b.ToTable("SavedOrderOrderItems", (string)null);
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Addon", b =>
@@ -573,7 +1106,132 @@ namespace Server.Migrations
                     b.Navigation("Modifier");
                 });
 
-            modelBuilder.Entity("SalernoServer.Models.Order", b =>
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.AddonSnapshot", b =>
+                {
+                    b.HasOne("SalernoServer.Models.ItemModels.Addon", "Addon")
+                        .WithMany()
+                        .HasForeignKey("AddonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Models.ItemModels.SnapshotModels.ModifierSnapshot", "Modifier")
+                        .WithMany("Addons")
+                        .HasForeignKey("ModifierSnapshotId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Addon");
+
+                    b.Navigation("Modifier");
+                });
+
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.CategorySnapshot", b =>
+                {
+                    b.HasOne("Server.Models.ItemModels.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.GroupOptionSnapshot", b =>
+                {
+                    b.HasOne("SalernoServer.Models.ItemModels.GroupOption", "GroupOption")
+                        .WithMany()
+                        .HasForeignKey("GroupOptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Models.ItemModels.SnapshotModels.GroupSnapshot", "Group")
+                        .WithMany("GroupOptions")
+                        .HasForeignKey("GroupSnapshotId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("GroupOption");
+                });
+
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.GroupSnapshot", b =>
+                {
+                    b.HasOne("SalernoServer.Models.ItemModels.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Models.ItemModels.SnapshotModels.ModifierSnapshot", "Modifier")
+                        .WithMany("Groups")
+                        .HasForeignKey("ModifierSnapshotId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Modifier");
+                });
+
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.ItemSnapshot", b =>
+                {
+                    b.HasOne("Server.Models.ItemModels.SnapshotModels.CategorySnapshot", "Category")
+                        .WithMany("Items")
+                        .HasForeignKey("CategorySnapshotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SalernoServer.Models.ItemModels.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Item");
+                });
+
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.ModifierSnapshot", b =>
+                {
+                    b.HasOne("Server.Models.ItemModels.SnapshotModels.ItemSnapshot", "Item")
+                        .WithOne("Modifier")
+                        .HasForeignKey("Server.Models.ItemModels.SnapshotModels.ModifierSnapshot", "ItemSnapshotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SalernoServer.Models.ItemModels.Modifier", "Modifier")
+                        .WithMany()
+                        .HasForeignKey("ModifierId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+
+                    b.Navigation("Modifier");
+                });
+
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.NoOptionSnapshot", b =>
+                {
+                    b.HasOne("Server.Models.ItemModels.SnapshotModels.ModifierSnapshot", "Modifier")
+                        .WithMany("NoOptions")
+                        .HasForeignKey("ModifierSnapshotId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SalernoServer.Models.ItemModels.NoOption", "NoOption")
+                        .WithMany()
+                        .HasForeignKey("NoOptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Modifier");
+
+                    b.Navigation("NoOption");
+                });
+
+            modelBuilder.Entity("Server.Models.OrderModels.Order", b =>
                 {
                     b.HasOne("Server.Models.Authentication.Account", "Account")
                         .WithMany("Orders")
@@ -584,15 +1242,15 @@ namespace Server.Migrations
                     b.Navigation("Account");
                 });
 
-            modelBuilder.Entity("SalernoServer.Models.OrderItem", b =>
+            modelBuilder.Entity("Server.Models.OrderModels.OrderItem", b =>
                 {
-                    b.HasOne("SalernoServer.Models.ItemModels.Item", "Item")
+                    b.HasOne("Server.Models.ItemModels.SnapshotModels.ItemSnapshot", "Item")
                         .WithMany()
-                        .HasForeignKey("ItemId")
+                        .HasForeignKey("ItemSnapshotId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SalernoServer.Models.Order", "Order")
+                    b.HasOne("Server.Models.OrderModels.Order", "Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -603,83 +1261,52 @@ namespace Server.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("SalernoServer.Models.OrderItemAddon", b =>
+            modelBuilder.Entity("Server.Models.OrderModels.OrderItemAddon", b =>
                 {
-                    b.HasOne("SalernoServer.Models.ItemModels.Addon", "Addon")
+                    b.HasOne("Server.Models.ItemModels.SnapshotModels.AddonSnapshot", "Addon")
                         .WithMany()
-                        .HasForeignKey("AddonId")
+                        .HasForeignKey("AddonSnapshotId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SalernoServer.Models.OrderItem", "OrderItem")
+                    b.HasOne("Server.Models.OrderModels.OrderItem", null)
                         .WithMany("Addons")
-                        .HasForeignKey("OrderItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderItemId");
 
                     b.Navigation("Addon");
-
-                    b.Navigation("OrderItem");
                 });
 
-            modelBuilder.Entity("SalernoServer.Models.OrderItemGroup", b =>
+            modelBuilder.Entity("Server.Models.OrderModels.OrderItemGroup", b =>
                 {
-                    b.HasOne("SalernoServer.Models.ItemModels.Group", "Group")
+                    b.HasOne("Server.Models.ItemModels.SnapshotModels.GroupOptionSnapshot", "GroupOption")
                         .WithMany()
-                        .HasForeignKey("GroupId")
+                        .HasForeignKey("GroupOptionSnapshotId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SalernoServer.Models.ItemModels.GroupOption", "GroupOption")
-                        .WithMany()
-                        .HasForeignKey("GroupOptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SalernoServer.Models.OrderItem", "OrderItem")
+                    b.HasOne("Server.Models.OrderModels.OrderItem", null)
                         .WithMany("Groups")
-                        .HasForeignKey("OrderItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
+                        .HasForeignKey("OrderItemId");
 
                     b.Navigation("GroupOption");
-
-                    b.Navigation("OrderItem");
                 });
 
-            modelBuilder.Entity("SalernoServer.Models.OrderItemNoOption", b =>
+            modelBuilder.Entity("Server.Models.OrderModels.OrderItemNoOption", b =>
                 {
-                    b.HasOne("SalernoServer.Models.ItemModels.NoOption", "NoOption")
+                    b.HasOne("Server.Models.ItemModels.SnapshotModels.NoOptionSnapshot", "NoOption")
                         .WithMany()
-                        .HasForeignKey("NoOptionId")
+                        .HasForeignKey("NoOptionSnapshotId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SalernoServer.Models.OrderItem", "OrderItem")
+                    b.HasOne("Server.Models.OrderModels.OrderItem", null)
                         .WithMany("NoOptions")
-                        .HasForeignKey("OrderItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderItemId");
 
                     b.Navigation("NoOption");
-
-                    b.Navigation("OrderItem");
                 });
 
-            modelBuilder.Entity("Server.Models.Review", b =>
-                {
-                    b.HasOne("Server.Models.Authentication.Account", "Account")
-                        .WithMany("Reviews")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-                });
-
-            modelBuilder.Entity("Server.Models.SavedOrder", b =>
+            modelBuilder.Entity("Server.Models.OrderModels.SavedOrder", b =>
                 {
                     b.HasOne("Server.Models.Authentication.Account", "Account")
                         .WithMany("SavedOrders")
@@ -690,23 +1317,30 @@ namespace Server.Migrations
                     b.Navigation("Account");
                 });
 
-            modelBuilder.Entity("Server.Models.SavedOrderOrderItem", b =>
+            modelBuilder.Entity("Server.Models.OrderModels.SavedOrderOrderItem", b =>
                 {
-                    b.HasOne("SalernoServer.Models.OrderItem", "OrderItem")
+                    b.HasOne("Server.Models.OrderModels.OrderItem", "OrderItem")
                         .WithMany()
-                        .HasForeignKey("OrderItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderItemId");
 
-                    b.HasOne("Server.Models.SavedOrder", "SavedOrder")
+                    b.HasOne("Server.Models.OrderModels.SavedOrder", "SavedOrder")
                         .WithMany("OrderItems")
-                        .HasForeignKey("SavedOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SavedOrderId");
 
                     b.Navigation("OrderItem");
 
                     b.Navigation("SavedOrder");
+                });
+
+            modelBuilder.Entity("Server.Old.Review", b =>
+                {
+                    b.HasOne("Server.Models.Authentication.Account", "Account")
+                        .WithMany("Reviews")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Group", b =>
@@ -729,20 +1363,6 @@ namespace Server.Migrations
                     b.Navigation("NoOptions");
                 });
 
-            modelBuilder.Entity("SalernoServer.Models.Order", b =>
-                {
-                    b.Navigation("OrderItems");
-                });
-
-            modelBuilder.Entity("SalernoServer.Models.OrderItem", b =>
-                {
-                    b.Navigation("Addons");
-
-                    b.Navigation("Groups");
-
-                    b.Navigation("NoOptions");
-                });
-
             modelBuilder.Entity("Server.Models.Authentication.Account", b =>
                 {
                     b.Navigation("Orders");
@@ -757,7 +1377,46 @@ namespace Server.Migrations
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("Server.Models.SavedOrder", b =>
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.CategorySnapshot", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.GroupSnapshot", b =>
+                {
+                    b.Navigation("GroupOptions");
+                });
+
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.ItemSnapshot", b =>
+                {
+                    b.Navigation("Modifier")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.ModifierSnapshot", b =>
+                {
+                    b.Navigation("Addons");
+
+                    b.Navigation("Groups");
+
+                    b.Navigation("NoOptions");
+                });
+
+            modelBuilder.Entity("Server.Models.OrderModels.Order", b =>
+                {
+                    b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("Server.Models.OrderModels.OrderItem", b =>
+                {
+                    b.Navigation("Addons");
+
+                    b.Navigation("Groups");
+
+                    b.Navigation("NoOptions");
+                });
+
+            modelBuilder.Entity("Server.Models.OrderModels.SavedOrder", b =>
                 {
                     b.Navigation("OrderItems");
                 });

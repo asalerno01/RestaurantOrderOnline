@@ -1,24 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.IdentityModel.Tokens;
-using SalernoServer.JwtHelpers;
 using SalernoServer.Models;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Principal;
-using System.Text;
-using System.Text.Json.Nodes;
-using SalernoServer.Models.Authentication;
 using Server.Models.ItemModels.Helpers;
 using Server.Models.ItemModels;
-using Microsoft.AspNetCore.Http.Features;
-using SalernoServer.Models.ItemModels;
 
 namespace SalernoServer.Controllers
 {
-    [Route("api/category")]
+	[Route("api/category")]
     [ApiController]
     public class CategoryController : ControllerBase
     {
@@ -42,6 +30,7 @@ namespace SalernoServer.Controllers
                 .ThenInclude(m => m.Groups)
                 .ThenInclude(g => g.GroupOptions)
                 .ToListAsync();
+
             return Ok(categories.Select(category => new CategoryDTO(category)).ToList());
         }
         [HttpGet]
@@ -77,11 +66,40 @@ namespace SalernoServer.Controllers
         public async Task<IActionResult> CreateCategory([FromBody] Category category)
         {
             if (category is null) return BadRequest("Category is null");
-            var foundCategory = await _context.Categories.Where(c => c.Name.Equals(category.Name, StringComparison.OrdinalIgnoreCase)).FirstOrDefaultAsync();
+            var foundCategory = await _context.Categories.Where(c => c.Name.Equals(category.Name)).FirstOrDefaultAsync();
             if (foundCategory is not null) return BadRequest($"Category with {category.Name} already exists");
             
             await _context.Categories.AddAsync(category);
             await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> EditCategory(int? id, Category category)
+        {
+            if (id is null) return NotFound();
+
+            if (id != category.CategoryId) return BadRequest();
+
+            _context.Categories.Update(category);
+
+            // await _context.SaveChangesAsync();
+
+            _context.Entry(category).State = EntityState.Modified;
+
+            try
+            {
+                Console.WriteLine("Saving");
+                await _context.SaveChangesAsync();
+                Console.WriteLine("Saved");
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Categories.Any(c => c.CategoryId == id)) return NotFound();
+                else throw;
+            }
+
             return Ok();
         }
     }

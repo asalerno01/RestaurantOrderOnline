@@ -1,5 +1,5 @@
-﻿using SalernoServer.Models;
-using Server.Models.Authentication;
+﻿using Server.Models.Authentication;
+using Server.Models.OrderModels;
 
 namespace Server.Models.ItemModels.Helpers
 {

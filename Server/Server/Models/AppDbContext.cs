@@ -4,9 +4,11 @@ using Microsoft.Extensions.Configuration;
 using SalernoServer.Models.ItemModels;
 using SalernoServer.Models.Authentication;
 using Server.Models.Authentication;
-using SalernoServer.Models;
 using Server.Models.ItemModels;
-using Server.Models;
+using Server.Models.OrderModels;
+using Server.Models.ItemModels.SnapshotModels;
+using Server.Old;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace SalernoServer.Models
 {
@@ -27,79 +29,125 @@ namespace SalernoServer.Models
         public DbSet<OrderItemNoOption> OrderItemNoOptions { get; set; }
         public DbSet<OrderItemGroup> OrderItemGroups { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Review> Reviews { get; set; }
         public DbSet<SavedOrder> SavedOrders { get; set; }
         public DbSet<SavedOrderOrderItem> SavedOrderOrderItems { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public DbSet<ItemSnapshot> ItemSnapshots { get; set; }
+        public DbSet<ModifierSnapshot> ModifierSnapshots { get; set; }
+        public DbSet<AddonSnapshot> AddonSnapshots { get; set; }
+        public DbSet<NoOptionSnapshot> NoOptionSnapshots { get; set; }
+        public DbSet<GroupSnapshot> GroupSnapshots { get; set; }
+        public DbSet<GroupOptionSnapshot> GroupOptionSnapshots { get; set; }
+		public DbSet<CategorySnapshot> CategorySnapshots { get; set; }
+
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Modifier>()
+
+            modelBuilder.Entity<ModifierSnapshot>()
+                .HasMany(m => m.Addons)
+                .WithOne(a => a.Modifier)
+                .OnDelete(DeleteBehavior.Restrict);
+
+			modelBuilder.Entity<ModifierSnapshot>()
+				.HasMany(m => m.NoOptions)
+				.WithOne(a => a.Modifier)
+				.OnDelete(DeleteBehavior.Restrict);
+
+			modelBuilder.Entity<ModifierSnapshot>()
+				.HasMany(m => m.Groups)
+				.WithOne(a => a.Modifier)
+				.OnDelete(DeleteBehavior.Restrict);
+
+			modelBuilder.Entity<GroupOptionSnapshot>()
+				.HasOne(go => go.Group)
+				.WithMany(g => g.GroupOptions)
+				.OnDelete(DeleteBehavior.Restrict);
+
+			modelBuilder.Entity<ItemSnapshot>()
+				.HasOne(i => i.Item)
+				.WithMany()
+				.OnDelete(DeleteBehavior.Restrict);
+
+			modelBuilder.Entity<ModifierSnapshot>()
+				.HasOne(m => m.Modifier)
+				.WithMany()
+				.OnDelete(DeleteBehavior.Restrict);
+
+			modelBuilder.Entity<ItemSnapshot>()
+				.HasOne(i => i.Category)
+				.WithMany(c => c.Items);
+
+			modelBuilder.Entity<Category>()
+				.HasQueryFilter(c => c.DeletedAt == null);
+
+			/*modelBuilder.Entity<ModifierSnapshot>()
                 .HasOne(m => m.Item)
                 .WithOne(i => i.Modifier)
-                .HasForeignKey<Modifier>(i => i.ItemId);
+                .HasForeignKey<ModifierSnapshot>(i => i.ItemId);*/
 
-            /*modelBuilder.Entity<Modifier>().Navigation(m => m.Addons).AutoInclude();*/
-            //modelBuilder.Entity<Modifier>()
-            //    .HasMany(m => m.Addons)
-            //    .WithOne(a => a.Modifier)
-            //    .OnDelete(DeleteBehavior.SetNull);
-            //modelBuilder.Entity<Modifier>()
-            //    .HasMany(m => m.NoOptions)
-            //    .WithOne(no => no.Modifier)
-            //    .OnDelete(DeleteBehavior.SetNull);
-            //modelBuilder.Entity<Modifier>()
-            //    .HasMany(m => m.Groups)
-            //    .WithOne(g => g.Modifier)
-            //    .OnDelete(DeleteBehavior.SetNull);
-            //modelBuilder.Entity<Group>()
-            //    .HasMany(m => m.GroupOptions)
-            //    .WithOne(gi => gi.Group);
 
-            //modelBuilder.Entity<Item>()
-            //    .HasKey(i => i.ItemId);
+			/*modelBuilder.Entity<Modifier>().Navigation(m => m.Addons).AutoInclude();*/
+			//modelBuilder.Entity<Modifier>()
+			//    .HasMany(m => m.Addons)
+			//    .WithOne(a => a.Modifier)
+			//    .OnDelete(DeleteBehavior.SetNull);
+			//modelBuilder.Entity<Modifier>()
+			//    .HasMany(m => m.NoOptions)
+			//    .WithOne(no => no.Modifier)
+			//    .OnDelete(DeleteBehavior.SetNull);
+			//modelBuilder.Entity<Modifier>()
+			//    .HasMany(m => m.Groups)
+			//    .WithOne(g => g.Modifier)
+			//    .OnDelete(DeleteBehavior.SetNull);
+			//modelBuilder.Entity<Group>()
+			//    .HasMany(m => m.GroupOptions)
+			//    .WithOne(gi => gi.Group);
 
-            //modelBuilder.Entity<Item>()
-            //    .HasMany(i => i.Modifiers)
-            //    .WithOne(m => m.Item)
-            //    .OnDelete(DeleteBehavior.SetNull);
+			//modelBuilder.Entity<Item>()
+			//    .HasKey(i => i.ItemId);
 
-            //modelBuilder.Entity<Order>()
-            //    .HasMany(o => o.OrderItems);
+			//modelBuilder.Entity<Item>()
+			//    .HasMany(i => i.Modifiers)
+			//    .WithOne(m => m.Item)
+			//    .OnDelete(DeleteBehavior.SetNull);
 
-            //modelBuilder.Entity<OrderItem>()
-            //    .HasOne(oi => oi.Item);
+			//modelBuilder.Entity<Order>()
+			//    .HasMany(o => o.OrderItems);
 
-            //modelBuilder.Entity<OrderItem>()
-            //    .HasMany(oi => oi.OrderItemAddons)
-            //    .WithOne(oia => oia.OrderItem)
-            //    .OnDelete(DeleteBehavior.Cascade);
-            //modelBuilder.Entity<OrderItem>()
-            //    .HasMany(oi => oi.OrderItemNoOptions)
-            //    .WithOne(oia => oia.OrderItem)
-            //    .OnDelete(DeleteBehavior.Cascade);
-            //modelBuilder.Entity<OrderItem>()
-            //    .HasMany(oi => oi.OrderItemGroups)
-            //    .WithOne(oia => oia.OrderItem)
-            //    .OnDelete(DeleteBehavior.Cascade);
+			//modelBuilder.Entity<OrderItem>()
+			//    .HasOne(oi => oi.Item);
 
-            //modelBuilder.Entity<OrderItemAddon>()
-            //    .HasOne(oia => oia.Addon);
-            //modelBuilder.Entity<OrderItemNoOption>()
-            //    .HasOne(oino => oino.NoOption);
-            //modelBuilder.Entity<OrderItemGroup>()
-            //    .HasOne(oig => oig.GroupOption);
-            //modelBuilder.Entity<OrderItemGroup>()
-            //    .HasOne(oig => oig.GroupOption);
+			//modelBuilder.Entity<OrderItem>()
+			//    .HasMany(oi => oi.OrderItemAddons)
+			//    .WithOne(oia => oia.OrderItem)
+			//    .OnDelete(DeleteBehavior.Cascade);
+			//modelBuilder.Entity<OrderItem>()
+			//    .HasMany(oi => oi.OrderItemNoOptions)
+			//    .WithOne(oia => oia.OrderItem)
+			//    .OnDelete(DeleteBehavior.Cascade);
+			//modelBuilder.Entity<OrderItem>()
+			//    .HasMany(oi => oi.OrderItemGroups)
+			//    .WithOne(oia => oia.OrderItem)
+			//    .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<OrderItemAddon>()
+			//modelBuilder.Entity<OrderItemAddon>()
+			//    .HasOne(oia => oia.Addon);
+			//modelBuilder.Entity<OrderItemNoOption>()
+			//    .HasOne(oino => oino.NoOption);
+			//modelBuilder.Entity<OrderItemGroup>()
+			//    .HasOne(oig => oig.GroupOption);
+			//modelBuilder.Entity<OrderItemGroup>()
+			//    .HasOne(oig => oig.GroupOption);
+
+			/*modelBuilder.Entity<OrderItemAddon>()
                 .HasKey("OrderItemId", "AddonId");
             modelBuilder.Entity<OrderItemNoOption>()
                 .HasKey("OrderItemId", "NoOptionId");
             modelBuilder.Entity<OrderItemGroup>()
-                .HasKey("OrderItemId", "GroupId", "GroupOptionId");
+                .HasKey("OrderItemId", "GroupId", "GroupOptionId");*/
 
-            /*modelBuilder.Entity<NoOption>()
+			/*modelBuilder.Entity<NoOption>()
                 .HasOne(n => n.Modifier)
                 .WithMany(m => m.NoOptions);
 
@@ -107,7 +155,7 @@ namespace SalernoServer.Models
                 .HasOne(go => go.Group)
                 .WithMany(g => g.GroupOptions);*/
 
-            /*modelBuilder.Entity<Modifier>()
+			/*modelBuilder.Entity<Modifier>()
                 .HasMany<Group>(m => m.Groups)
                 .WithOne(g => g.Modifier)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -122,7 +170,7 @@ namespace SalernoServer.Models
                 .WithOne(n => n.Modifier)
                 .OnDelete(DeleteBehavior.Cascade);*/
 
-            /*modelBuilder.Entity<Employee>()
+			/*modelBuilder.Entity<Employee>()
                 .HasOne<Account>(e => e.Account)
                 .WithOne(a => a.Employee)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -131,6 +179,6 @@ namespace SalernoServer.Models
                 .HasOne<Employee>(e => e.Employee)
                 .WithOne(a => a.Account)
                 .OnDelete(DeleteBehavior.Cascade);*/
-        }
+		}
     }
 }

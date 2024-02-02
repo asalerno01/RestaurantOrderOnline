@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SalernoServer.Models;
-using Server.Models;
 using Server.Models.Authentication;
 using Server.Models.ItemModels.Helpers;
+using Server.Models.OrderModels;
 
 namespace SalernoServer.Controllers
 {
@@ -59,7 +59,7 @@ namespace SalernoServer.Controllers
                 .ThenInclude(oino => oino.NoOption)
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Groups)
-                .ThenInclude(oig => oig.Group)
+                //.ThenInclude(oig => oig.Group)
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Groups)
                 .ThenInclude(oig => oig.GroupOption)
@@ -169,7 +169,7 @@ namespace SalernoServer.Controllers
                 .ThenInclude(oino => oino.NoOption)
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Groups)
-                .ThenInclude(oig => oig.Group)
+                //.ThenInclude(oig => oig.Group)
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Groups)
                 .ThenInclude(oig => oig.GroupOption)
@@ -222,7 +222,7 @@ namespace SalernoServer.Controllers
                 .Include(savedOrder => savedOrder.OrderItems)
                 .ThenInclude(orderItem => orderItem.OrderItem)
                 .ThenInclude(orderItem => orderItem.Groups)
-                .ThenInclude(group => group.Group)
+                //.ThenInclude(group => group.Group)
                 .Include(savedOrder => savedOrder.OrderItems)
                 .ThenInclude(orderItem => orderItem.OrderItem)
                 .ThenInclude(orderItem => orderItem.Groups)
@@ -237,7 +237,7 @@ namespace SalernoServer.Controllers
             
             return Ok(savedOrders.Select(savedOrder => new SavedOrderDTO(savedOrder)).ToList());
         }
-        [HttpPost]
+        /*[HttpPost]
         public async Task<ActionResult<Order>> CreateOrder([FromBody] OrderHelper order)
         {
             if (order is null) return BadRequest("Invalid order");
@@ -339,8 +339,8 @@ namespace SalernoServer.Controllers
                 nameof(GetOrder),
                 new { id = newOrder.OrderId },
                 newOrder);
-        }
-        [HttpPost]
+        }*/
+        /*[HttpPost]
         [Route("many")]
         public async Task<ActionResult<IEnumerable<Order>>> CreateOrders([FromBody] List<OrderHelper> orders)
         {
@@ -444,7 +444,7 @@ namespace SalernoServer.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
-        }
+        }*/
         private static List<SavedOrderOrderItem> OrderItemsToSavedOrderOrderItems(SavedOrder savedOrder, Order order)
         {
             List<SavedOrderOrderItem> savedOrderOrderItems = new();
