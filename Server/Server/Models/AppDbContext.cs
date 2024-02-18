@@ -9,6 +9,8 @@ using Server.Models.OrderModels;
 using Server.Models.ItemModels.SnapshotModels;
 using Server.Old;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Server.Interceptors;
+using Server.Models;
 
 namespace SalernoServer.Models
 {
@@ -39,6 +41,24 @@ namespace SalernoServer.Models
         public DbSet<GroupSnapshot> GroupSnapshots { get; set; }
         public DbSet<GroupOptionSnapshot> GroupOptionSnapshots { get; set; }
 		public DbSet<CategorySnapshot> CategorySnapshots { get; set; }
+
+		public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+		{
+			// https://stackoverflow.com/a/66072734
+			foreach (var entry in ChangeTracker.Entries<ISoftDelete>())
+			{
+				switch (entry.State)
+				{
+					case EntityState.Deleted:
+						// Override removal. Unchanged is better than Modified, because the latter flags ALL properties for update.
+						// With Unchanged, the change tracker will pick up on the freshly changed properties and save them.
+						entry.State = EntityState.Unchanged;
+						entry.Property(nameof(ISoftDelete.DeletedAt)).CurrentValue = DateTimeOffset.UtcNow;
+						break;
+				}
+			}
+			return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+		}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -78,7 +98,34 @@ namespace SalernoServer.Models
 				.HasOne(i => i.Category)
 				.WithMany(c => c.Items);
 
+			// DeletedAt query filters
+			modelBuilder.Entity<Item>()
+				.HasQueryFilter(i => i.DeletedAt == null);
+			modelBuilder.Entity<ItemSnapshot>()
+				.HasQueryFilter(i => i.DeletedAt == null);
+			modelBuilder.Entity<Modifier>()
+				.HasQueryFilter(m => m.DeletedAt == null);
+			modelBuilder.Entity<ModifierSnapshot>()
+				.HasQueryFilter(m => m.DeletedAt == null);
+			modelBuilder.Entity<Addon>()
+				.HasQueryFilter(a => a.DeletedAt == null);
+			modelBuilder.Entity<AddonSnapshot>()
+				.HasQueryFilter(a => a.DeletedAt == null);
+			modelBuilder.Entity<NoOption>()
+				.HasQueryFilter(n => n.DeletedAt == null);
+			modelBuilder.Entity<NoOptionSnapshot>()
+				.HasQueryFilter(n => n.DeletedAt == null);
+			modelBuilder.Entity<Group>()
+				.HasQueryFilter(g => g.DeletedAt == null);
+			modelBuilder.Entity<GroupSnapshot>()
+				.HasQueryFilter(g => g.DeletedAt == null);
+			modelBuilder.Entity<GroupOption>()
+				.HasQueryFilter(g => g.DeletedAt == null);
+			modelBuilder.Entity<GroupOptionSnapshot>()
+				.HasQueryFilter(g => g.DeletedAt == null);
 			modelBuilder.Entity<Category>()
+				.HasQueryFilter(c => c.DeletedAt == null);
+			modelBuilder.Entity<CategorySnapshot>()
 				.HasQueryFilter(c => c.DeletedAt == null);
 
 			/*modelBuilder.Entity<ModifierSnapshot>()

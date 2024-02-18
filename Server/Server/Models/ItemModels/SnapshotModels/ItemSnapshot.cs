@@ -40,6 +40,5 @@ namespace Server.Models.ItemModels.SnapshotModels
 		public bool IsEnabled { get; set; }
 		[JsonIgnore]
         public ModifierSnapshot Modifier { get; set; } = new();
-
-    }
+	}
 }

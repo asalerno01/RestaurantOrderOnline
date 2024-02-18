@@ -102,5 +102,19 @@ namespace SalernoServer.Controllers
 
             return Ok();
         }
-    }
+
+		// POST: Category/Delete/5
+		[HttpPost, ActionName("Delete")]
+        [Route("delete/{categoryId}")]
+		public async Task<IActionResult> DeleteConfirmed(long categoryId)
+		{
+			var category = await _context.Categories.FindAsync(categoryId);
+			if (category != null)
+			{
+				_context.Categories.Remove(category);
+				await _context.SaveChangesAsync();
+			}
+            return Ok();
+		}
+	}
 }
