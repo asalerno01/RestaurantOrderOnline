@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using SalernoServer.Models;
 using SalernoServer.Models.ItemModels;
 using Server.Models.ItemModels.Helpers;
+using Server.Models.ItemModels.ModelDTO;
 
 namespace SalernoServer.Controllers
 {
@@ -76,10 +77,7 @@ namespace SalernoServer.Controllers
                 .Include(i => i.Category)
                 .FirstOrDefaultAsync(i => i.ItemId.Equals(id));
 
-            if (item == null)
-            {
-                return NotFound();
-            }
+            if (item == null) return NotFound();
             
 
             return Ok(new ItemDTO(item));
@@ -89,15 +87,11 @@ namespace SalernoServer.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutItem(string id, [FromBody] ItemHelper item)
         {
-            if (id != item.ItemId)
-            {
-                return BadRequest($"item.ItemId");
-            }
+            if (id != item.ItemId) return BadRequest($"{item.ItemId}");
+            
             var newItem = await _context.Items.FindAsync(id);
-            if (newItem == null)
-            {
-                return NotFound();
-            }
+            if (newItem == null) return NotFound();
+
             var category = await _context.Categories.FindAsync(item.CategoryId);
             if (category is null) return BadRequest("Bad category");
 
@@ -117,7 +111,6 @@ namespace SalernoServer.Controllers
             newItem.Quantity = item.Quantity;
             newItem.ReorderTrigger = item.ReorderTrigger;
             newItem.RecommendedOrder = item.RecommendedOrder;
-            newItem.LastSoldDate = item.LastSoldDate;
             newItem.Supplier = item.Supplier;
             newItem.LiabilityItem = item.LiabilityItem;
             newItem.LiabilityRedemptionTender = item.LiabilityRedemptionTender;
@@ -131,9 +124,14 @@ namespace SalernoServer.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Item>> PostItem([FromBody] ItemHelper itemHelper)
+        [Route("item")]
+        public async Task<ActionResult> PostItem([FromBody] ItemHelper itemHelper)
         {
             if (itemHelper is null) return BadRequest("ItemHelper is null");
+
+            bool itemExists = _context.Items.Any(i => i.ItemId.Equals(itemHelper.ItemId));
+            if (itemExists) return BadRequest($"ItemId exists:{itemHelper.ItemId}");
+
             var category = await _context.Categories.FindAsync(itemHelper.CategoryId);
             if (category is null) return BadRequest("Bad category");
 
@@ -155,7 +153,6 @@ namespace SalernoServer.Controllers
                 Quantity = itemHelper.Quantity,
                 ReorderTrigger = itemHelper.ReorderTrigger,
                 RecommendedOrder = itemHelper.RecommendedOrder,
-                LastSoldDate = itemHelper.LastSoldDate,
                 Supplier = itemHelper.Supplier,
                 LiabilityItem = itemHelper.LiabilityItem,
                 LiabilityRedemptionTender = itemHelper.LiabilityRedemptionTender,
@@ -169,8 +166,54 @@ namespace SalernoServer.Controllers
             return Ok();
         }
 
-        // DELETE: api/Items/5
-        [HttpDelete("{id}")]
+		[HttpPost]
+        [Route("items")]
+		public async Task<ActionResult> PostItems([FromBody] List<ItemHelper> itemHelpers)
+		{
+			foreach(ItemHelper itemHelper in itemHelpers)
+            {
+				bool itemExists = _context.Items.Any(i => i.ItemId.Equals(itemHelper.ItemId));
+				if (!itemExists)
+                {
+					var category = await _context.Categories.FindAsync(itemHelper.CategoryId);
+					if (category is null) return BadRequest("Bad category");
+
+					Item newItem = new()
+					{
+						ItemId = itemHelper.ItemId.Equals("") ? Guid.NewGuid().ToString() : itemHelper.ItemId,
+						Name = itemHelper.Name,
+						Description = itemHelper.Description,
+						Department = itemHelper.Department,
+						Category = category,
+						SKU = itemHelper.SKU,
+						UPC = itemHelper.UPC,
+						Price = itemHelper.Price,
+						Discountable = itemHelper.Discountable,
+						Taxable = itemHelper.Taxable,
+						TrackingInventory = itemHelper.TrackingInventory,
+						Cost = itemHelper.Cost,
+						AssignedCost = itemHelper.AssignedCost,
+						Quantity = itemHelper.Quantity,
+						ReorderTrigger = itemHelper.ReorderTrigger,
+						RecommendedOrder = itemHelper.RecommendedOrder,
+						Supplier = itemHelper.Supplier,
+						LiabilityItem = itemHelper.LiabilityItem,
+						LiabilityRedemptionTender = itemHelper.LiabilityRedemptionTender,
+						TaxGroupOrRate = itemHelper.TaxGroupOrRate,
+						IsEnabled = itemHelper.IsEnabled
+					};
+
+					await _context.Items.AddAsync(newItem);
+				}
+			}
+
+			await _context.SaveChangesAsync();
+
+			return Ok();
+		}
+
+		// DELETE: api/Items/5
+		[HttpDelete("{id}")]
         public async Task<IActionResult> DeleteItem(string id)
         {
             var item = await _context.Items.FindAsync(id);

@@ -11,6 +11,7 @@ using Server.Old;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Interceptors;
 using Server.Models;
+using Server.Logger;
 
 namespace SalernoServer.Models
 {
@@ -50,6 +51,7 @@ namespace SalernoServer.Models
 				switch (entry.State)
 				{
 					case EntityState.Deleted:
+						Logger.Log("Cancelling entity delete");
 						// Override removal. Unchanged is better than Modified, because the latter flags ALL properties for update.
 						// With Unchanged, the change tracker will pick up on the freshly changed properties and save them.
 						entry.State = EntityState.Unchanged;
@@ -64,22 +66,22 @@ namespace SalernoServer.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<ModifierSnapshot>()
+            modelBuilder.Entity<Modifier>()
                 .HasMany(m => m.Addons)
                 .WithOne(a => a.Modifier)
                 .OnDelete(DeleteBehavior.Restrict);
 
-			modelBuilder.Entity<ModifierSnapshot>()
+			modelBuilder.Entity<Modifier>()
 				.HasMany(m => m.NoOptions)
 				.WithOne(a => a.Modifier)
 				.OnDelete(DeleteBehavior.Restrict);
 
-			modelBuilder.Entity<ModifierSnapshot>()
+			modelBuilder.Entity<Modifier>()
 				.HasMany(m => m.Groups)
 				.WithOne(a => a.Modifier)
 				.OnDelete(DeleteBehavior.Restrict);
 
-			modelBuilder.Entity<GroupOptionSnapshot>()
+			modelBuilder.Entity<GroupOption>()
 				.HasOne(go => go.Group)
 				.WithMany(g => g.GroupOptions)
 				.OnDelete(DeleteBehavior.Restrict);
@@ -94,7 +96,7 @@ namespace SalernoServer.Models
 				.WithMany()
 				.OnDelete(DeleteBehavior.Restrict);
 
-			modelBuilder.Entity<ItemSnapshot>()
+			modelBuilder.Entity<Item>()
 				.HasOne(i => i.Category)
 				.WithMany(c => c.Items);
 
@@ -127,6 +129,17 @@ namespace SalernoServer.Models
 				.HasQueryFilter(c => c.DeletedAt == null);
 			modelBuilder.Entity<CategorySnapshot>()
 				.HasQueryFilter(c => c.DeletedAt == null);
+
+			modelBuilder.Entity<OrderItem>()
+				.HasQueryFilter(o => o.Item.DeletedAt == null);
+
+			modelBuilder.Entity<OrderItemAddon>()
+				.HasQueryFilter(oia => oia.Addon.DeletedAt == null);
+			modelBuilder.Entity<OrderItemNoOption>()
+							.HasQueryFilter(oino => oino.NoOption.DeletedAt == null);
+			modelBuilder.Entity<OrderItemGroup>()
+							.HasQueryFilter(oig => oig.GroupOption.DeletedAt == null);
+
 
 			/*modelBuilder.Entity<ModifierSnapshot>()
                 .HasOne(m => m.Item)
@@ -227,5 +240,5 @@ namespace SalernoServer.Models
                 .WithOne(a => a.Account)
                 .OnDelete(DeleteBehavior.Cascade);*/
 		}
-    }
+	}
 }

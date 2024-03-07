@@ -15,7 +15,5 @@ namespace Server.Models.ItemModels.SnapshotModels
 		public string Name { get; set; }
 		[Precision(18, 2)]
 		public decimal Price { get; set; }
-		[JsonIgnore]
-		public ModifierSnapshot Modifier { get; set; }
 	}
 }

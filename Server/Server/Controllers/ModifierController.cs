@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
 using SalernoServer.Models;
 using SalernoServer.Models.ItemModels;
+using Server.Models.ItemModels.ModelDTO;
 
 namespace SalernoServer.Controllers
 {
@@ -28,12 +29,14 @@ namespace SalernoServer.Controllers
         public async Task<ActionResult<IEnumerable<Modifier>>> GetModififers()
         {
             // might not work
-            return await _context.Modifiers
+            var modifiers =  await _context.Modifiers
                 .Include(m => m.Groups)
                 .ThenInclude(g => g.GroupOptions)
                 .Include(m => m.Addons)
                 .Include(m => m.NoOptions)
                 .ToListAsync();
+
+            return Ok(modifiers.Select(m => new ModifierDTO(m)).ToList());
         }
 
         // GET: api/modifier/5
@@ -53,7 +56,7 @@ namespace SalernoServer.Controllers
                 return NotFound();
             }
 
-            return modifier;
+            return Ok(new ModifierDTO(modifier));
         }
 
         // PUT: api/Items/5
@@ -61,17 +64,14 @@ namespace SalernoServer.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutModifier(long id, [FromBody] ModifierHelper modifier)
         {
-            if (modifier == null)
-            {
-                return BadRequest();
-            }
+            if (modifier == null) return BadRequest();
+
             var foundModifier = await _context.Modifiers.FindAsync(id);
             if (foundModifier == null) return BadRequest($"Modifier ID to update not found: {id}");
+
             Modifier updatedModifier = new()
             {
                 ModifierId = id,
-                Name = modifier.Name,
-                Description = modifier.Description,
                 Item = foundModifier.Item
             };
 
@@ -146,8 +146,6 @@ namespace SalernoServer.Controllers
 
             var newModifier = new Modifier
             {
-                Name = modifier.Name,
-                Description = modifier.Description,
                 Item = foundItem
             };
             if (foundModifier is not null) newModifier.ModifierId = foundModifier.ModifierId;

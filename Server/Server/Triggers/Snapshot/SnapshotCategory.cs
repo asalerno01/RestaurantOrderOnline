@@ -1,7 +1,12 @@
 ﻿using EntityFrameworkCore.Triggered;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Hosting;
 using SalernoServer.Models;
+using SalernoServer.Models.ItemModels;
+using Server.Logger;
 using Server.Models.ItemModels;
 using Server.Models.ItemModels.SnapshotModels;
+using System.Xml.Linq;
 
 namespace Server.Triggers.Snapshot
 {
@@ -16,25 +21,15 @@ namespace Server.Triggers.Snapshot
 
 		public Task BeforeSave(ITriggerContext<Category> context, CancellationToken cancellationToken)
 		{
-			if (context.ChangeType == ChangeType.Added)
+			if (context.ChangeType == ChangeType.Added || context.ChangeType == ChangeType.Modified)
 			{
-				Console.WriteLine("Adding category");
-				CategorySnapshot categorySnapshot = new()
-				{
-					CategoryId = context.Entity.CategoryId,
-					Category = context.Entity,
-					Name = context.Entity.Name
-				};
+				// Console.WriteLine($"Snapshotting category:{context.Entity.CategoryId}");
+				Server.Logger.Logger.Log($"Snapshotting category:{context.Entity.CategoryId}");
 
-				_context.CategorySnapshots.Add(categorySnapshot);
-			}
-			else if (context.ChangeType == ChangeType.Modified)
-			{
-				Console.WriteLine("Modifying category");
 				CategorySnapshot categorySnapshot = new()
 				{
-					CategoryId = context.Entity.CategoryId,
 					Category = context.Entity,
+					CategoryId = context.Entity.CategoryId,
 					Name = context.Entity.Name
 				};
 

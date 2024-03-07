@@ -33,7 +33,7 @@ namespace Server.Migrations
                     b.Property<bool>("BackOfficeAccess")
                         .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
@@ -62,7 +62,7 @@ namespace Server.Migrations
                     b.Property<int>("RegisterCode")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("EmployeeId");
@@ -78,7 +78,7 @@ namespace Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("AddonId"), 1L, 1);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
@@ -95,7 +95,7 @@ namespace Server.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("AddonId");
@@ -113,7 +113,7 @@ namespace Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("GroupId"), 1L, 1);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
@@ -130,7 +130,7 @@ namespace Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("GroupId");
@@ -148,7 +148,7 @@ namespace Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("GroupOptionId"), 1L, 1);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
@@ -168,7 +168,7 @@ namespace Server.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("GroupOptionId");
@@ -194,7 +194,7 @@ namespace Server.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
@@ -213,9 +213,6 @@ namespace Server.Migrations
 
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("bit");
-
-                    b.Property<DateTime>("LastSoldDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<bool>("LiabilityItem")
                         .HasColumnType("bit");
@@ -263,7 +260,7 @@ namespace Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("ItemId");
@@ -281,25 +278,17 @@ namespace Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ModifierId"), 1L, 1);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ItemId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("ModifierId");
@@ -318,7 +307,7 @@ namespace Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("NoOptionId"), 1L, 1);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
@@ -335,7 +324,7 @@ namespace Server.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("NoOptionId");
@@ -353,7 +342,7 @@ namespace Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("AccountId"), 1L, 1);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
@@ -389,7 +378,7 @@ namespace Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("AccountId");
@@ -405,7 +394,7 @@ namespace Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("CategoryId"), 1L, 1);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
@@ -415,7 +404,7 @@ namespace Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("CategoryId");
@@ -434,14 +423,11 @@ namespace Server.Migrations
                     b.Property<long>("AddonId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<long>("ModifierSnapshotId")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -451,14 +437,12 @@ namespace Server.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("AddonSnapshotId");
 
                     b.HasIndex("AddonId");
-
-                    b.HasIndex("ModifierSnapshotId");
 
                     b.ToTable("AddonSnapshots");
                 });
@@ -474,7 +458,7 @@ namespace Server.Migrations
                     b.Property<long>("CategoryId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
@@ -484,7 +468,7 @@ namespace Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("CategorySnapshotId");
@@ -502,16 +486,13 @@ namespace Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("GroupOptionSnapshotId"), 1L, 1);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<long>("GroupOptionId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("GroupSnapshotId")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsDefault")
@@ -525,14 +506,12 @@ namespace Server.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("GroupOptionSnapshotId");
 
                     b.HasIndex("GroupOptionId");
-
-                    b.HasIndex("GroupSnapshotId");
 
                     b.ToTable("GroupOptionSnapshots");
                 });
@@ -545,31 +524,25 @@ namespace Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("GroupSnapshotId"), 1L, 1);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<long?>("GroupId")
-                        .IsRequired()
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ModifierSnapshotId")
+                    b.Property<long>("GroupId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("GroupSnapshotId");
 
                     b.HasIndex("GroupId");
-
-                    b.HasIndex("ModifierSnapshotId");
 
                     b.ToTable("GroupSnapshots");
                 });
@@ -586,14 +559,14 @@ namespace Server.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<long>("CategorySnapshotId")
+                    b.Property<long>("CategoryId")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Cost")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
@@ -616,9 +589,6 @@ namespace Server.Migrations
                     b.Property<string>("ItemId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("LastSoldDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<bool>("LiabilityItem")
                         .HasColumnType("bit");
@@ -666,12 +636,12 @@ namespace Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("ItemSnapshotId");
 
-                    b.HasIndex("CategorySnapshotId");
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("ItemId");
 
@@ -686,37 +656,19 @@ namespace Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ModifierSnapshotId"), 1L, 1);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ItemId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("ItemSnapshotId")
-                        .HasColumnType("bigint");
-
                     b.Property<long>("ModifierId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("ModifierSnapshotId");
-
-                    b.HasIndex("ItemSnapshotId")
-                        .IsUnique();
 
                     b.HasIndex("ModifierId");
 
@@ -731,14 +683,11 @@ namespace Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("NoOptionSnapshotId"), 1L, 1);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<long>("ModifierSnapshotId")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -751,12 +700,10 @@ namespace Server.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("NoOptionSnapshotId");
-
-                    b.HasIndex("ModifierSnapshotId");
 
                     b.HasIndex("NoOptionId");
 
@@ -774,7 +721,7 @@ namespace Server.Migrations
                     b.Property<long>("AccountId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
@@ -805,7 +752,7 @@ namespace Server.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("OrderId");
@@ -826,7 +773,7 @@ namespace Server.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
@@ -838,7 +785,7 @@ namespace Server.Migrations
                     b.Property<long>("OrderId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("OrderItemId");
@@ -861,7 +808,7 @@ namespace Server.Migrations
                     b.Property<long>("AddonSnapshotId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
@@ -870,7 +817,7 @@ namespace Server.Migrations
                     b.Property<long?>("OrderItemId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("OrderItemAddonId");
@@ -890,7 +837,7 @@ namespace Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("OrderItemGroupId"), 1L, 1);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
@@ -902,7 +849,7 @@ namespace Server.Migrations
                     b.Property<long?>("OrderItemId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("OrderItemGroupId");
@@ -922,7 +869,7 @@ namespace Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("OrderItemNoOptionId"), 1L, 1);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
@@ -934,7 +881,7 @@ namespace Server.Migrations
                     b.Property<long?>("OrderItemId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("OrderItemNoOptionId");
@@ -957,7 +904,7 @@ namespace Server.Migrations
                     b.Property<long>("AccountId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
@@ -970,7 +917,7 @@ namespace Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("SavedOrderId");
@@ -988,7 +935,7 @@ namespace Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("SavedOrderOrderItemId"), 1L, 1);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
@@ -1000,7 +947,7 @@ namespace Server.Migrations
                     b.Property<long?>("SavedOrderId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("SavedOrderOrderItemId");
@@ -1045,7 +992,7 @@ namespace Server.Migrations
                     b.HasOne("SalernoServer.Models.ItemModels.Modifier", "Modifier")
                         .WithMany("Addons")
                         .HasForeignKey("ModifierId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Modifier");
@@ -1056,7 +1003,7 @@ namespace Server.Migrations
                     b.HasOne("SalernoServer.Models.ItemModels.Modifier", "Modifier")
                         .WithMany("Groups")
                         .HasForeignKey("ModifierId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Modifier");
@@ -1067,7 +1014,7 @@ namespace Server.Migrations
                     b.HasOne("SalernoServer.Models.ItemModels.Group", "Group")
                         .WithMany("GroupOptions")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Group");
@@ -1100,7 +1047,7 @@ namespace Server.Migrations
                     b.HasOne("SalernoServer.Models.ItemModels.Modifier", "Modifier")
                         .WithMany("NoOptions")
                         .HasForeignKey("ModifierId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Modifier");
@@ -1114,15 +1061,7 @@ namespace Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Server.Models.ItemModels.SnapshotModels.ModifierSnapshot", "Modifier")
-                        .WithMany("Addons")
-                        .HasForeignKey("ModifierSnapshotId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Addon");
-
-                    b.Navigation("Modifier");
                 });
 
             modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.CategorySnapshot", b =>
@@ -1144,14 +1083,6 @@ namespace Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Server.Models.ItemModels.SnapshotModels.GroupSnapshot", "Group")
-                        .WithMany("GroupOptions")
-                        .HasForeignKey("GroupSnapshotId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-
                     b.Navigation("GroupOption");
                 });
 
@@ -1163,22 +1094,14 @@ namespace Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Server.Models.ItemModels.SnapshotModels.ModifierSnapshot", "Modifier")
-                        .WithMany("Groups")
-                        .HasForeignKey("ModifierSnapshotId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Group");
-
-                    b.Navigation("Modifier");
                 });
 
             modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.ItemSnapshot", b =>
                 {
-                    b.HasOne("Server.Models.ItemModels.SnapshotModels.CategorySnapshot", "Category")
-                        .WithMany("Items")
-                        .HasForeignKey("CategorySnapshotId")
+                    b.HasOne("Server.Models.ItemModels.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1195,38 +1118,22 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.ModifierSnapshot", b =>
                 {
-                    b.HasOne("Server.Models.ItemModels.SnapshotModels.ItemSnapshot", "Item")
-                        .WithOne("Modifier")
-                        .HasForeignKey("Server.Models.ItemModels.SnapshotModels.ModifierSnapshot", "ItemSnapshotId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SalernoServer.Models.ItemModels.Modifier", "Modifier")
                         .WithMany()
                         .HasForeignKey("ModifierId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Item");
-
                     b.Navigation("Modifier");
                 });
 
             modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.NoOptionSnapshot", b =>
                 {
-                    b.HasOne("Server.Models.ItemModels.SnapshotModels.ModifierSnapshot", "Modifier")
-                        .WithMany("NoOptions")
-                        .HasForeignKey("ModifierSnapshotId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("SalernoServer.Models.ItemModels.NoOption", "NoOption")
                         .WithMany()
                         .HasForeignKey("NoOptionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Modifier");
 
                     b.Navigation("NoOption");
                 });
@@ -1375,31 +1282,6 @@ namespace Server.Migrations
             modelBuilder.Entity("Server.Models.ItemModels.Category", b =>
                 {
                     b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.CategorySnapshot", b =>
-                {
-                    b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.GroupSnapshot", b =>
-                {
-                    b.Navigation("GroupOptions");
-                });
-
-            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.ItemSnapshot", b =>
-                {
-                    b.Navigation("Modifier")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.ModifierSnapshot", b =>
-                {
-                    b.Navigation("Addons");
-
-                    b.Navigation("Groups");
-
-                    b.Navigation("NoOptions");
                 });
 
             modelBuilder.Entity("Server.Models.OrderModels.Order", b =>

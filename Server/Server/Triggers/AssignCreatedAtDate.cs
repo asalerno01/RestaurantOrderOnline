@@ -7,6 +7,7 @@ namespace Server.Triggers
 	{
 		public Task BeforeSave(ITriggerContext<BaseModel> context, CancellationToken cancellationToken)
 		{
+			Logger.Logger.Log($"CreatedAt:{context.Entity.CreatedAt}");
 			context.Entity.CreatedAt = DateTimeOffset.UtcNow;
 
 			return Task.CompletedTask;

@@ -10,6 +10,5 @@ namespace Server.Models.ItemModels.SnapshotModels
 		[ForeignKey("CategoryId")]
 		public Category Category { get; set; }
 		public string Name { get; set; }
-		public List<ItemSnapshot> Items { get; set; } = new();
 	}
 }

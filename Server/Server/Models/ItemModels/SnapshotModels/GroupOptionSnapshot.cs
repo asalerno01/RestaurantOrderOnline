@@ -16,7 +16,5 @@ namespace Server.Models.ItemModels.SnapshotModels
 		[Precision(18, 2)]
 		public decimal Price { get; set; }
 		public bool IsDefault { get; set; }
-		[JsonIgnore]
-		public GroupSnapshot Group { get; set; }
 	}
 }

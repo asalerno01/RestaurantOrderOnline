@@ -10,7 +10,7 @@ namespace SalernoServer.Models.ItemModels
     {
         public string ItemId { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string Description { get; set; } = "";
         public string Department { get; set; }
         public Category Category { get; set; }
         public string UPC { get; set; }
@@ -27,12 +27,11 @@ namespace SalernoServer.Models.ItemModels
         public int Quantity { get; set; }
         public int ReorderTrigger { get; set; }
         public int RecommendedOrder { get; set; }
-        public DateTime LastSoldDate { get; set; } = DateTime.Now;
         public string Supplier { get; set; }
         public bool LiabilityItem { get; set; } = false;
         public string LiabilityRedemptionTender { get; set; }
         public string TaxGroupOrRate { get; set; }
-        public bool IsEnabled { get; set; }
+        public bool IsEnabled { get; set; } = true;
         [JsonIgnore]
         public Modifier Modifier { get; set; } = new();
         

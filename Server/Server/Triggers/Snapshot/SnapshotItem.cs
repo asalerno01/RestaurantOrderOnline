@@ -3,6 +3,9 @@ using SalernoServer.Models;
 using Server.Models.ItemModels.SnapshotModels;
 using Server.Models.ItemModels;
 using SalernoServer.Models.ItemModels;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Hosting;
+using System.Xml.Linq;
 
 namespace Server.Triggers.Snapshot
 {
@@ -19,12 +22,15 @@ namespace Server.Triggers.Snapshot
 		{
 			if (context.ChangeType == ChangeType.Added || context.ChangeType == ChangeType.Modified)
 			{
+				Logger.Logger.Log($"Snapshotting item:{context.Entity.ItemId}");
 				ItemSnapshot itemSnapshot = new()
 				{
 					ItemId = context.Entity.ItemId,
+					Item = context.Entity,
 					Name = context.Entity.Name,
 					Description = context.Entity.Description,
 					Department = context.Entity.Department,
+					CategoryId = context.Entity.Category.CategoryId,
 					Category = context.Entity.Category,
 					UPC = context.Entity.UPC,
 					SKU = context.Entity.SKU,
@@ -37,16 +43,14 @@ namespace Server.Triggers.Snapshot
 					Quantity = context.Entity.Quantity,
 					ReorderTrigger = context.Entity.ReorderTrigger,
 					RecommendedOrder = context.Entity.RecommendedOrder,
-					LastSoldDate = context.Entity.LastSoldDate,
 					Supplier = context.Entity.Supplier,
 					LiabilityItem = context.Entity.LiabilityItem,
 					LiabilityRedemptionTender = context.Entity.LiabilityRedemptionTender,
 					TaxGroupOrRate = context.Entity.TaxGroupOrRate,
-					IsEnabled = context.Entity.IsEnabled,
-					Modifier = 
-				}
+					IsEnabled = context.Entity.IsEnabled
+				};
 
-				_context.CategorySnapshots.Add(categorySnapshot);
+				_context.ItemSnapshots.Add(itemSnapshot);
 			}
 
 			return Task.CompletedTask;

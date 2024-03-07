@@ -35,6 +35,12 @@ namespace SalernoServer
 					triggerOptions.AddTrigger<AssignCreatedAtDate>();
 					triggerOptions.AddTrigger<AssignUpdatedAtDate>();
 					triggerOptions.AddTrigger<SnapshotCategory>();
+					triggerOptions.AddTrigger<SnapshotItem>();
+					triggerOptions.AddTrigger<SnapshotAddon>();
+					triggerOptions.AddTrigger<SnapshotNoOption>();
+					triggerOptions.AddTrigger<SnapshotGroup>();
+					triggerOptions.AddTrigger<SnapshotGroupOption>();
+					triggerOptions.AddTrigger<SnapshotModifier>();
 				})
 	            .LogTo(Console.WriteLine, LogLevel.Information)
 	            .EnableDetailedErrors()

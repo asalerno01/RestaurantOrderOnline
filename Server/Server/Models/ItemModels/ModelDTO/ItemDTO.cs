@@ -1,6 +1,7 @@
 ﻿using SalernoServer.Models.ItemModels;
+using Server.Models.ItemModels.Helpers;
 
-namespace Server.Models.ItemModels.Helpers
+namespace Server.Models.ItemModels.ModelDTO
 {
     public class ItemDTO
     {
@@ -22,12 +23,11 @@ namespace Server.Models.ItemModels.Helpers
             Quantity = item.Quantity;
             ReorderTrigger = item.ReorderTrigger;
             RecommendedOrder = item.RecommendedOrder;
-            LastSoldDate = item.LastSoldDate;
             Supplier = item.Supplier;
             LiabilityItem = item.LiabilityItem;
             LiabilityRedemptionTender = item.LiabilityRedemptionTender;
             TaxGroupOrRate = item.TaxGroupOrRate;
-            Modifier = item.Modifier;
+            Modifier = new ModifierDTO(item.Modifier);
             IsEnabled = item.IsEnabled;
         }
         public string ItemId { get; set; }
@@ -46,13 +46,12 @@ namespace Server.Models.ItemModels.Helpers
         public int Quantity { get; set; }
         public int ReorderTrigger { get; set; }
         public int RecommendedOrder { get; set; }
-        public DateTime LastSoldDate { get; set; } = DateTime.Now;
         public string Supplier { get; set; }
         public bool LiabilityItem { get; set; } = false;
         public string LiabilityRedemptionTender { get; set; }
         public string TaxGroupOrRate { get; set; }
         public bool IsEnabled { get; set; }
-        public virtual Modifier Modifier { get; set; } = new();
+        public ModifierDTO Modifier { get; set; }
 
         private static CategoryHelper CategoryToCategoryHelper(Category category)
         {
