@@ -363,11 +363,7 @@ namespace Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrderCount")
-                        .HasColumnType("int");
-
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -529,6 +525,10 @@ namespace Server.Migrations
 
                     b.Property<DateTimeOffset?>("DeletedAt")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("GroupId")
                         .HasColumnType("bigint");
@@ -959,32 +959,166 @@ namespace Server.Migrations
                     b.ToTable("SavedOrderOrderItems");
                 });
 
-            modelBuilder.Entity("Server.Old.Review", b =>
+            modelBuilder.Entity("Server.Models.ShoppingCartModels.ShoppingCart", b =>
                 {
-                    b.Property<long>("ReviewId")
+                    b.Property<long>("ShoppingCartId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ReviewId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ShoppingCartId"), 1L, 1);
 
-                    b.Property<long>("AccountId")
+                    b.Property<long?>("AccountId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
 
-                    b.Property<int>("Rating")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("ShoppingCartId");
+
+                    b.ToTable("ShoppingCarts");
+                });
+
+            modelBuilder.Entity("Server.Models.ShoppingCartModels.ShoppingCartAddon", b =>
+                {
+                    b.Property<long>("ShoppingCartAddonId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ShoppingCartAddonId"), 1L, 1);
+
+                    b.Property<long>("AddonId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long>("ShoppingCartItemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("ShoppingCartAddonId");
+
+                    b.HasIndex("AddonId");
+
+                    b.HasIndex("ShoppingCartItemId");
+
+                    b.ToTable("ShoppingCartAddons");
+                });
+
+            modelBuilder.Entity("Server.Models.ShoppingCartModels.ShoppingCartGroup", b =>
+                {
+                    b.Property<long>("ShoppingCartGroupId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ShoppingCartGroupId"), 1L, 1);
+
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long>("GroupId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("GroupOptionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ShoppingCartItemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("ShoppingCartGroupId");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("GroupOptionId");
+
+                    b.HasIndex("ShoppingCartItemId");
+
+                    b.ToTable("ShoppingCartGroups");
+                });
+
+            modelBuilder.Entity("Server.Models.ShoppingCartModels.ShoppingCartItem", b =>
+                {
+                    b.Property<long>("ShoppingCartItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ShoppingCartItemId"), 1L, 1);
+
+                    b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.HasKey("ReviewId");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
-                    b.HasIndex("AccountId");
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
 
-                    b.ToTable("Review");
+                    b.Property<string>("ItemId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<long>("ShoppingCartId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("ShoppingCartItemId");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("ShoppingCartId");
+
+                    b.ToTable("ShoppingCartItems");
+                });
+
+            modelBuilder.Entity("Server.Models.ShoppingCartModels.ShoppingCartNoOption", b =>
+                {
+                    b.Property<long>("ShoppingCartNoOptionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ShoppingCartNoOptionId"), 1L, 1);
+
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long>("NoOptionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ShoppingCartItemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("ShoppingCartNoOptionId");
+
+                    b.HasIndex("NoOptionId");
+
+                    b.HasIndex("ShoppingCartItemId");
+
+                    b.ToTable("ShoppingCartNoOptions");
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Addon", b =>
@@ -1025,7 +1159,7 @@ namespace Server.Migrations
                     b.HasOne("Server.Models.ItemModels.Category", "Category")
                         .WithMany("Items")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -1239,15 +1373,86 @@ namespace Server.Migrations
                     b.Navigation("SavedOrder");
                 });
 
-            modelBuilder.Entity("Server.Old.Review", b =>
+            modelBuilder.Entity("Server.Models.ShoppingCartModels.ShoppingCartAddon", b =>
                 {
-                    b.HasOne("Server.Models.Authentication.Account", "Account")
-                        .WithMany("Reviews")
-                        .HasForeignKey("AccountId")
+                    b.HasOne("SalernoServer.Models.ItemModels.Addon", "Addon")
+                        .WithMany()
+                        .HasForeignKey("AddonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Account");
+                    b.HasOne("Server.Models.ShoppingCartModels.ShoppingCartItem", "ShoppingCartItem")
+                        .WithMany("Addons")
+                        .HasForeignKey("ShoppingCartItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Addon");
+
+                    b.Navigation("ShoppingCartItem");
+                });
+
+            modelBuilder.Entity("Server.Models.ShoppingCartModels.ShoppingCartGroup", b =>
+                {
+                    b.HasOne("SalernoServer.Models.ItemModels.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SalernoServer.Models.ItemModels.GroupOption", "GroupOption")
+                        .WithMany()
+                        .HasForeignKey("GroupOptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Models.ShoppingCartModels.ShoppingCartItem", "ShoppingCartItem")
+                        .WithMany("Groups")
+                        .HasForeignKey("ShoppingCartItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("GroupOption");
+
+                    b.Navigation("ShoppingCartItem");
+                });
+
+            modelBuilder.Entity("Server.Models.ShoppingCartModels.ShoppingCartItem", b =>
+                {
+                    b.HasOne("SalernoServer.Models.ItemModels.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Models.ShoppingCartModels.ShoppingCart", null)
+                        .WithMany("ShoppingCartItems")
+                        .HasForeignKey("ShoppingCartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+                });
+
+            modelBuilder.Entity("Server.Models.ShoppingCartModels.ShoppingCartNoOption", b =>
+                {
+                    b.HasOne("SalernoServer.Models.ItemModels.NoOption", "NoOption")
+                        .WithMany()
+                        .HasForeignKey("NoOptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Models.ShoppingCartModels.ShoppingCartItem", "ShoppingCartItem")
+                        .WithMany("NoOptions")
+                        .HasForeignKey("ShoppingCartItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NoOption");
+
+                    b.Navigation("ShoppingCartItem");
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Group", b =>
@@ -1274,8 +1479,6 @@ namespace Server.Migrations
                 {
                     b.Navigation("Orders");
 
-                    b.Navigation("Reviews");
-
                     b.Navigation("SavedOrders");
                 });
 
@@ -1301,6 +1504,20 @@ namespace Server.Migrations
             modelBuilder.Entity("Server.Models.OrderModels.SavedOrder", b =>
                 {
                     b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("Server.Models.ShoppingCartModels.ShoppingCart", b =>
+                {
+                    b.Navigation("ShoppingCartItems");
+                });
+
+            modelBuilder.Entity("Server.Models.ShoppingCartModels.ShoppingCartItem", b =>
+                {
+                    b.Navigation("Addons");
+
+                    b.Navigation("Groups");
+
+                    b.Navigation("NoOptions");
                 });
 #pragma warning restore 612, 618
         }

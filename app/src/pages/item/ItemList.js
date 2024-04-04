@@ -331,11 +331,11 @@ const ItemList = () => {
                                             <a href={`/salerno/items/${item['itemId']}/edit`} className='ItemList_ItemName_Button'>{item['name']}</a>
                                         </div>
                                     </div>
-                                    <div className='ItemList_Table_Content_Body_Cell' style={{display: 'block', width: `calc(100% / ${showHideValue.length + 1}`}}>
+                                    {/* <div className='ItemList_Table_Content_Body_Cell' style={{display: 'block', width: `calc(100% / ${showHideValue.length + 1}`}}>
                                         <div className='ItemList_Table_Body_Data_Container'>
                                             <span className='ItemList_ItemDetails'>{(item.isEnabled) ? "Active" : "Inactive"}</span>
                                         </div>
-                                    </div>
+                                    </div> */}
                                     <div className='ItemList_Table_Content_Body_Cell' style={(showHideValue.includes('Margin')) ? {display: 'block', width: `calc(100% / ${showHideValue.length + 1}`} : {display: 'none'}}>
                                         <div className='ItemList_Table_Body_Data_Container'>
                                             <span className='ItemList_ItemDetails'>{item.margin.toFixed(2)}%</span>
@@ -536,13 +536,13 @@ const ItemList = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className='ItemList_Table_Header_Col' style={{display: 'block', width: `calc(100% / ${showHideValue.length + 1}`}}>
+                                {/* <div className='ItemList_Table_Header_Col' style={{display: 'block', width: `calc(100% / ${showHideValue.length + 1}`}}>
                                     <div className='ItemList_Table_Header_Wrapper'>
                                         <div className='ItemList_Table_Header_Grid'>
                                             <div className='ItemList_Table_Header_Title_Not_Item'><span>Active</span></div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
                                 <div className='ItemList_Table_Header_Col' style={(showHideValue.includes('Margin')) ? {display: 'block', width: `calc(100% / ${showHideValue.length + 1}`} : {display: 'none'}}>
                                     <div className='ItemList_Table_Header_Wrapper'>
                                         <div className='ItemList_Table_Header_Grid'>

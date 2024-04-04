@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Interceptors;
 using Server.Models;
 using Server.Logger;
+using Server.Models.ShoppingCartModels;
 
 namespace SalernoServer.Models
 {
@@ -42,6 +43,13 @@ namespace SalernoServer.Models
         public DbSet<GroupSnapshot> GroupSnapshots { get; set; }
         public DbSet<GroupOptionSnapshot> GroupOptionSnapshots { get; set; }
 		public DbSet<CategorySnapshot> CategorySnapshots { get; set; }
+
+		// ShoppingCart
+		public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+		public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
+		public DbSet<ShoppingCartAddon> ShoppingCartAddons { get; set; }
+		public DbSet<ShoppingCartGroup> ShoppingCartGroups { get; set; }
+		public DbSet<ShoppingCartNoOption> ShoppingCartNoOptions { get; set; }
 
 		public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
 		{
@@ -96,11 +104,20 @@ namespace SalernoServer.Models
 				.WithMany()
 				.OnDelete(DeleteBehavior.Restrict);
 
-			modelBuilder.Entity<Item>()
+			/*modelBuilder.Entity<Item>()
 				.HasOne(i => i.Category)
-				.WithMany(c => c.Items);
+				.WithMany(c => c.Items);*/
+			modelBuilder.Entity<Category>()
+				.HasMany(c => c.Items)
+				.WithOne(i => i.Category)
+				.OnDelete(DeleteBehavior.Restrict);
+			modelBuilder.Entity<Item>()
+				.HasOne(i => i.Modifier)
+				.WithOne(m => m.Item)
+				.OnDelete(DeleteBehavior.Cascade);
 
 			// DeletedAt query filters
+			// Items
 			modelBuilder.Entity<Item>()
 				.HasQueryFilter(i => i.DeletedAt == null);
 			modelBuilder.Entity<ItemSnapshot>()
@@ -130,15 +147,29 @@ namespace SalernoServer.Models
 			modelBuilder.Entity<CategorySnapshot>()
 				.HasQueryFilter(c => c.DeletedAt == null);
 
+			// ShoppingCart
+			modelBuilder.Entity<ShoppingCart>()
+				.HasQueryFilter(s => s.DeletedAt == null);
+			modelBuilder.Entity<ShoppingCartItem>()
+				.HasQueryFilter(s => s.DeletedAt == null);
+			modelBuilder.Entity<ShoppingCartAddon>()
+				.HasQueryFilter(s => s.DeletedAt == null);
+			modelBuilder.Entity<ShoppingCartNoOption>()
+				.HasQueryFilter(s => s.DeletedAt == null);
+			modelBuilder.Entity<ShoppingCartGroup>()
+				.HasQueryFilter(s => s.DeletedAt == null);
+
+			// Orders
 			modelBuilder.Entity<OrderItem>()
 				.HasQueryFilter(o => o.Item.DeletedAt == null);
-
 			modelBuilder.Entity<OrderItemAddon>()
 				.HasQueryFilter(oia => oia.Addon.DeletedAt == null);
 			modelBuilder.Entity<OrderItemNoOption>()
 							.HasQueryFilter(oino => oino.NoOption.DeletedAt == null);
 			modelBuilder.Entity<OrderItemGroup>()
 							.HasQueryFilter(oig => oig.GroupOption.DeletedAt == null);
+
+			// Indexes
 
 
 			/*modelBuilder.Entity<ModifierSnapshot>()

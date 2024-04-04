@@ -1,4 +1,5 @@
 ﻿using SalernoServer.Models.ItemModels;
+using Server.Models.ItemModels.SnapshotModels;
 
 namespace Server.Models.ItemModels.ModelDTO
 {

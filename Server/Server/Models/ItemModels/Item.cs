@@ -2,6 +2,7 @@
 using Server.Models;
 using Server.Models.ItemModels;
 using Server.Models.ItemModels.Helpers;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace SalernoServer.Models.ItemModels
@@ -12,6 +13,9 @@ namespace SalernoServer.Models.ItemModels
         public string Name { get; set; }
         public string Description { get; set; } = "";
         public string Department { get; set; }
+        public long CategoryId { get; set; }
+        [ForeignKey("CategoryId")]
+        [JsonIgnore]
         public Category Category { get; set; }
         public string UPC { get; set; }
         public string SKU { get; set; }

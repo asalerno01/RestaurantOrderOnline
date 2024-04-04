@@ -141,6 +141,9 @@ const Checkout = () => {
         if (canSubmitOrder(inputData)) {
             await axios({
                 method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${auth.accessToken}`
+                },
                 url: "https://localhost:7074/api/orders",
                 data: {
                     accountId: auth.accountId,
@@ -158,6 +161,7 @@ const Checkout = () => {
                 withCredentials: true
             })
             .then(res => {
+                console.log(auth.accessToken)
                 console.log(res);
                 localStorage.removeItem("order");
                 navigate("/salerno/order");

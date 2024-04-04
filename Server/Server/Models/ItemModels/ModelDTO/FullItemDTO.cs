@@ -1,40 +1,17 @@
 ﻿using SalernoServer.Models.ItemModels;
 using Server.Models.ItemModels.Helpers;
+using Server.Models.ItemModels.SnapshotModels;
 
 namespace Server.Models.ItemModels.ModelDTO
 {
-    public class ItemDTO
+    public class FullItemDTO
     {
-        public ItemDTO(Item item)
-        {
-            ItemId = item.ItemId;
-            Name = item.Name;
-            Description = item.Description;
-            Department = item.Department;
-            CategoryId = item.Category.CategoryId;
-            UPC = item.UPC;
-            SKU = item.SKU;
-            Price = item.Price;
-            Discountable = item.Discountable;
-            Taxable = item.Taxable;
-            TrackingInventory = item.TrackingInventory;
-            Cost = item.Cost;
-            AssignedCost = item.AssignedCost;
-            Quantity = item.Quantity;
-            ReorderTrigger = item.ReorderTrigger;
-            RecommendedOrder = item.RecommendedOrder;
-            Supplier = item.Supplier;
-            LiabilityItem = item.LiabilityItem;
-            LiabilityRedemptionTender = item.LiabilityRedemptionTender;
-            TaxGroupOrRate = item.TaxGroupOrRate;
-            Modifier = new ModifierDTO(item.Modifier);
-            IsEnabled = item.IsEnabled;
-        }
         public string ItemId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string Department { get; set; }
-        public long CategoryId { get; set; }
+        //public long CategoryId { get; set; }
+        public CategoryHelper Category { get; set; }
         public string UPC { get; set; }
         public string SKU { get; set; }
         public decimal Price { get; set; }
@@ -62,5 +39,32 @@ namespace Server.Models.ItemModels.ModelDTO
             };
             return categoryHelper;
         }
-    }
+
+		public FullItemDTO(Item item)
+		{
+			ItemId = item.ItemId;
+			Name = item.Name;
+			Description = item.Description;
+			Department = item.Department;
+			//CategoryId = item.CategoryId;
+            Category = CategoryToCategoryHelper(item.Category);
+			UPC = item.UPC;
+			SKU = item.SKU;
+			Price = item.Price;
+			Discountable = item.Discountable;
+			Taxable = item.Taxable;
+			TrackingInventory = item.TrackingInventory;
+			Cost = item.Cost;
+			AssignedCost = item.AssignedCost;
+			Quantity = item.Quantity;
+			ReorderTrigger = item.ReorderTrigger;
+			RecommendedOrder = item.RecommendedOrder;
+			Supplier = item.Supplier;
+			LiabilityItem = item.LiabilityItem;
+			LiabilityRedemptionTender = item.LiabilityRedemptionTender;
+			TaxGroupOrRate = item.TaxGroupOrRate;
+			Modifier = new ModifierDTO(item.Modifier);
+			IsEnabled = item.IsEnabled;
+		}
+	}
 }

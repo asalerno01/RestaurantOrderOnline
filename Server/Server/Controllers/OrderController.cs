@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SalernoServer.Models;
 using Server.Models.Authentication;
 using Server.Models.ItemModels.Helpers;
 using Server.Models.OrderModels;
+using System.Security.Claims;
 
 namespace SalernoServer.Controllers
 {
@@ -236,6 +238,14 @@ namespace SalernoServer.Controllers
                 .ToListAsync();
             
             return Ok(savedOrders.Select(savedOrder => new SavedOrderDTO(savedOrder)).ToList());
+        }
+
+		[Authorize]
+        [HttpPost]
+		public IActionResult CreateOrder()
+        {
+            var x = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            return Ok(x);
         }
         /*[HttpPost]
         public async Task<ActionResult<Order>> CreateOrder([FromBody] OrderHelper order)

@@ -12,6 +12,9 @@ const Edit = () => {
     const { itemId } = useParams();
     const location = useLocation();
 
+    const [createNewCategory, setCreateNewCategory] = useState(false);
+    const [newCategory, setNewCategory] = useState("");
+
     const [item, setItem] = useState({
         "itemId": "",
         "name": "",
@@ -29,12 +32,12 @@ const Edit = () => {
         "quantity": 0,
         "reorderTrigger": 0,
         "recommendedOrder": 0,
-        "lastSoldDate": new Date(),
         "supplier": "",
         "liabilityItem": false,
         "liabilityRedemptionTender": "",
         "taxGroupOrRate": "0",
-        "isEnabled": true
+        "isEnabled": true,
+        "categoryName": ""
     });
     const [categories, setCategories] = useState([]);
 
@@ -74,8 +77,10 @@ const Edit = () => {
             .catch(err => console.log(err));
         }
         else {
+            let fixedItem = addCategoryObjectToState();
             console.log("putting")
-            await axios.put(`https://localhost:7074/api/items/${item.itemId}`, item)
+            console.log(JSON.stringify(fixedItem));
+            await axios.put(`https://localhost:7074/api/items/${item.itemId}`, fixedItem)
             .then(res => {
                 console.log(res);
                 navigate("/salerno/items");
@@ -85,18 +90,68 @@ const Edit = () => {
             });
         }
     }
+
+    function addCategoryObjectToState() {
+        console.log("Adding category object")
+        let tempItem = Object.assign({}, item);
+        let category = {
+            "categoryId": item["categoryId"],
+            "name": ""
+        };
+        if (item["categoryId"] !== 0) {
+            console.log(item["categoryId"])
+            console.log(categories)
+            // num to string here...
+            category["name"] = categories.find(c => c["categoryId"] == item["categoryId"])["name"];
+            
+        } else {
+            category["name"] = item["categoryName"];
+        }
+        tempItem["category"] = category;
+        return tempItem;
+    }
+
     const handleInputChange = event => {
         // TODO: Validate input number vs string.
-        let value = event.target.value;
-        let attributeType = event.target.attributes.attributeType.value;
-        let tempItem = Object.assign({}, item);
-        console.log(item.isEnabled)
-        if (attributeType === "isEnabled") tempItem.isEnabled = !item.isEnabled;
-        else tempItem[attributeType] = value;
-        setItem(tempItem);
+        if (event.target.value === "_newCategory") {
+            setCreateNewCategory(true);
+        } else {
+            let value = event.target.value;
+            let attributeType = event.target.attributes.attributeType.value;
+            let tempItem = Object.assign({}, item);
+            console.log(event.target.value)
+            if (attributeType === "isEnabled") tempItem.isEnabled = !item.isEnabled;
+            else tempItem[attributeType] = value;
+            setItem(tempItem);
+        }
     }
+
     if ((itemId === undefined || itemId === "undefined") && location.pathname !== "/salerno/items/new") return navigate("/salerno/items");
 
+    const CategoryDiv = () => {
+        if (!createNewCategory) {
+            return (
+                <div>
+                    <select className={EditStyles.input} value={item.categoryId} attributeType="categoryId" onChange={handleInputChange} id='category-input'>
+                    <option value="_newCategory">Add a new Category.</option>
+                    {
+                        categories.map(category => (
+                            <option key={`category-${category.categoryId}`} value={category.categoryId}>{category.name}</option>
+                        ))
+                    }
+                    </select>
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    <input type='text' className={EditStyles.input} value={newCategory} onChange={e => setNewCategory(e.target.value)} />
+                    <button type="button">Save</button>
+                    <button type="button" onClick={() => setCreateNewCategory(false)}>Cancel</button>
+                </div>
+            )
+        }
+    }
     return (
         <main className={EditStyles.edit}>
             <div className={EditStyles.header}>
@@ -137,13 +192,7 @@ const Edit = () => {
                             </div>
                             <div>
                                 <label htmlFor='category-input'>Category <QuestionIcon /></label>
-                                <select className={EditStyles.input} value={item.categoryId} attributeType="categoryId" onChange={handleInputChange} id='category-input'>
-                                {
-                                    categories.map(category => (
-                                        <option key={`category-${category.categoryId}`} value={category.categoryId}>{category.name}</option>
-                                    ))
-                                }
-                                </select>
+                                <CategoryDiv />
                             </div>
                             <div>
                                 <label htmlFor='upc-input'>UPC <QuestionIcon /></label>
@@ -159,7 +208,7 @@ const Edit = () => {
                         <h3>Pricing</h3>
                         <div className={EditStyles.inputs_container}>
                             <div>
-                                <label htmlFor='sale-price-input' className={EditStyles.required_label}>Sales Price <div className='EditItem_Required_Field_Indicator'></div></label>
+                                <label htmlFor='sale-price-input' className={EditStyles.required_label}>Sales Price</label>
                                 <input type='text' className={EditStyles.input} value={item.price} attributeType="price" onChange={handleInputChange} id='sale-price-input'/>
                             </div>
                             <div>
@@ -243,6 +292,18 @@ const Edit = () => {
                 </footer>
             </section>
         </main>
+    )
+}
+
+function CategoryNameInput() {
+    const [categoryName, setCategoryName] = useState("");
+    return (
+        <div>
+            <label htmlFor='category-input'>Category <QuestionIcon /></label>
+            <input type='text' className={EditStyles.input} value={categoryName} onChange={e => setCategoryName(e.target.value)} />
+            <button type="button">Save</button>
+            <button type="button">Cancel</button>
+        </div>
     )
 }
 

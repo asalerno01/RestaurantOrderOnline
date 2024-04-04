@@ -9,6 +9,9 @@ using Server.Models.Authentication;
 using Microsoft.EntityFrameworkCore;
 using System.Web;
 using Server.Models;
+using System.Security.Principal;
+using SalernoServer.JwtHelpers;
+using Server.Models.ShoppingCartModels;
 
 namespace SalernoServer
 {
@@ -29,25 +32,26 @@ namespace SalernoServer
         public async Task<IActionResult> LoginAccount([FromBody] LoginModel loginModel)
         {
             var cookie = Request.Cookies["RefreshToken"];
-            foreach (string s in Request.Cookies.Keys)
-            {
-                Console.WriteLine(s);
-            }
-            if (cookie is not null)
-            {
-                Console.WriteLine($"===== Cookie Value=>{cookie}");
-            }
-            var account = _context.Accounts.Where(a => a.Email.Equals(loginModel.Email)).FirstOrDefault();
+
+            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Email.Equals(loginModel.Email));
+            if (account is null) return BadRequest("Bad email");
+            if (account.Password is null) return BadRequest("Account has null password");
+
+            var shoppingCart = await _context.ShoppingCarts.FirstOrDefaultAsync(s => s.AccountId == account.AccountId);
+            long shoppingCartId = (shoppingCart is null) ? 0 : shoppingCart.ShoppingCartId;
+
             if (account is not null && account.Password.Equals(loginModel.Password))
             {
                 var authClaims = new List<Claim>
                 {
-                    new Claim("Email", account.Email),
+                    new Claim(ClaimTypes.Email, account.Email),
+                    new Claim("ShoppingCartId", shoppingCartId.ToString(), ClaimValueTypes.String),
+                    new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString()),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 };
 
-                var accessToken = CreateAccessToken(authClaims);
-                var refreshToken = CreateRefreshToken(authClaims);
+                var accessToken = JwtHelpers.JwtHelpers.CreateAccessToken(authClaims);
+                var refreshToken = JwtHelpers.JwtHelpers.CreateRefreshToken(authClaims);
 
                 var refTokString = new JwtSecurityTokenHandler().WriteToken(refreshToken);
                 account.RefreshToken = refTokString;
@@ -69,8 +73,8 @@ namespace SalernoServer
                 {
                     accountId = account.AccountId,
                     accessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
-                    Email = account.Email,
-                    FirstName = account.FirstName,
+                    email = account.Email,
+                    firstName = account.FirstName,
                     lastName = account.LastName,
                     phoneNumber = account.PhoneNumber
                 });
@@ -120,6 +124,32 @@ namespace SalernoServer
             Response.Cookies.Append("RefreshToken", "", cookieOptions);
             return Ok("Done");
         }
+
+        [HttpGet]
+        [Route("unregisteredtoken")]
+        public async Task<IActionResult> GetUnregisteredToken()
+        {
+            var newShoppingCart = new ShoppingCart();
+            await _context.ShoppingCarts.AddAsync(newShoppingCart);
+
+			var authClaims = new List<Claim>
+			{
+				new Claim(ClaimTypes.Email, string.Empty),
+				new Claim("ShoppingCartId", newShoppingCart.ShoppingCartId.ToString(), ClaimValueTypes.String),
+				new Claim(ClaimTypes.NameIdentifier, "0"),
+				new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+			};
+
+			var accessToken = JwtHelpers.JwtHelpers.CreateRefreshToken(authClaims);
+
+			await _context.SaveChangesAsync();
+
+			return Ok(new
+			{
+				accessToken = new JwtSecurityTokenHandler().WriteToken(accessToken)
+			});
+		}
+
         [HttpGet]
         [Route("refresh")]
         public async Task<IActionResult> RefreshToken()
@@ -129,18 +159,19 @@ namespace SalernoServer
             if (string.IsNullOrEmpty(refreshToken)) return NoContent();
             Console.WriteLine("RefreshToken==============>" + refreshToken);
             
-            var principal = ValidateToken(refreshToken);
+            var principal = JwtHelpers.JwtHelpers.ValidateToken(refreshToken);
             if (principal is null)
             {
                 return BadRequest("Invalid token");
             }
-            string emailFromClaim = principal.Claims.Where(c => c.Type.Equals("Email")).FirstOrDefault().Value;
-            if (emailFromClaim is null) return BadRequest("Bad email");
-            Console.WriteLine(emailFromClaim);
-            var account = _context.Accounts.Where(a => a.Email.Equals(emailFromClaim)).FirstOrDefault();
-            if (account is null)
-                return BadRequest("Invalid token account!");
-            Console.WriteLine(DateTime.UtcNow.TimeOfDay.Ticks + " - " + principal.Claims.Where(c => c.Type.Equals("exp")).FirstOrDefault().Value);
+            //string emailFromClaim = principal.Claims.Where(c => c.Type.Equals("Email")).FirstOrDefault().Value;
+            //if (emailFromClaim is null) return BadRequest("Bad email");
+            //var account = _context.Accounts.Where(a => a.Email.Equals(emailFromClaim)).FirstOrDefault();
+            var accountIdClaim = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (accountIdClaim is null) return BadRequest("AccountId is null");
+
+			var account = await _context.Accounts.FindAsync(long.Parse(accountIdClaim.Value)); // check this
+            if (account is null) return BadRequest("Invalid token account!");
             var tokenDate = DateTimeOffset.FromUnixTimeSeconds(long.Parse(principal.Claims.Where(c => c.Type.Equals("exp")).FirstOrDefault().Value)).UtcDateTime;
             var now = DateTime.UtcNow.ToUniversalTime();
 
@@ -159,13 +190,18 @@ namespace SalernoServer
                 return BadRequest("Token does not match DB");
             }
 
-            var authClaims = new List<Claim>
-                {
-                    new Claim("Email", account.Email),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
+			var shoppingCart = await _context.ShoppingCarts.FirstOrDefaultAsync(s => s.AccountId == account.AccountId);
+			long shoppingCartId = (shoppingCart is null) ? 0 : shoppingCart.ShoppingCartId;
 
-            var token = CreateAccessToken(authClaims);
+			var authClaims = new List<Claim>
+			{
+				new Claim(ClaimTypes.Email, account.Email),
+				new Claim("ShoppingCartId", shoppingCartId.ToString(), ClaimValueTypes.String),
+				new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString()),
+				new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+			};
+
+			var token = JwtHelpers.JwtHelpers.CreateAccessToken(authClaims);
             
             var tok = new JwtSecurityTokenHandler().WriteToken(token);
             
@@ -180,67 +216,6 @@ namespace SalernoServer
                 phoneNumber = account.PhoneNumber,
                 accessToken = tok
             });
-        }
-        private static JwtSecurityToken CreateAccessToken(List<Claim> authClaims)
-        {
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                "393db6f97fa5f393e04a0d687a6963d843bfed13189aa397398084a8056e881656be9a7448d923d75eef7e19087145da577dc03c3c9c6a8e32884a6e5fa7bc1"
-            ));
-
-            var token = new JwtSecurityToken(
-                issuer: "https://localhost:7074",
-                audience: "https://localhost:7074",
-                expires: DateTime.UtcNow.AddMinutes(15),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
-
-            return token;
-        }
-        private static JwtSecurityToken CreateRefreshToken(List<Claim> authClaims)
-        {
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                "e7202338bf9a0384046b2753776c5fa9cc7e095dc0df1e63c8f95bbb0df31a7bc9a3732b13bfe0ecd2c4f9ce5abaaba7be85860f9dc2a25c453ec3aab6be157f"
-            ));
-
-            var token = new JwtSecurityToken(
-                issuer: "https://localhost:7074",
-                audience: "https://localhost:7074",
-                expires: DateTime.UtcNow.AddHours(1),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                ); ;
-
-            return token;
-        }
-
-        private static ClaimsPrincipal? ValidateToken(string token)
-        {
-            try
-            {
-                var tokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateAudience = false,
-                    ValidateIssuer = false,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                        "e7202338bf9a0384046b2753776c5fa9cc7e095dc0df1e63c8f95bbb0df31a7bc9a3732b13bfe0ecd2c4f9ce5abaaba7be85860f9dc2a25c453ec3aab6be157f"
-                    )),
-                    ValidateLifetime = true
-                };
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
-                if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                    throw new SecurityTokenException("Invalid token");
-
-                return principal;
-            }
-            catch (Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException ex)
-            {
-                Console.WriteLine("Yeah");
-                return null;
-            }
         }
     }
 }

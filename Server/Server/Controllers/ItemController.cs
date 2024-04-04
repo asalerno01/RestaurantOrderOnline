@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using SalernoServer.Models;
 using SalernoServer.Models.ItemModels;
+using Server.Models.ItemModels;
 using Server.Models.ItemModels.Helpers;
 using Server.Models.ItemModels.ModelDTO;
 
@@ -26,7 +27,7 @@ namespace SalernoServer.Controllers
 
         // GET: api/Items
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ItemDTO>>> GetItems()
+        public async Task<ActionResult<IEnumerable<FullItemDTO>>> GetItems()
         {
             var items = await _context.Items
                 .Include(i => i.Modifier)
@@ -39,11 +40,11 @@ namespace SalernoServer.Controllers
                 .Include(i => i.Category)
                 .OrderBy(i => i.Category)
                 .ToListAsync();
-            return Ok(items.Select(item => new ItemDTO(item)).ToList());
+            return Ok(items.Select(item => new FullItemDTO(item)).ToList());
         }
         [HttpGet]
         [Route("menu")]
-        public async Task<ActionResult<IEnumerable<ItemDTO>>> GetMenuItems()
+        public async Task<ActionResult<IEnumerable<FullItemDTO>>> GetMenuItems()
         {
             var items = await _context.Items
                 .Include(i => i.Modifier)
@@ -58,12 +59,12 @@ namespace SalernoServer.Controllers
                 .OrderBy(i => i.Category)
                 .ToListAsync();
 
-            return Ok(items.Select(item => new ItemDTO(item)).ToList());
+            return Ok(items.Select(item => new FullItemDTO(item)).ToList());
         }
 
         // GET: api/items/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ItemDTO>> GetItem(string id)
+        public async Task<ActionResult<FullItemDTO>> GetItem(string id)
         {
             //var item = await _context.Items.FindAsync(itemId);
             var item = await _context.Items
@@ -80,7 +81,7 @@ namespace SalernoServer.Controllers
             if (item == null) return NotFound();
             
 
-            return Ok(new ItemDTO(item));
+            return Ok(new FullItemDTO(item));
         }
         // PUT: api/Items/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -92,7 +93,7 @@ namespace SalernoServer.Controllers
             var newItem = await _context.Items.FindAsync(id);
             if (newItem == null) return NotFound();
 
-            var category = await _context.Categories.FindAsync(item.CategoryId);
+            var category = await _context.Categories.FindAsync(item.Category.CategoryId);
             if (category is null) return BadRequest("Bad category");
 
             newItem.ItemId = item.ItemId;
@@ -132,8 +133,17 @@ namespace SalernoServer.Controllers
             bool itemExists = _context.Items.Any(i => i.ItemId.Equals(itemHelper.ItemId));
             if (itemExists) return BadRequest($"ItemId exists:{itemHelper.ItemId}");
 
-            var category = await _context.Categories.FindAsync(itemHelper.CategoryId);
-            if (category is null) return BadRequest("Bad category");
+            Category category;
+            if (itemHelper.Category.CategoryId == 0)
+            {
+                category = new(itemHelper.Category.Name);
+            }
+            else
+            {
+				var foundCategory = await _context.Categories.FindAsync(itemHelper.Category.CategoryId);
+				if (foundCategory is null) return BadRequest("Bad category");
+                category = foundCategory;
+			}
 
             Item newItem = new()
             {
@@ -175,7 +185,7 @@ namespace SalernoServer.Controllers
 				bool itemExists = _context.Items.Any(i => i.ItemId.Equals(itemHelper.ItemId));
 				if (!itemExists)
                 {
-					var category = await _context.Categories.FindAsync(itemHelper.CategoryId);
+					var category = await _context.Categories.FindAsync(itemHelper.Category.CategoryId);
 					if (category is null) return BadRequest("Bad category");
 
 					Item newItem = new()

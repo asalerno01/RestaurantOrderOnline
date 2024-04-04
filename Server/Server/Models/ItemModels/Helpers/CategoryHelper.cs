@@ -2,7 +2,7 @@
 {
     public class CategoryHelper
     {
-        public long CategoryId { get; set; }
+        public long? CategoryId { get; set; }
         public string Name { get; set; }
     }
 }

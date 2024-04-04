@@ -13,5 +13,10 @@ namespace Server.Models.ItemModels
             CategoryId = categoryId;
             Name = name;
         }
+
+        public Category(string name)
+        {
+            Name = name;
+        }
     }
 }

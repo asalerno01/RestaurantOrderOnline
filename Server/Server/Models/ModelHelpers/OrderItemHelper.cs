@@ -6,8 +6,8 @@ namespace SalernoServer.Models
     {
         public string ItemId { get; set; }
         public int Count { get; set; }
-        public List<GroupOptionHelper> GroupOptions { get; set; } = new();
-        public List<AddonHelper> Addons { get; set; } = new();
-        public List<NoOptionHelper> NoOptions { get; set; } = new();
+        public List<GroupOptionHelper> GroupOptions { get; set; }
+        public List<AddonHelper> Addons { get; set; }
+        public List<NoOptionHelper> NoOptions { get; set; }
     }
 }

@@ -16,7 +16,7 @@ namespace SalernoServer.Controllers
             _context = context;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategories()
+        public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
             var categories = await _context.Categories
                 .Include(c => c.Items)
@@ -29,10 +29,12 @@ namespace SalernoServer.Controllers
                 .ThenInclude(i => i.Modifier)
                 .ThenInclude(m => m.Groups)
                 .ThenInclude(g => g.GroupOptions)
+                .AsSplitQuery()
                 .ToListAsync();
 
-            return Ok(categories.Select(category => new CategoryDTO(category)).ToList());
+            return Ok(categories.Select(c => new CategoryDTO(c)).ToList());
         }
+
         [HttpGet]
         [Route("simple")]
         public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategoriesSimple()
@@ -63,13 +65,15 @@ namespace SalernoServer.Controllers
         }
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> CreateCategory([FromBody] Category category)
+        public async Task<IActionResult> CreateCategory([FromBody] CategoryHelper category)
         {
             if (category is null) return BadRequest("Category is null");
             var foundCategory = await _context.Categories.Where(c => c.Name.Equals(category.Name)).FirstOrDefaultAsync();
             if (foundCategory is not null) return BadRequest($"Category with {category.Name} already exists");
-            
-            await _context.Categories.AddAsync(category);
+
+            Category newCategory = new(category.Name);
+
+            await _context.Categories.AddAsync(newCategory);
             await _context.SaveChangesAsync();
             return Ok();
         }

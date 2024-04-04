@@ -9,6 +9,8 @@ using SalernoServer.Services;
 using System.Text;
 using Server.Triggers;
 using Server.Triggers.Snapshot;
+using Microsoft.AspNetCore.Authentication;
+using System.Configuration;
 
 namespace SalernoServer
 {
@@ -48,7 +50,22 @@ namespace SalernoServer
 
             services.AddControllers();
 
-            services.AddJWTTokenServices(Configuration);
+			//services.AddJWTTokenServices(Configuration);
+
+			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+				.AddJwtBearer(options =>
+				{
+					options.TokenValidationParameters = new TokenValidationParameters
+					{
+						ValidateIssuer = true,
+						ValidateAudience = true,
+						ValidateLifetime = true,
+						ValidateIssuerSigningKey = true,
+						ValidIssuer = "https://localhost:7074",
+						ValidAudience = "https://localhost:7074",
+						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("e7202338bf9a0384046b2753776c5fa9cc7e095dc0df1e63c8f95bbb0df31a7bc9a3732b13bfe0ecd2c4f9ce5abaaba7be85860f9dc2a25c453ec3aab6be157f"))
+					};
+				});
 
 			services.AddCors(options =>
 			{

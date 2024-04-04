@@ -12,5 +12,6 @@ namespace Server.Models.ItemModels.SnapshotModels
 		[JsonIgnore]
 		public Group Group { get; set; }
 		public string Name { get; set; }
+		public string Description { get; set; }
 	}
 }

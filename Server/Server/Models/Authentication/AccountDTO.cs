@@ -8,7 +8,6 @@
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public bool IsVerified { get; set; }
-        public int OrderCount { get; set; }
 
         public AccountDTO(Account account)
         {
@@ -18,7 +17,6 @@
             Email = account.Email;
             PhoneNumber = account.PhoneNumber;
             IsVerified = account.IsVerified;
-            OrderCount = account.OrderCount;
         }
     }
 }

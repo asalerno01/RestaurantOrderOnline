@@ -4,6 +4,7 @@ using SalernoServer.Models;
 using Microsoft.EntityFrameworkCore;
 using Server.Models.ItemModels.Helpers;
 using Server.Models.ItemModels;
+using Server.Models.ItemModels.ModelDTO;
 
 namespace Server.Controllers
 {
@@ -32,18 +33,20 @@ namespace Server.Controllers
                 .ThenInclude(i => i.Modifier)
                 .ThenInclude(m => m.Groups)
                 .ThenInclude(g => g.GroupOptions)
+                .Include(c => c.Items)
                 .ToListAsync();
-            return Ok(categories.Select(category => new CategoryDTO(category)).ToList().Select(category => new MenuCategoryDTO(category)).Where(category => category.Items.Count > 0).ToList());
+
+            return Ok(categories.Select(category => new MenuCategoryDTO(category)).ToList());
         }
         
         public class MenuCategoryDTO
         {
             public string Name { get; set; }
-            public List<CategoryItemDTO> Items { get; set; } = new();
-            public MenuCategoryDTO(CategoryDTO category)
+            public List<SimpleItemDTO> Items { get; set; }
+            public MenuCategoryDTO(Category category)
             {
                 Name = category.Name;
-                Items = category.Items.Select(item => new CategoryItemDTO(item.ItemId, item.Name, item.Description, item.Price, item.Modifier, item.IsEnabled)).Where(item => item.IsEnabled).ToList();
+                Items = category.Items.Select(item => new SimpleItemDTO(item)).ToList();
             }
         }
     }

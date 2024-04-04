@@ -1,17 +1,21 @@
-﻿namespace Server.Models.ItemModels.Helpers
+﻿using Server.Models.ItemModels.ModelDTO;
+
+namespace Server.Models.ItemModels.Helpers
 {
-    public class CategoryDTO : BaseModel
+    public class CategoryDTO
     {
         public long CategoryId { get; set; }
         public string Name { get; set; }
-        public List<CategoryItemDTO> Items { get; set; }
+        public List<FullItemDTO> Items { get; set; }
         public CategoryDTO(Category category)
         {
             CategoryId = category.CategoryId;
             Name = category.Name;
-            CreatedAt = category.CreatedAt;
-            UpdatedAt = category.UpdatedAt;
-            Items = category.Items.Select(item => new CategoryItemDTO(item.ItemId, item.Name, item.Description, item.Price, item.Modifier, item.IsEnabled)).Where(item => item.IsEnabled).ToList();
+            Items = category.Items
+                .Select(item => new FullItemDTO(item))
+                .Where(item => item.IsEnabled)
+                .ToList();
         }
+        // TODO: Fix this. Remove where is enabled.
     }
 }
