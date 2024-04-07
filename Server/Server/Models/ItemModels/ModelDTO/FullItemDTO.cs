@@ -28,7 +28,9 @@ namespace Server.Models.ItemModels.ModelDTO
         public string LiabilityRedemptionTender { get; set; }
         public string TaxGroupOrRate { get; set; }
         public bool IsEnabled { get; set; }
-        public ModifierDTO Modifier { get; set; }
+        public List<AddonDTO> Addons { get; set; }
+        public List<NoOptionDTO> NoOptions { get; set; }
+        public List<GroupDTO> Groups { get; set; }
 
         private static CategoryHelper CategoryToCategoryHelper(Category category)
         {
@@ -63,8 +65,11 @@ namespace Server.Models.ItemModels.ModelDTO
 			LiabilityItem = item.LiabilityItem;
 			LiabilityRedemptionTender = item.LiabilityRedemptionTender;
 			TaxGroupOrRate = item.TaxGroupOrRate;
-			Modifier = new ModifierDTO(item.Modifier);
 			IsEnabled = item.IsEnabled;
+
+            Addons = item.Addons.Select(addon => new AddonDTO(addon)).ToList();
+            NoOptions = item.NoOptions.Select(noOption =>  new NoOptionDTO(noOption)).ToList();
+            Groups = item.Groups.Select(group => new GroupDTO(group)).ToList();
 		}
 	}
 }

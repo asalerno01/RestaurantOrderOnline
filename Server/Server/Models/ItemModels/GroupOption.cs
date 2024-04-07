@@ -13,7 +13,5 @@ namespace SalernoServer.Models.ItemModels
 		[Precision(18, 2)]
 		public decimal Price { get; set; } = 0;
         public bool IsDefault { get; set; } = false;
-        [JsonIgnore]
-        public Group Group { get; set; }
     }
 }

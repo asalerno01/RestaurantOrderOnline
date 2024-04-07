@@ -84,8 +84,8 @@ namespace Server.Migrations
                     b.Property<DateTimeOffset?>("DeletedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<long>("ModifierId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("ItemId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -100,7 +100,7 @@ namespace Server.Migrations
 
                     b.HasKey("AddonId");
 
-                    b.HasIndex("ModifierId");
+                    b.HasIndex("ItemId");
 
                     b.ToTable("Addons");
                 });
@@ -123,8 +123,8 @@ namespace Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("ModifierId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("ItemId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -135,7 +135,7 @@ namespace Server.Migrations
 
                     b.HasKey("GroupId");
 
-                    b.HasIndex("ModifierId");
+                    b.HasIndex("ItemId");
 
                     b.ToTable("Groups");
                 });
@@ -154,7 +154,7 @@ namespace Server.Migrations
                     b.Property<DateTimeOffset?>("DeletedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<long>("GroupId")
+                    b.Property<long?>("GroupId")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsDefault")
@@ -270,35 +270,6 @@ namespace Server.Migrations
                     b.ToTable("Items");
                 });
 
-            modelBuilder.Entity("SalernoServer.Models.ItemModels.Modifier", b =>
-                {
-                    b.Property<long>("ModifierId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ModifierId"), 1L, 1);
-
-                    b.Property<DateTimeOffset?>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTimeOffset?>("DeletedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("ItemId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.HasKey("ModifierId");
-
-                    b.HasIndex("ItemId")
-                        .IsUnique();
-
-                    b.ToTable("Modifiers");
-                });
-
             modelBuilder.Entity("SalernoServer.Models.ItemModels.NoOption", b =>
                 {
                     b.Property<long>("NoOptionId")
@@ -313,8 +284,8 @@ namespace Server.Migrations
                     b.Property<DateTimeOffset?>("DeletedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<long>("ModifierId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("ItemId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -329,7 +300,7 @@ namespace Server.Migrations
 
                     b.HasKey("NoOptionId");
 
-                    b.HasIndex("ModifierId");
+                    b.HasIndex("ItemId");
 
                     b.ToTable("NoOptions");
                 });
@@ -648,33 +619,6 @@ namespace Server.Migrations
                     b.ToTable("ItemSnapshots");
                 });
 
-            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.ModifierSnapshot", b =>
-                {
-                    b.Property<long>("ModifierSnapshotId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ModifierSnapshotId"), 1L, 1);
-
-                    b.Property<DateTimeOffset?>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTimeOffset?>("DeletedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<long>("ModifierId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.HasKey("ModifierSnapshotId");
-
-                    b.HasIndex("ModifierId");
-
-                    b.ToTable("ModifierSnapshots");
-                });
-
             modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.NoOptionSnapshot", b =>
                 {
                     b.Property<long>("NoOptionSnapshotId")
@@ -893,72 +837,6 @@ namespace Server.Migrations
                     b.ToTable("OrderItemNoOptions");
                 });
 
-            modelBuilder.Entity("Server.Models.OrderModels.SavedOrder", b =>
-                {
-                    b.Property<long>("SavedOrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("SavedOrderId"), 1L, 1);
-
-                    b.Property<long>("AccountId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTimeOffset?>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTimeOffset?>("DeletedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTime>("LastOrderDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.HasKey("SavedOrderId");
-
-                    b.HasIndex("AccountId");
-
-                    b.ToTable("SavedOrders");
-                });
-
-            modelBuilder.Entity("Server.Models.OrderModels.SavedOrderOrderItem", b =>
-                {
-                    b.Property<long>("SavedOrderOrderItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("SavedOrderOrderItemId"), 1L, 1);
-
-                    b.Property<DateTimeOffset?>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTimeOffset?>("DeletedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<long?>("OrderItemId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("SavedOrderId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.HasKey("SavedOrderOrderItemId");
-
-                    b.HasIndex("OrderItemId");
-
-                    b.HasIndex("SavedOrderId");
-
-                    b.ToTable("SavedOrderOrderItems");
-                });
-
             modelBuilder.Entity("Server.Models.ShoppingCartModels.ShoppingCart", b =>
                 {
                     b.Property<long>("ShoppingCartId")
@@ -1123,35 +1001,23 @@ namespace Server.Migrations
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Addon", b =>
                 {
-                    b.HasOne("SalernoServer.Models.ItemModels.Modifier", "Modifier")
+                    b.HasOne("SalernoServer.Models.ItemModels.Item", null)
                         .WithMany("Addons")
-                        .HasForeignKey("ModifierId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Modifier");
+                        .HasForeignKey("ItemId");
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Group", b =>
                 {
-                    b.HasOne("SalernoServer.Models.ItemModels.Modifier", "Modifier")
+                    b.HasOne("SalernoServer.Models.ItemModels.Item", null)
                         .WithMany("Groups")
-                        .HasForeignKey("ModifierId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Modifier");
+                        .HasForeignKey("ItemId");
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.GroupOption", b =>
                 {
-                    b.HasOne("SalernoServer.Models.ItemModels.Group", "Group")
+                    b.HasOne("SalernoServer.Models.ItemModels.Group", null)
                         .WithMany("GroupOptions")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Group");
+                        .HasForeignKey("GroupId");
                 });
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Item", b =>
@@ -1165,26 +1031,11 @@ namespace Server.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("SalernoServer.Models.ItemModels.Modifier", b =>
-                {
-                    b.HasOne("SalernoServer.Models.ItemModels.Item", "Item")
-                        .WithOne("Modifier")
-                        .HasForeignKey("SalernoServer.Models.ItemModels.Modifier", "ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Item");
-                });
-
             modelBuilder.Entity("SalernoServer.Models.ItemModels.NoOption", b =>
                 {
-                    b.HasOne("SalernoServer.Models.ItemModels.Modifier", "Modifier")
+                    b.HasOne("SalernoServer.Models.ItemModels.Item", null)
                         .WithMany("NoOptions")
-                        .HasForeignKey("ModifierId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Modifier");
+                        .HasForeignKey("ItemId");
                 });
 
             modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.AddonSnapshot", b =>
@@ -1248,17 +1099,6 @@ namespace Server.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Item");
-                });
-
-            modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.ModifierSnapshot", b =>
-                {
-                    b.HasOne("SalernoServer.Models.ItemModels.Modifier", "Modifier")
-                        .WithMany()
-                        .HasForeignKey("ModifierId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Modifier");
                 });
 
             modelBuilder.Entity("Server.Models.ItemModels.SnapshotModels.NoOptionSnapshot", b =>
@@ -1345,32 +1185,6 @@ namespace Server.Migrations
                         .HasForeignKey("OrderItemId");
 
                     b.Navigation("NoOption");
-                });
-
-            modelBuilder.Entity("Server.Models.OrderModels.SavedOrder", b =>
-                {
-                    b.HasOne("Server.Models.Authentication.Account", "Account")
-                        .WithMany("SavedOrders")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-                });
-
-            modelBuilder.Entity("Server.Models.OrderModels.SavedOrderOrderItem", b =>
-                {
-                    b.HasOne("Server.Models.OrderModels.OrderItem", "OrderItem")
-                        .WithMany()
-                        .HasForeignKey("OrderItemId");
-
-                    b.HasOne("Server.Models.OrderModels.SavedOrder", "SavedOrder")
-                        .WithMany("OrderItems")
-                        .HasForeignKey("SavedOrderId");
-
-                    b.Navigation("OrderItem");
-
-                    b.Navigation("SavedOrder");
                 });
 
             modelBuilder.Entity("Server.Models.ShoppingCartModels.ShoppingCartAddon", b =>
@@ -1462,12 +1276,6 @@ namespace Server.Migrations
 
             modelBuilder.Entity("SalernoServer.Models.ItemModels.Item", b =>
                 {
-                    b.Navigation("Modifier")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SalernoServer.Models.ItemModels.Modifier", b =>
-                {
                     b.Navigation("Addons");
 
                     b.Navigation("Groups");
@@ -1478,8 +1286,6 @@ namespace Server.Migrations
             modelBuilder.Entity("Server.Models.Authentication.Account", b =>
                 {
                     b.Navigation("Orders");
-
-                    b.Navigation("SavedOrders");
                 });
 
             modelBuilder.Entity("Server.Models.ItemModels.Category", b =>
@@ -1499,11 +1305,6 @@ namespace Server.Migrations
                     b.Navigation("Groups");
 
                     b.Navigation("NoOptions");
-                });
-
-            modelBuilder.Entity("Server.Models.OrderModels.SavedOrder", b =>
-                {
-                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("Server.Models.ShoppingCartModels.ShoppingCart", b =>

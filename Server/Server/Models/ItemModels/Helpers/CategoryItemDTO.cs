@@ -9,14 +9,13 @@ namespace Server.Models.ItemModels.Helpers
         public string Description { get; set; }
         public decimal Price { get; set; }
         public bool IsEnabled { get; set; }
-        public Modifier Modifier { get; set; }
-        public CategoryItemDTO(string itemId, string name, string description, decimal price, Modifier modifier, bool isEnabled)
+        // TODO: Add modifiers
+        public CategoryItemDTO(string itemId, string name, string description, decimal price, bool isEnabled)
         {
             ItemId = itemId;
             Name = name;
             Description = description;
             Price = price;
-            Modifier = modifier;
             IsEnabled = isEnabled;
         }
     }

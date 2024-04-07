@@ -22,7 +22,6 @@ namespace SalernoServer.Models
         public DbSet<Item> Items { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<Modifier> Modifiers { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupOption> GroupOptions { get; set; }
         public DbSet<Addon> Addons { get; set; }
@@ -33,11 +32,8 @@ namespace SalernoServer.Models
         public DbSet<OrderItemNoOption> OrderItemNoOptions { get; set; }
         public DbSet<OrderItemGroup> OrderItemGroups { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<SavedOrder> SavedOrders { get; set; }
-        public DbSet<SavedOrderOrderItem> SavedOrderOrderItems { get; set; }
 
         public DbSet<ItemSnapshot> ItemSnapshots { get; set; }
-        public DbSet<ModifierSnapshot> ModifierSnapshots { get; set; }
         public DbSet<AddonSnapshot> AddonSnapshots { get; set; }
         public DbSet<NoOptionSnapshot> NoOptionSnapshots { get; set; }
         public DbSet<GroupSnapshot> GroupSnapshots { get; set; }
@@ -74,47 +70,24 @@ namespace SalernoServer.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Modifier>()
-                .HasMany(m => m.Addons)
-                .WithOne(a => a.Modifier)
-                .OnDelete(DeleteBehavior.Restrict);
-
-			modelBuilder.Entity<Modifier>()
-				.HasMany(m => m.NoOptions)
-				.WithOne(a => a.Modifier)
-				.OnDelete(DeleteBehavior.Restrict);
-
-			modelBuilder.Entity<Modifier>()
-				.HasMany(m => m.Groups)
-				.WithOne(a => a.Modifier)
-				.OnDelete(DeleteBehavior.Restrict);
-
-			modelBuilder.Entity<GroupOption>()
+			/*modelBuilder.Entity<GroupOption>()
 				.HasOne(go => go.Group)
 				.WithMany(g => g.GroupOptions)
-				.OnDelete(DeleteBehavior.Restrict);
+				.OnDelete(DeleteBehavior.Restrict);*/
 
 			modelBuilder.Entity<ItemSnapshot>()
 				.HasOne(i => i.Item)
 				.WithMany()
 				.OnDelete(DeleteBehavior.Restrict);
 
-			modelBuilder.Entity<ModifierSnapshot>()
-				.HasOne(m => m.Modifier)
-				.WithMany()
-				.OnDelete(DeleteBehavior.Restrict);
-
 			/*modelBuilder.Entity<Item>()
 				.HasOne(i => i.Category)
 				.WithMany(c => c.Items);*/
+
 			modelBuilder.Entity<Category>()
 				.HasMany(c => c.Items)
 				.WithOne(i => i.Category)
 				.OnDelete(DeleteBehavior.Restrict);
-			modelBuilder.Entity<Item>()
-				.HasOne(i => i.Modifier)
-				.WithOne(m => m.Item)
-				.OnDelete(DeleteBehavior.Cascade);
 
 			// DeletedAt query filters
 			// Items
@@ -122,10 +95,6 @@ namespace SalernoServer.Models
 				.HasQueryFilter(i => i.DeletedAt == null);
 			modelBuilder.Entity<ItemSnapshot>()
 				.HasQueryFilter(i => i.DeletedAt == null);
-			modelBuilder.Entity<Modifier>()
-				.HasQueryFilter(m => m.DeletedAt == null);
-			modelBuilder.Entity<ModifierSnapshot>()
-				.HasQueryFilter(m => m.DeletedAt == null);
 			modelBuilder.Entity<Addon>()
 				.HasQueryFilter(a => a.DeletedAt == null);
 			modelBuilder.Entity<AddonSnapshot>()

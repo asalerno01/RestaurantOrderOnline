@@ -14,7 +14,9 @@ namespace Server.Models.ItemModels.ModelDTO
 		public decimal Price { get; set; }
 		[JsonIgnore]
 		public bool IsEnabled { get; set; }
-		public ModifierDTO Modifier { get; set; }
+		public List<AddonDTO> Addons { get; set; }
+		public List<NoOptionDTO> NoOptions { get; set; }
+		public List<GroupDTO> Groups { get; set; }
 
 		public SimpleItemDTO(Item item)
 		{
@@ -23,7 +25,9 @@ namespace Server.Models.ItemModels.ModelDTO
 			Description = item.Description;
 			CategoryId = item.CategoryId;
 			Price = item.Price;
-			Modifier = new ModifierDTO(item.Modifier);
+			Addons = item.Addons.Select(addon => new AddonDTO(addon)).ToList();
+			NoOptions = item.NoOptions.Select(noOption => new NoOptionDTO(noOption)).ToList();
+			Groups = item.Groups.Select(group => new GroupDTO(group)).ToList();
 		}
 	}
 }

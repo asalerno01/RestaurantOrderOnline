@@ -36,8 +36,10 @@ namespace SalernoServer.Models.ItemModels
         public string LiabilityRedemptionTender { get; set; }
         public string TaxGroupOrRate { get; set; }
         public bool IsEnabled { get; set; } = true;
-        [JsonIgnore]
-        public Modifier Modifier { get; set; } = new();
-        
-    }
+
+		public List<Group> Groups { get; set; } = new();
+		public List<Addon> Addons { get; set; } = new();
+		public List<NoOption> NoOptions { get; set; } = new();
+
+	}
 }

@@ -42,7 +42,6 @@ namespace SalernoServer
 					triggerOptions.AddTrigger<SnapshotNoOption>();
 					triggerOptions.AddTrigger<SnapshotGroup>();
 					triggerOptions.AddTrigger<SnapshotGroupOption>();
-					triggerOptions.AddTrigger<SnapshotModifier>();
 				})
 	            .LogTo(Console.WriteLine, LogLevel.Information)
 	            .EnableDetailedErrors()

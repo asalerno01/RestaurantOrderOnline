@@ -24,13 +24,10 @@ namespace Server.Controllers
         {
             var categories = await _context.Categories
                 .Include(c => c.Items)
-                .ThenInclude(i => i.Modifier)
                 .ThenInclude(m => m.Addons)
                 .Include(c => c.Items)
-                .ThenInclude(i => i.Modifier)
                 .ThenInclude(m => m.NoOptions)
                 .Include(c => c.Items)
-                .ThenInclude(i => i.Modifier)
                 .ThenInclude(m => m.Groups)
                 .ThenInclude(g => g.GroupOptions)
                 .Include(c => c.Items)

@@ -12,7 +12,5 @@ namespace SalernoServer.Models.ItemModels
         public string Name { get; set; }
         [Precision(18, 2)]
         public decimal Price { get; set; }
-        [JsonIgnore]
-        public Modifier Modifier { get; set; }
     }
 }

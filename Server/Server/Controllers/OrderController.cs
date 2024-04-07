@@ -206,39 +206,6 @@ namespace SalernoServer.Controllers
 
             return Ok(new OrderDTO(order));
         }
-        [HttpGet]
-        [Route("savedorders/{id}")]
-        public async Task<ActionResult<List<SavedOrderDTO>>> GetSavedOrders(long id)
-        {
-            var account = await _context.Accounts.FindAsync(id);
-            if (account is null) return NotFound();
-            var savedOrders = await _context.SavedOrders
-                .Include(savedOrder => savedOrder.OrderItems)
-                .ThenInclude(orderItem => orderItem.OrderItem)
-                .ThenInclude(orderItem => orderItem.Addons)
-                .ThenInclude(addons => addons.Addon)
-                .Include(savedOrder => savedOrder.OrderItems)
-                .ThenInclude(orderItem => orderItem.OrderItem)
-                .ThenInclude(orderItem => orderItem.NoOptions)
-                .ThenInclude(noOption => noOption.NoOption)
-                .Include(savedOrder => savedOrder.OrderItems)
-                .ThenInclude(orderItem => orderItem.OrderItem)
-                .ThenInclude(orderItem => orderItem.Groups)
-                //.ThenInclude(group => group.Group)
-                .Include(savedOrder => savedOrder.OrderItems)
-                .ThenInclude(orderItem => orderItem.OrderItem)
-                .ThenInclude(orderItem => orderItem.Groups)
-                .ThenInclude(group => group.GroupOption)
-                .Include(savedOrder => savedOrder.OrderItems)
-                .ThenInclude(orderItem => orderItem.OrderItem)
-                .Include(savedOrder => savedOrder.OrderItems)
-                .ThenInclude(savedOrderItem => savedOrderItem.OrderItem)
-                .ThenInclude(orderItem => orderItem.Item)
-                .Where(so => so.Account == account)
-                .ToListAsync();
-            
-            return Ok(savedOrders.Select(savedOrder => new SavedOrderDTO(savedOrder)).ToList());
-        }
 
 		[Authorize]
         [HttpPost]
@@ -455,20 +422,6 @@ namespace SalernoServer.Controllers
 
             return Ok();
         }*/
-        private static List<SavedOrderOrderItem> OrderItemsToSavedOrderOrderItems(SavedOrder savedOrder, Order order)
-        {
-            List<SavedOrderOrderItem> savedOrderOrderItems = new();
-            foreach(OrderItem orderItem in order.OrderItems)
-            {
-                savedOrderOrderItems.Add(new()
-                {
-                    SavedOrder = savedOrder,
-                    OrderItem = orderItem
-                });
-            }
-            return savedOrderOrderItems;
-
-        }
         // DELETE: api/orders/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(long id)

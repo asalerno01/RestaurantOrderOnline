@@ -26,6 +26,8 @@ namespace Server.Models.ItemModels.Helpers
         public string TaxGroupOrRate { get; set; }
         public bool IsEnabled { get; set; } = true;
 
-        public ModifierHelper? Modifier { get; set; }
+        public List<AddonHelper> Addons { get; set; }
+        public List<NoOptionHelper> NoOptions { get; set; }
+        public List<GroupHelper> Groups { get; set; }
     }
 }

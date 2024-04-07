@@ -20,13 +20,10 @@ namespace SalernoServer.Controllers
         {
             var categories = await _context.Categories
                 .Include(c => c.Items)
-                .ThenInclude(i => i.Modifier)
                 .ThenInclude(m => m.Addons)
                 .Include(c => c.Items)
-                .ThenInclude(i => i.Modifier)
                 .ThenInclude(m => m.NoOptions)
                 .Include(c => c.Items)
-                .ThenInclude(i => i.Modifier)
                 .ThenInclude(m => m.Groups)
                 .ThenInclude(g => g.GroupOptions)
                 .AsSplitQuery()
@@ -48,13 +45,10 @@ namespace SalernoServer.Controllers
             //var item = await _context.Items.FindAsync(itemId);
             var category = await _context.Categories
                 .Include(c => c.Items)
-                .ThenInclude(i => i.Modifier)
                 .ThenInclude(m => m.Addons)
                 .Include(c => c.Items)
-                .ThenInclude(i => i.Modifier)
                 .ThenInclude(m => m.NoOptions)
                 .Include(c => c.Items)
-                .ThenInclude(i => i.Modifier)
                 .ThenInclude(m => m.Groups)
                 .ThenInclude(g => g.GroupOptions)
                 .FirstOrDefaultAsync(c => c.CategoryId == id);

@@ -11,7 +11,5 @@ namespace SalernoServer.Models.ItemModels
         public string Name { get; set; }
         public string Description { get; set; } = string.Empty;
         public List<GroupOption> GroupOptions { get; set; } = new();
-        [JsonIgnore]
-        public Modifier Modifier { get; set; }
     }
 }

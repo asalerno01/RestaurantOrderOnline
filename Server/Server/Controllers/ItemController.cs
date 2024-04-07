@@ -30,12 +30,9 @@ namespace SalernoServer.Controllers
         public async Task<ActionResult<IEnumerable<FullItemDTO>>> GetItems()
         {
             var items = await _context.Items
-                .Include(i => i.Modifier)
-                .ThenInclude(m => m.Addons)
-                .Include(m => m.Modifier)
-                .ThenInclude(m => m.NoOptions)
-                .Include(m => m.Modifier)
-                .ThenInclude(m => m.Groups)
+                .Include(i => i.Addons)
+                .Include(m => m.NoOptions)
+                .Include(m => m.Groups)
                 .ThenInclude(g => g.GroupOptions)
                 .Include(i => i.Category)
                 .OrderBy(i => i.Category)
@@ -47,12 +44,9 @@ namespace SalernoServer.Controllers
         public async Task<ActionResult<IEnumerable<FullItemDTO>>> GetMenuItems()
         {
             var items = await _context.Items
-                .Include(i => i.Modifier)
-                .ThenInclude(m => m.Addons)
-                .Include(m => m.Modifier)
-                .ThenInclude(m => m.NoOptions)
-                .Include(m => m.Modifier)
-                .ThenInclude(m => m.Groups)
+                .Include(i => i.Addons)
+                .Include(m => m.NoOptions)
+                .Include(m => m.Groups)
                 .ThenInclude(g => g.GroupOptions)
                 .Include(i => i.Category)
                 .Where(item => item.IsEnabled)
@@ -68,18 +62,14 @@ namespace SalernoServer.Controllers
         {
             //var item = await _context.Items.FindAsync(itemId);
             var item = await _context.Items
-                .Include(i => i.Modifier)
-                .ThenInclude(m => m.Addons)
-                .Include(m => m.Modifier)
-                .ThenInclude(m => m.NoOptions)
-                .Include(m => m.Modifier)
-                .ThenInclude(m => m.Groups)
-                .ThenInclude(g => g.GroupOptions)
-                .Include(i => i.Category)
+				.Include(i => i.Addons)
+				.Include(m => m.NoOptions)
+				.Include(m => m.Groups)
+				.ThenInclude(g => g.GroupOptions)
+				.Include(i => i.Category)
                 .FirstOrDefaultAsync(i => i.ItemId.Equals(id));
 
             if (item == null) return NotFound();
-            
 
             return Ok(new FullItemDTO(item));
         }
@@ -118,29 +108,29 @@ namespace SalernoServer.Controllers
             newItem.TaxGroupOrRate = item.TaxGroupOrRate;
             newItem.IsEnabled = item.IsEnabled;
 
-            newItem.Modifier.Addons.Clear();
-            newItem.Modifier.NoOptions.Clear();
-            newItem.Modifier.Groups.Clear();
+            newItem.Addons.Clear();
+            newItem.NoOptions.Clear();
+            newItem.Groups.Clear();
 
-            foreach (var addon in newItem.Modifier.Addons)
+            foreach (var addon in newItem.Addons)
             {
                 var foundAddon = await _context.Addons.FindAsync(addon.AddonId) ?? new()
                 {
                     Name = addon.Name,
                     Price = addon.Price
                 };
-				newItem.Modifier.Addons.Add(foundAddon);
+				newItem.Addons.Add(foundAddon);
             }
-			foreach (var noOption in newItem.Modifier.NoOptions)
+			foreach (var noOption in newItem.NoOptions)
 			{
 				var foundNoOption = await _context.NoOptions.FindAsync(noOption.NoOptionId) ?? new()
 				{
 					Name = noOption.Name,
 					Price = noOption.Price
 				};
-				newItem.Modifier.NoOptions.Add(foundNoOption);
+				newItem.NoOptions.Add(foundNoOption);
 			}
-			foreach (var group in newItem.Modifier.Groups)
+			foreach (var group in newItem.Groups)
 			{
 				var foundGroup = await _context.Groups.FindAsync(group.GroupId) ?? new()
 				{
@@ -155,7 +145,7 @@ namespace SalernoServer.Controllers
                     };
                     foundGroup.GroupOptions.Add(foundGroupOption);
                 }
-				newItem.Modifier.Groups.Add(foundGroup);
+				newItem.Groups.Add(foundGroup);
 			}
 
 			_context.Update(newItem);
