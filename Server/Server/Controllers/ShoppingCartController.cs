@@ -50,7 +50,7 @@ namespace Server.Controllers
 		[Authorize]
 		[HttpGet]
 		[Route("user")]
-		public async Task<ActionResult<Order>> GetUserShoppingCart()
+		public async Task<ActionResult<ICollection<ShoppingCartItemDTO>>> GetUserShoppingCart()
 		{
 			long shoppingCartId = long.Parse(User.Claims.FirstOrDefault(c => c.Type == "ShoppingCartId").Value);
 
@@ -71,7 +71,7 @@ namespace Server.Controllers
 
 			if (shoppingCart is null) return NotFound();
 
-			return Ok(new ShoppingCartDTO(shoppingCart));
+			return Ok(shoppingCart.ShoppingCartItems.Select(i => new ShoppingCartItemDTO(i)).ToList());
 		}
 
 		[HttpGet]
@@ -98,7 +98,7 @@ namespace Server.Controllers
 
 		[Authorize]
 		[HttpPost]
-		public async Task<ActionResult<ShoppingCart>> AddShoppingCartItem([FromBody] ShoppingCartItemHelper shoppingCartItem)
+		public async Task<ActionResult<ICollection<ShoppingCartItemDTO>>> AddShoppingCartItem([FromBody] ShoppingCartItemHelper shoppingCartItem)
 		{
 			long shoppingCartId = long.Parse(User.Claims.FirstOrDefault(c => c.Type == "ShoppingCartId").Value);
 
@@ -167,12 +167,12 @@ namespace Server.Controllers
 				.AsSplitQuery()
 				.FirstOrDefaultAsync(s => s.ShoppingCartId == shoppingCartId);
 
-			return Ok(new ShoppingCartDTO(shoppingCart));
+			return Ok(shoppingCart.ShoppingCartItems.Select(i => new ShoppingCartItemDTO(i)).ToList());
 		}
 
 		[Authorize]
 		[HttpPut("{shoppingCartItemId}")]
-		public async Task<ActionResult<ShoppingCart>> UpdateShoppingCartItem(long shoppingCartItemId, [FromBody] ShoppingCartItemHelper shoppingCartItem)
+		public async Task<ActionResult<ICollection<ShoppingCartItemDTO>>> UpdateShoppingCartItem(long shoppingCartItemId, [FromBody] ShoppingCartItemHelper shoppingCartItem)
 		{
 			long shoppingCartId = long.Parse(User.Claims.FirstOrDefault(c => c.Type == "ShoppingCartId").Value);
 
@@ -274,12 +274,73 @@ namespace Server.Controllers
 				.AsSplitQuery()
 				.FirstOrDefaultAsync(s => s.ShoppingCartId == shoppingCartId);
 
-			return Ok(new ShoppingCartDTO(shoppingCart));
+			return Ok(shoppingCart.ShoppingCartItems.Select(i => new ShoppingCartItemDTO(i)).ToList());
+		}
+
+		[Authorize]
+		[HttpPut("increase/{shoppingCartItemId}")]
+		public async Task<ActionResult<ICollection<ShoppingCartItem>>> IncreaseShoppingCartItemCount(long shoppingCartItemId)
+		{
+			long shoppingCartId = long.Parse(User.Claims.FirstOrDefault(c => c.Type == "ShoppingCartId").Value);
+
+			var shoppingCart = await _context.ShoppingCarts
+				.Include(s => s.ShoppingCartItems)
+				.ThenInclude(si => si.Addons)
+				.ThenInclude(a => a.Addon)
+				.Include(s => s.ShoppingCartItems)
+				.ThenInclude(si => si.NoOptions)
+				.ThenInclude(n => n.NoOption)
+				.Include(s => s.ShoppingCartItems)
+				.ThenInclude(si => si.Groups)
+				.ThenInclude(g => g.GroupOption)
+				.Include(s => s.ShoppingCartItems)
+				.ThenInclude(si => si.Item)
+				.AsSplitQuery()
+				.FirstOrDefaultAsync(s => s.ShoppingCartId == shoppingCartId);
+
+			shoppingCart.ShoppingCartItems.Where(s => s.ShoppingCartItemId == shoppingCartItemId).First().Count++;
+
+			_context.Update(shoppingCart);
+			await _context.SaveChangesAsync();
+
+			return Ok(shoppingCart.ShoppingCartItems.Select(i => new ShoppingCartItemDTO(i)).ToList());
+		}
+
+		[Authorize]
+		[HttpPut("decrease/{shoppingCartItemId}")]
+		public async Task<ActionResult<ICollection<ShoppingCartItem>>> DecreaseShoppingCartItemCount(long shoppingCartItemId)
+		{
+			long shoppingCartId = long.Parse(User.Claims.FirstOrDefault(c => c.Type == "ShoppingCartId").Value);
+
+			var shoppingCart = await _context.ShoppingCarts
+				.Include(s => s.ShoppingCartItems)
+				.ThenInclude(si => si.Addons)
+				.ThenInclude(a => a.Addon)
+				.Include(s => s.ShoppingCartItems)
+				.ThenInclude(si => si.NoOptions)
+				.ThenInclude(n => n.NoOption)
+				.Include(s => s.ShoppingCartItems)
+				.ThenInclude(si => si.Groups)
+				.ThenInclude(g => g.GroupOption)
+				.Include(s => s.ShoppingCartItems)
+				.ThenInclude(si => si.Item)
+				.AsSplitQuery()
+				.FirstOrDefaultAsync(s => s.ShoppingCartId == shoppingCartId);
+
+			if (shoppingCart.ShoppingCartItems.Where(s => s.ShoppingCartItemId == shoppingCartItemId).First().Count > 1)
+			{
+				shoppingCart.ShoppingCartItems.Where(s => s.ShoppingCartItemId == shoppingCartItemId).First().Count--;
+
+				_context.Update(shoppingCart);
+				await _context.SaveChangesAsync();
+			}
+
+			return Ok(shoppingCart.ShoppingCartItems.Select(i => new ShoppingCartItemDTO(i)).ToList());
 		}
 
 		[Authorize]
 		[HttpDelete("{shoppingCartItemId}")]
-		public async Task<ActionResult<ShoppingCart>> DeleteShoppingCartItem(long shoppingCartItemId)
+		public async Task<ActionResult<ICollection<ShoppingCartItemDTO>>> DeleteShoppingCartItem(long shoppingCartItemId)
 		{
 			long shoppingCartId = long.Parse(User.Claims.FirstOrDefault(c => c.Type == "ShoppingCartId").Value);
 
@@ -301,13 +362,13 @@ namespace Server.Controllers
 				.Include(s => s.ShoppingCartItems)
 				.ThenInclude(si => si.Groups)
 				.ThenInclude(g => g.GroupOption)
-				//.AsSplitQuery()
+				.AsSplitQuery()
 				.FirstOrDefaultAsync(s => s.ShoppingCartId == shoppingCartId);
 			
 			// bandaid fix
 			shoppingCart.ShoppingCartItems = shoppingCart.ShoppingCartItems.Where(s => s.ShoppingCartItemId != shoppingCartItemId).ToList();
 			
-			return Ok(new ShoppingCartDTO(shoppingCart));
+			return Ok(shoppingCart.ShoppingCartItems.Where(s => s.ShoppingCartItemId != shoppingCartItemId).Select(i => new ShoppingCartItemDTO(i)).ToList());
 		}
 	}
 }

@@ -25,5 +25,7 @@ namespace Server.Models.ItemModels.Helpers
         public string LiabilityRedemptionTender { get; set; }
         public string TaxGroupOrRate { get; set; }
         public bool IsEnabled { get; set; } = true;
+
+        public ModifierHelper? Modifier { get; set; }
     }
 }

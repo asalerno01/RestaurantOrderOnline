@@ -6,15 +6,19 @@ import { getOrderItemPrice } from './functions/OrderFunctions';
 import OrderItemSummaryStyles from './css/OrderItemSummary.module.css';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { Addons, Groups, NoOptions } from './BaseItemModifiers';
-
+import useAuth from '../../hooks/useAuth';
+import axios from 'axios';
 
 const OrderItem = ({ selectedItemData, setSelectedItemData, order, setOrder, cartIsOpen }) => {
     const [optionsSelected, setOptionsSelected] = useState({ groups: [], addons: [], noOptions: [] });
     const [count, setCount] = useState(1);
+
+    console.log(selectedItemData)
+
     useEffect(() => {
         if (selectedItemData.index !== null) {
-            const selectedItem = order[selectedItemData.index];
-            setOptionsSelected({ groups: selectedItem.groups, addons: selectedItem.addons, noOptions: selectedItem.noOptions });
+            const selectedItem = order[selectedItemData.index].item;
+            setOptionsSelected({ groups: selectedItem.modifier.groups, addons: selectedItem.modifier.addons, noOptions: selectedItem.modifier.noOptions });
             setCount(selectedItem.count);
         }
     }, [selectedItemData.index]);
@@ -57,16 +61,33 @@ const OrderItem = ({ selectedItemData, setSelectedItemData, order, setOrder, car
         setCount(1);
     }
 
+    const handleAddToOnlineCartClick = async event => {
+        if (optionsSelected.groups.length < selectedItemData.item.modifier.groups.length) return;
+        const orderItem = {
+            "itemId": selectedItemData.item.itemId,
+            "count": count,
+            "addons": optionsSelected.addons,
+            "noOptions": optionsSelected.noOptions,
+            "groups": optionsSelected.groups
+        }
+        //setSelectedItemData({ item: null, index: null });
+        //setOptionsSelected({ groups: [], addons: [], noOptions: [] });
+        //setCount(1);
+
+        
+    }
+
     const handleClose = event => {
         setSelectedItemData({ item: null, index: null })
         setOptionsSelected({ groups: [], addons: [], noOptions: [] });
         setCount(1);
     }
     const OrderItemButton = () => {
+        console.log(selectedItemData)
         const orderItemPrice = getOrderItemPrice(selectedItemData.item.price, count, optionsSelected.addons, optionsSelected.noOptions, optionsSelected.groups)
         if (selectedItemData.index !== null)
-            return <button className={OrderItemStyles.add_button} onClick={handleAddToCartClick}>Update item - ${orderItemPrice.toFixed(2)}</button>
-        return <button className={OrderItemStyles.add_button} onClick={handleAddToCartClick}>Add to cart - ${orderItemPrice.toFixed(2)}</button>
+            return <button className={OrderItemStyles.add_button} onClick={handleAddToOnlineCartClick}>Update item - ${orderItemPrice.toFixed(2)}</button>
+        return <button className={OrderItemStyles.add_button} onClick={handleAddToOnlineCartClick}>Add to cart - ${orderItemPrice.toFixed(2)}</button>
     }
     function isDrink(name) { return ["Diet Coke", "Sprite", "Coke", "Root Beer", "Dr Pepper", "Mountain Dew", "Pepsi", "Orange Crush", "Dasani Water"].includes(name); }
     

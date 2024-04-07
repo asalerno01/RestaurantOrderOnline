@@ -24,28 +24,6 @@ const Order = () => {
     const cartSliderRef = useRef();
     const [cartOpen, setCartOpen] = useState(false);
     
-    function getLocalStorageOrder() {
-        let order = localStorage.getItem("order");
-        if (order === undefined || order === null || order.length === 0) return;
-        setOrder(JSON.parse(order));
-    }
-    
-    function saveToLocalStorage() {
-        localStorage.setItem("order", JSON.stringify(order));
-        // localStorage.setItem("order", JSON.stringify(order.map(orderItem => (
-        //     {
-        //         itemId: orderItem.itemId,
-        //         count: orderItem.count,
-        //         addons: [...orderItem.addons.map(addon => addon?.addonId)],
-        //         noOptions: [...orderItem.noOptions.map(noOption => noOption?.noOptionId)],
-        //         groups: [...orderItem.groups.map(group => ({ groupId: group?.groupId, groupOptionId: group?.groupOptionId }))]
-        //     }
-        // ))));
-    }
-    useEffect(() => {
-        if (!isLoading) saveToLocalStorage();
-    }, [order])
-    
     const getMenu = async () => {
         await axios.get("https://localhost:7074/api/menu")
         .then(response => {
@@ -53,29 +31,45 @@ const Order = () => {
         })
         .catch(err => console.log(err));
         if (auth.accountId !== undefined) {
-            console.log(auth);getSavedOrders();
+            console.log(auth);
         }
         setIsLoading(false);
     }
-    const getSavedOrders = async () => {
-        if (auth.accountId === undefined) return;
+    // const getSavedOrders = async () => {
+    //     if (auth.accountId === undefined) return;
+    //     await axios({
+    //     method: "GET",
+    //     url: `https://localhost:7074/api/orders/savedorders/${auth.accountId}`,
+    //     })
+    //     .then(res => {
+    //         if (res.data.length > 0) {
+    //             setMenu(prev => {
+    //                 if (prev[0]?.name === "Saved Orders") return prev;
+    //                 return[{ name: "Saved Orders", items: [...res.data] }, ...prev];
+    //             })
+    //         }
+    //     })
+    //     .catch(err => console.log(err));
+    // }
+    useEffect(() => { 
+        getMenu();
+        getCart();
+    }, [auth]);
+
+    const getCart = async () => {
         await axios({
-        method: "GET",
-        url: `https://localhost:7074/api/orders/savedorders/${auth.accountId}`,
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${auth?.accessToken}`
+            },
+            url: "https://localhost:7074/api/ShoppingCart/User"
         })
         .then(res => {
-            if (res.data.length > 0) {
-                setMenu(prev => {
-                    if (prev[0]?.name === "Saved Orders") return prev;
-                    return[{ name: "Saved Orders", items: [...res.data] }, ...prev];
-                })
-            }
+            console.log(res);
+            setOrder(res.data);
         })
-        .catch(err => console.log(err));
+        .catch(err => console.log(err))
     }
-    useEffect(() => { getLocalStorageOrder(); }, []);
-    useEffect(() => { getMenu(); }, [auth]);
-
     function getScroll() {
         for (let i = menu.length - 1; i > -1; i--) {
             if ((document.getElementById(i).getBoundingClientRect().top - 106) < 0) {
@@ -117,7 +111,6 @@ const Order = () => {
                 order={order}
                 setOrder={setOrder}
                 cartIsOpen={cartIsOpen}
-                saveToLocalStorage={saveToLocalStorage}
             />
         )
     }
@@ -179,7 +172,6 @@ const Order = () => {
                         setSelectedItemData={setSelectedItemData}
                         cartOpen={cartOpen}
                         cartIsOpen={cartIsOpen}
-                        saveToLocalStorage={saveToLocalStorage}
                     />
                 </div>
             </div>

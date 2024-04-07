@@ -12,6 +12,7 @@ using Server.Models;
 using System.Security.Principal;
 using SalernoServer.JwtHelpers;
 using Server.Models.ShoppingCartModels;
+using Server.Logger;
 
 namespace SalernoServer
 {
@@ -154,8 +155,9 @@ namespace SalernoServer
         [Route("refresh")]
         public async Task<IActionResult> RefreshToken()
         {
-            Console.WriteLine("refreshing");
+            Logger.Log("==========refreshing===========");
             string? refreshToken = Request.Cookies["RefreshToken"];
+            Logger.Log(refreshToken);
             if (string.IsNullOrEmpty(refreshToken)) return NoContent();
             Console.WriteLine("RefreshToken==============>" + refreshToken);
             

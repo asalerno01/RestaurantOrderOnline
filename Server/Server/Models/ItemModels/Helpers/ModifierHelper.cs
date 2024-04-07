@@ -5,7 +5,6 @@ namespace SalernoServer.Models.ItemModels
 {
     public class ModifierHelper
     {
-        public string ItemId { get; set; }
         public List<ModifierGroupHelper> Groups { get; set; } = new();
         public List<ModifierAddonHelper> Addons { get; set; } = new();
         public List<ModifierNoOptionHelper> NoOptions { get; set; } = new();

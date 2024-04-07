@@ -8,6 +8,7 @@ const RememberLogin = () => {
     const [isLoading, setIsLoading] = useState(true);
     const refresh = useRefreshToken();
     const { auth, remember } = useAuth();
+    
     useEffect(() => {
         if (isEmptyObject(auth)) {
             let isMounted = true;

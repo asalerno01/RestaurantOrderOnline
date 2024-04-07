@@ -35,6 +35,7 @@ export function getOrderSubtotal(order, items) {
     return subtotal;
 }
 export function getOrderItemPrice(basePrice, count, addons, noOptions, groups) {
+    console.log(addons)
     let orderItemPrice = basePrice;
     addons.forEach(addon => { orderItemPrice += Number(addon.price); });
     noOptions.forEach(noOption => { orderItemPrice -= Number(noOption.price); });

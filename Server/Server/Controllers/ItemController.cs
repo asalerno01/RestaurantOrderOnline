@@ -85,12 +85,12 @@ namespace SalernoServer.Controllers
         }
         // PUT: api/Items/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutItem(string id, [FromBody] ItemHelper item)
+        [HttpPut("{itemId}")]
+        public async Task<IActionResult> PutItem(string itemId, [FromBody] ItemHelper item)
         {
-            if (id != item.ItemId) return BadRequest($"{item.ItemId}");
-            
-            var newItem = await _context.Items.FindAsync(id);
+            if (itemId != item.ItemId) return BadRequest($"{item.ItemId}");
+
+            var newItem = await _context.Items.FindAsync(itemId);
             if (newItem == null) return NotFound();
 
             var category = await _context.Categories.FindAsync(item.Category.CategoryId);
@@ -118,7 +118,47 @@ namespace SalernoServer.Controllers
             newItem.TaxGroupOrRate = item.TaxGroupOrRate;
             newItem.IsEnabled = item.IsEnabled;
 
-            _context.Update(newItem);
+            newItem.Modifier.Addons.Clear();
+            newItem.Modifier.NoOptions.Clear();
+            newItem.Modifier.Groups.Clear();
+
+            foreach (var addon in newItem.Modifier.Addons)
+            {
+                var foundAddon = await _context.Addons.FindAsync(addon.AddonId) ?? new()
+                {
+                    Name = addon.Name,
+                    Price = addon.Price
+                };
+				newItem.Modifier.Addons.Add(foundAddon);
+            }
+			foreach (var noOption in newItem.Modifier.NoOptions)
+			{
+				var foundNoOption = await _context.NoOptions.FindAsync(noOption.NoOptionId) ?? new()
+				{
+					Name = noOption.Name,
+					Price = noOption.Price
+				};
+				newItem.Modifier.NoOptions.Add(foundNoOption);
+			}
+			foreach (var group in newItem.Modifier.Groups)
+			{
+				var foundGroup = await _context.Groups.FindAsync(group.GroupId) ?? new()
+				{
+					Name = group.Name
+				};
+                foreach (var groupOption in group.GroupOptions)
+                {
+                    var foundGroupOption = await _context.GroupOptions.FindAsync(groupOption.GroupOptionId) ?? new()
+                    {
+                        Name = groupOption.Name,
+                        Price = groupOption.Price
+                    };
+                    foundGroup.GroupOptions.Add(foundGroupOption);
+                }
+				newItem.Modifier.Groups.Add(foundGroup);
+			}
+
+			_context.Update(newItem);
             await _context.SaveChangesAsync();
 
             return Ok();
